@@ -27,18 +27,3 @@ The superstar and groupies are Small Independent Mobile Actuators (SIMA) capable
 2. **Software Setup**:
     - Install the necessary libraries (e.g., Adafruit Motor Shield library).
     - Build & upload the code to the Arduino.
-
-## Finite State Machine (FSM)
-
-The FSM manages the following states:
-
--   `INIT`: Initial state, transitions to WAIT.
--   `WAIT`: Waits for a specified delay before starting obstacle detection.
--   `CHECK_OBSTACLE`: Checks for obstacles using the ultrasonic sensor.
--   `MOVE_FORWARD`: Moves the robot forward if no obstacles are detected.
--   `ROTATE`: Rotates the robot if an obstacle is detected.
--   `STOP`: Stops the robot.
-
-## License
-
-This project is licensed under the MIT License.

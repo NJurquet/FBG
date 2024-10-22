@@ -9,3 +9,7 @@ The technical challenge involves building one or more robots.
 ## Usage
 
 **To program the SIMA with Arduino**, open the project **with PlatformIO** (containing a `platformio.ini` file), **not the repository folder !**
+
+## License
+
+This project is licensed under the MIT License.
