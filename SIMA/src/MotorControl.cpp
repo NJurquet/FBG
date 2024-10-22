@@ -22,12 +22,20 @@ namespace MotorControl
         rightMotor->run(FORWARD);
     }
 
-    void rotate()
+    void rotateLeft()
     {
         leftMotor->setSpeed(30);
         rightMotor->setSpeed(30);
         leftMotor->run(BACKWARD);
         rightMotor->run(FORWARD);
+    }
+
+    void rotateRight()
+    {
+        leftMotor->setSpeed(30);
+        rightMotor->setSpeed(30);
+        leftMotor->run(FORWARD);
+        rightMotor->run(BACKWARD);
     }
 
     void stop()

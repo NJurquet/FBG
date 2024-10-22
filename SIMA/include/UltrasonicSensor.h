@@ -1,10 +1,16 @@
 #ifndef ULTRASONICSENSOR_H
 #define ULTRASONICSENSOR_H
 
-namespace UltrasonicSensor
+class UltrasonicSensor
 {
-    void init(int trigPin, int echoPin);
+public:
+    UltrasonicSensor(int trigPin, int echoPin);
+    void init();
     long readDistance();
-}
+
+private:
+    int trigPin;
+    int echoPin;
+};
 
 #endif // ULTRASONICSENSOR_H

@@ -2,8 +2,10 @@
 #include "FSM.h"
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"
+#include "IRSensor.h"
 
-FSM::FSM() : currentState(INIT), rotateStartTime(0) {}
+FSM::FSM(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR)
+    : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), currentState(INIT) {}
 
 void FSM::update()
 {
@@ -14,12 +16,14 @@ void FSM::update()
     case INIT:
         currentState = WAIT;
         break;
+
     case WAIT:
         if (currentTime >= startDelay)
         {
             currentState = CHECK_OBSTACLE;
         }
         break;
+
     case CHECK_OBSTACLE:
         if (currentTime < stopTime)
         {
@@ -30,10 +34,11 @@ void FSM::update()
             currentState = STOP;
         }
         break;
-    case MOVE_FORWARD:
+
+    case FOLLOW_LINE:
         if (currentTime < stopTime)
         {
-            moveForward();
+            followLine();
             currentState = CHECK_OBSTACLE;
         }
         else
@@ -41,50 +46,63 @@ void FSM::update()
             currentState = STOP;
         }
         break;
-    case ROTATE:
+
+    case AVOID_OBSTACLE:
         if (currentTime < stopTime)
         {
-            rotate();
+            avoidObstacle();
         }
         else
         {
             currentState = STOP;
         }
         break;
+
     case STOP:
         stopMotors();
         break;
     }
 }
 
-void FSM::moveForward()
-{
-    MotorControl::moveForward();
-}
-
 void FSM::checkObstacle()
 {
-    long distance = UltrasonicSensor::readDistance();
+    long distance = ultrasonicSensor.readDistance();
     if (distance < 20) // If obstacle is closer than 20 cm
     {
-        currentState = ROTATE;
-        rotateStartTime = millis(); // Record the start time of rotation
+        currentState = AVOID_OBSTACLE;
     }
     else
     {
-        currentState = MOVE_FORWARD;
+        currentState = FOLLOW_LINE;
     }
 }
 
-void FSM::rotate()
+void FSM::avoidObstacle()
 {
-    if (millis() - rotateStartTime < rotateDuration)
+    // TODO: Implement obstacle avoidance
+    currentState = CHECK_OBSTACLE;
+}
+
+void FSM::followLine()
+{
+    bool leftIR = leftIRSensor.read();
+    bool rightIR = rightIRSensor.read();
+
+    if (leftIR && rightIR)
     {
-        MotorControl::rotate();
+        MotorControl::moveForward();
+    }
+    else if (leftIR)
+    {
+        MotorControl::rotateLeft();
+    }
+    else if (rightIR)
+    {
+        MotorControl::rotateRight();
     }
     else
     {
-        currentState = MOVE_FORWARD;
+        MotorControl::stop();
     }
 }
 

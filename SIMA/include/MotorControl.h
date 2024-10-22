@@ -5,7 +5,8 @@ namespace MotorControl
 {
     void init();
     void moveForward();
-    void rotate();
+    void rotateLeft();
+    void rotateRight();
     void stop();
 }
 
