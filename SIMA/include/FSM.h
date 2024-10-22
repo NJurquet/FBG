@@ -1,8 +1,6 @@
 #ifndef FSM_H
 #define FSM_H
 
-#include <Arduino.h>
-
 enum State
 {
     INIT,

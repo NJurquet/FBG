@@ -1,8 +1,6 @@
 #ifndef MOTORCONTROL_H
 #define MOTORCONTROL_H
 
-#include <Adafruit_MotorShield.h>
-
 namespace MotorControl
 {
     void init();

@@ -1,4 +1,6 @@
+#include <Arduino.h>
 #include "MotorControl.h"
+#include <Adafruit_MotorShield.h>
 #include <SPI.h>
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();

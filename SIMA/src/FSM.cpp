@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "FSM.h"
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"

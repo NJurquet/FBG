@@ -1,5 +1,5 @@
-#include "UltrasonicSensor.h"
 #include <Arduino.h>
+#include "UltrasonicSensor.h"
 
 int trigPin;
 int echoPin;
