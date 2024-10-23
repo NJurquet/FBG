@@ -88,20 +88,21 @@ void FSM::followLine()
     bool leftIR = leftIRSensor.read();
     bool rightIR = rightIRSensor.read();
 
-    if (leftIR && rightIR)
+    if (leftIR == 0 && rightIR == 0) // If both sensors do not detect the black line
     {
         MotorControl::moveForward();
     }
-    else if (leftIR)
+    else if (leftIR) // If left sensor detects the black line
     {
         MotorControl::rotateLeft();
     }
-    else if (rightIR)
+    else if (rightIR) // If right sensor detects the black line
     {
         MotorControl::rotateRight();
     }
-    else
+    else // If both sensors detect the black line
     {
+        // TODO: Implement a solution for line division
         MotorControl::stop();
     }
 }
