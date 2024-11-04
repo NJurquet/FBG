@@ -39,8 +39,8 @@ private:
         AVOID_OBSTACLE,
         STOP
     } currentState;
-    const unsigned long startDelay = 85000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 100000;  // 100 seconds in milliseconds
+    const unsigned long startDelay = 5000; // 85 seconds in milliseconds
+    const unsigned long stopTime = 100000; // 100 seconds in milliseconds
 
     /**
      * @brief Checks for obstacles for a distance in front of the robot using ultrasonic sensor.

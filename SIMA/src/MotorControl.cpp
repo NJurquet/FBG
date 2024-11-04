@@ -4,8 +4,8 @@
 #include <SPI.h>
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(3);
-Adafruit_DCMotor *rightMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(3);
 
 namespace MotorControl
 {

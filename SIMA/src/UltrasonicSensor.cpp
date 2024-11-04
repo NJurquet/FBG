@@ -20,6 +20,6 @@ long UltrasonicSensor::readDistance()
     digitalWrite(trigPin, LOW);
 
     long duration = pulseIn(echoPin, HIGH);
-    long distance = (duration / 2) * 0.034; // Speed of sound wave divided by 2 (go and back)
+    long distance = (duration / 2) * 0.034; // Speed of sound wave divided by 2 (go and back) [cm]
     return distance;
 }
