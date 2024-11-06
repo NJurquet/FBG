@@ -4,8 +4,8 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 
-FSM::FSM(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR)
-    : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), currentState(INIT) {}
+FSM::FSM(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc)
+    : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), currentState(INIT) {}
 
 void FSM::update()
 {
@@ -90,27 +90,27 @@ void FSM::followLine()
 
     if (leftIR == 0 && rightIR == 0) // If both sensors do not detect the black line (detect white lines)
     {
-        MotorControl::moveForward();
+        motorControl.moveForward();
         Serial.println("Moving forward");
     }
     else if (leftIR && !rightIR) // If left sensor detects the black line
     {
-        MotorControl::rotateLeft();
+        motorControl.rotateLeft();
         Serial.println("Rotating left");
     }
     else if (!leftIR && rightIR) // If right sensor detects the black line
     {
-        MotorControl::rotateRight();
+        motorControl.rotateRight();
         Serial.println("Rotating right");
     }
     else if (leftIR && rightIR) // If both sensors detect the black line
     {
         // TODO: Implement a solution for line reunion
-        MotorControl::stop();
+        motorControl.stop();
     }
 }
 
 void FSM::stopMotors()
 {
-    MotorControl::stop();
+    motorControl.stop();
 }

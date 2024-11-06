@@ -15,12 +15,13 @@ const int echoPin = 12;
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
 IRSensor rightIRSensor(rightIRPin);
-FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor);
+MotorControl motorControl;
+FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
 
 void setup()
 {
     Serial.begin(9600);
-    MotorControl::init();
+    motorControl.init();
     ultrasonicSensor.init();
     leftIRSensor.init();
     rightIRSensor.init();

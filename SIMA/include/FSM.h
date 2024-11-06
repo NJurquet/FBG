@@ -3,6 +3,7 @@
 
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
+#include "MotorControl.h"
 
 /**
  * @brief State Machine (FSM) for controlling a robot's behavior based on sensor inputs.
@@ -12,6 +13,7 @@
  * @param ultrasonicSensor An instance of the UltrasonicSensor class for detecting obstacles.
  * @param leftIRSensor An instance of the IRSensor class for detecting the left side of the line.
  * @param rightIRSensor An instance of the IRSensor class for detecting the right side of the line.
+ * @param motorControl An instance of the MotorControl class for controlling the robot's motors/movements.
  */
 class FSM
 {
@@ -19,7 +21,7 @@ public:
     /**
      * @brief Constructor for the FSM class.
      */
-    FSM(UltrasonicSensor ultrasonicSensor, IRSensor leftIRSensor, IRSensor rightIRSensor);
+    FSM(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc);
 
     /**
      * @brief Updates the state of the FSM.
@@ -30,6 +32,7 @@ private:
     UltrasonicSensor ultrasonicSensor;
     IRSensor leftIRSensor;
     IRSensor rightIRSensor;
+    MotorControl motorControl;
     enum State
     {
         INIT,

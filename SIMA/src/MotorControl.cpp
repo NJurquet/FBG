@@ -1,46 +1,56 @@
 #include <Arduino.h>
 #include "MotorControl.h"
-#include <Adafruit_MotorShield.h>
 #include <SPI.h>
 
-Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
-Adafruit_DCMotor *rightMotor = AFMS.getMotor(3);
-
-namespace MotorControl
+MotorControl::MotorControl()
 {
-    void init()
-    {
-        AFMS.begin();
-    }
+    AFMS = Adafruit_MotorShield();
+    leftMotor = AFMS.getMotor(4);
+    rightMotor = AFMS.getMotor(3);
+    motorSpeed = 30;
+}
 
-    void moveForward()
-    {
-        leftMotor->setSpeed(30);
-        rightMotor->setSpeed(30);
-        leftMotor->run(FORWARD);
-        rightMotor->run(FORWARD);
-    }
+void MotorControl::init()
+{
+    AFMS.begin();
+}
 
-    void rotateLeft()
-    {
-        leftMotor->setSpeed(30);
-        rightMotor->setSpeed(30);
-        leftMotor->run(BACKWARD);
-        rightMotor->run(FORWARD);
-    }
+void MotorControl::moveForward()
+{
+    leftMotor->setSpeed(motorSpeed);
+    rightMotor->setSpeed(motorSpeed);
+    leftMotor->run(FORWARD);
+    rightMotor->run(FORWARD);
+}
 
-    void rotateRight()
-    {
-        leftMotor->setSpeed(30);
-        rightMotor->setSpeed(30);
-        leftMotor->run(FORWARD);
-        rightMotor->run(BACKWARD);
-    }
+void MotorControl::rotateLeft()
+{
+    leftMotor->setSpeed(motorSpeed);
+    rightMotor->setSpeed(motorSpeed);
+    leftMotor->run(BACKWARD);
+    rightMotor->run(FORWARD);
+}
 
-    void stop()
-    {
-        leftMotor->run(RELEASE);
-        rightMotor->run(RELEASE);
-    }
+void MotorControl::rotateRight()
+{
+    leftMotor->setSpeed(motorSpeed);
+    rightMotor->setSpeed(motorSpeed);
+    leftMotor->run(FORWARD);
+    rightMotor->run(BACKWARD);
+}
+
+void MotorControl::stop()
+{
+    leftMotor->run(RELEASE);
+    rightMotor->run(RELEASE);
+}
+
+int MotorControl::getSpeed()
+{
+    return motorSpeed;
+}
+
+void MotorControl::setSpeed(int speed)
+{
+    motorSpeed = speed;
 }
