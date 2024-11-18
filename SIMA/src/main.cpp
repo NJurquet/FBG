@@ -17,9 +17,9 @@ UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
-//FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
 
-FSM_dev fsm(ultrasonicSensor, motorControl);
+FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
+FSM_dev fsm_dev(ultrasonicSensor, motorControl);
 
 void setup()
 {
@@ -33,5 +33,5 @@ void setup()
 void loop()
 {
     //fsm.update();
-    fsm.update();
+    fsm_dev.update();
 }
