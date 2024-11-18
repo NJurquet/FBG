@@ -24,9 +24,9 @@ void HallSensor::ReadState() {
     // Check if the sensor state has changed
     if (SensorState != PreviousState) {
         if (SensorState == HIGH) {
-            Serial.println("Détection !");
+            Serial.println("Detection !");
         } else {
-            Serial.println("Aucune détection");
+            Serial.println("No detection");
         }
 
         // Update previous state

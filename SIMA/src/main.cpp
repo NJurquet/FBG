@@ -14,7 +14,7 @@ const int trigPin = 11;
 const int echoPin = 12;
 
 // Hall sensor pins
-const int HallSensorPin = 13;
+const int HallSensorPin(2);
 
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
@@ -35,5 +35,5 @@ void setup()
 
 void loop()
 {
-    fsm.update();
+    
 }
