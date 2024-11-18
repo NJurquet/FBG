@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "FSM.h"
+#include "FSM_dev.h"
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
@@ -16,7 +17,9 @@ UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
+
 FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
+FSM_dev fsm_dev(ultrasonicSensor, motorControl);
 
 void setup()
 {
@@ -29,5 +32,6 @@ void setup()
 
 void loop()
 {
-    fsm.update();
+    //fsm.update();
+    fsm_dev.update();
 }
