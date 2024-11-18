@@ -17,7 +17,7 @@ void FSM_dev::update()
         break;
 
     case MOVE:
-        if (currentTime < stopTime && avoided < maxAvoided)
+        if (currentTime < stopTime && avoided <= maxAvoided)
         {
             move();
         }
@@ -28,7 +28,7 @@ void FSM_dev::update()
         break;
 
     case CHECK_OBSTACLE:
-        if (currentTime < stopTime && avoided < maxAvoided)
+        if (currentTime < stopTime && avoided <= maxAvoided)
         {
             checkObstacle();
         }
@@ -39,7 +39,7 @@ void FSM_dev::update()
         break;
 
     case AVOID_OBSTACLE:
-        if (currentTime < stopTime && avoided < maxAvoided)
+        if (currentTime < stopTime && avoided <= maxAvoided)
         {
             avoidObstacle();
         }
@@ -50,7 +50,7 @@ void FSM_dev::update()
         break;
 
     case ROTATING:
-        if (currentTime < stopTime && avoided < maxAvoided)
+        if (currentTime < stopTime && avoided <= maxAvoided)
         {
             rotating();
         }
