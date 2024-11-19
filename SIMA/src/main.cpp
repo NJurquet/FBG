@@ -5,6 +5,7 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 #include "HallSensor.h"
+#include "Debug.h"
 
 // IR sensor pins
 const int leftIRPin = A0;
@@ -17,11 +18,16 @@ const int echoPin = 12;
 // Hall sensor pins
 const int HallSensorPin(2);
 
+// Debugging pins
+const int TX = 9;
+const int RX = 10;
+
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
+Debugger debugger(TX, RX);
 
 FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
 FSM_dev fsm_dev(ultrasonicSensor, motorControl);
