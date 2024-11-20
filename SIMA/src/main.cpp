@@ -19,15 +19,15 @@ const int echoPin = 12;
 const int HallSensorPin(2);
 
 // Debugging pins
-const int TX = 9;
-const int RX = 10;
+const int TX_Debug = 9;
+const int RX_Debug = 10;
 
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
-Debugger debugger(TX, RX);
+Debugger debugger(TX_Debug, RX_Debug);
 
 FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
 FSM_dev fsm_dev(ultrasonicSensor, motorControl);

@@ -11,7 +11,7 @@ public:
      * @brief Constructor for the Debugger class.
      * using a HC-05 bluetooth module.
      */
-    Debugger(int TX, int RX);
+    Debugger(int TX_Debug, int RX_Debug);
 
     /**
      * @brief Initializes the bluetooth debugger.
@@ -32,8 +32,8 @@ public:
     char read();
 
 private:
-    int TX;
-    int RX;
+    int TX_Debug;
+    int RX_Debug;
     char lastmessageSent[16];
     char lastmessageReceived[16];
     SoftwareSerial mySerial;
