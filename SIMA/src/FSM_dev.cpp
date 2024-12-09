@@ -28,6 +28,11 @@ void FSM_dev::update()
 {
     currentTime = millis();
 
+    if (currentTime >= stopTime || avoided > maxAvoided)
+    {
+        currentState = STOP;
+    }
+
     switch (currentState)
     {
     case INIT:
@@ -35,47 +40,19 @@ void FSM_dev::update()
         break;
 
     case MOVE:
-        if (currentTime < stopTime && avoided <= maxAvoided)
-        {
-            move();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        move();
         break;
 
     case CHECK_OBSTACLE:
-        if (currentTime < stopTime && avoided <= maxAvoided)
-        {
-            checkObstacle();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        checkObstacle();
         break;
 
     case AVOID_OBSTACLE:
-        if (currentTime < stopTime && avoided <= maxAvoided)
-        {
-            avoidObstacle();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        avoidObstacle();
         break;
 
     case ROTATING:
-        if (currentTime < stopTime && avoided <= maxAvoided)
-        {
-            rotating();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        rotating();
         break;
 
     case STOP:
@@ -129,12 +106,10 @@ void FSM_dev::avoidObstacle()
 {
     if (avoided % 2 == 0)
     {
-        avoided++;
         rotatingLeft = false;
     }
     else
     {
-        avoided++;
         rotatingLeft = true;
     }
     rotatingStartTime = millis();
@@ -146,7 +121,7 @@ void FSM_dev::avoidObstacle()
  *
  * Rotates the robot left or right for a predetermined time
  * based on the previous avoidObstacle() method configuration.
- * Transitions back to MOVE state after rotation is complete.
+ * Transitions back to CHECK_OBSTACLE state after rotation is complete.
  */
 void FSM_dev::rotating()
 {
@@ -165,7 +140,8 @@ void FSM_dev::rotating()
     }
     else
     {
-        currentState = MOVE;
+        avoided++;
+        currentState = CHECK_OBSTACLE;
     }
 }
 
