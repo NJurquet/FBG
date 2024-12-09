@@ -30,7 +30,7 @@ MotorControl motorControl;
 Debugger debugger(TX_Debug, RX_Debug);
 
 FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
-FSM_dev fsm_dev(ultrasonicSensor, motorControl);
+FSM_dev fsm_dev(ultrasonicSensor, motorControl, debugger);
 
 void setup()
 {
@@ -40,10 +40,11 @@ void setup()
     leftIRSensor.init();
     rightIRSensor.init();
     hallSensor.init();
+    debugger.init();
 }
 
 void loop()
 {
-    //fsm.update();
+    // fsm.update();
     fsm_dev.update();
 }

@@ -23,13 +23,13 @@ public:
      * @brief Write debug information in bluetooth terminal.
      *
      */
-    void write(char message[16]);
+    void write(String message);
 
     /**
-     * @brief Read debug information in bluetooth terminal.
+     * @brief Read debug information from bluetooth terminal.
      *
      */
-    char read();
+    String read();
 
 private:
     int TX_Debug;
@@ -37,7 +37,6 @@ private:
     char lastmessageSent[16];
     char lastmessageReceived[16];
     SoftwareSerial mySerial;
-
 };
 
 #endif // DEBUG_H

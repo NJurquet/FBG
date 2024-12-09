@@ -3,6 +3,7 @@
 
 #include "UltrasonicSensor.h"
 #include "MotorControl.h"
+#include "Debug.h"
 
 /**
  * @brief State Machine (FSM) for controlling a robot's behavior based on sensor inputs.
@@ -20,7 +21,7 @@ public:
     /**
      * @brief Constructor for the FSM class.
      */
-    FSM_dev(UltrasonicSensor us, MotorControl mc);
+    FSM_dev(UltrasonicSensor us, MotorControl mc, Debugger dbg);
 
     /**
      * @brief Updates the state of the FSM.
@@ -30,6 +31,7 @@ public:
 private:
     UltrasonicSensor ultrasonicSensor;
     MotorControl motorControl;
+    Debugger debugger;
     enum State
     {
         INIT,
@@ -39,13 +41,13 @@ private:
         ROTATING,
         STOP
     } currentState;
-    const unsigned long stopTime = 30000; // Stops after 30 seconds
+    const unsigned long stopTime = 30000;    // Stops after 30 seconds
     const unsigned long rotatingTime = 2500; // Rotates for 1 second
-    unsigned long rotatingStartTime; // Start time for rotating
-    unsigned short avoided = 0; // Number of avoided objects
-    const unsigned short maxAvoided = 5; // Avoid 5 objects max
-    bool rotatingLeft; // Flag to indicate if the robot is rotating left
-    unsigned long currentTime; // Current time in milliseconds
+    unsigned long rotatingStartTime;         // Start time for rotating
+    unsigned short avoided = 0;              // Number of avoided objects
+    const unsigned short maxAvoided = 5;     // Avoid 5 objects max
+    bool rotatingLeft;                       // Flag to indicate if the robot is rotating left
+    unsigned long currentTime;               // Current time in milliseconds
 
     /**
      * @brief Moves the robot forward.
