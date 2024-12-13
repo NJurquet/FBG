@@ -36,7 +36,7 @@ enum State
     };
 ```
 
-The state `INIT` will first set the state to `MOVE` (An initial obstacle check has not been done because "When we start the system, there is nothing in front of the senor").
+The state `INIT` will first set the state to `CHECK_OBSTACLE`.
 
 The `MOVE` state will move the robot forward and change the state to `CHECK_OBSTACLE` to check if there is an obstacle before continuing to move.
 

@@ -34,6 +34,9 @@ FSM_dev fsm_dev(ultrasonicSensor, motorControl, debugger);
 
 void setup()
 {
+    delay(1000);
+    while (!Serial)
+        ;
     Serial.begin(9600);
     motorControl.init();
     ultrasonicSensor.init();
