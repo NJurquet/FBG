@@ -36,7 +36,7 @@ void FSM_dev::update()
     switch (currentState)
     {
     case INIT:
-        currentState = MOVE;
+        currentState = CHECK_OBSTACLE;
         break;
 
     case MOVE:
@@ -85,7 +85,7 @@ void FSM_dev::move()
 void FSM_dev::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
-    if (distance < 20) // If obstacle is closer than 20 cm
+    if (distance < 10) // If obstacle is closer than 10 cm
     {
         currentState = AVOID_OBSTACLE;
     }
