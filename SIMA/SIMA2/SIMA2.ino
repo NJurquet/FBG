@@ -11,6 +11,7 @@
 
 // IR sensor pins
 const int leftIRPin = A0;
+const int centerIRPin = A2;
 const int rightIRPin = A1;
 
 // Ultrasonic sensor pins
@@ -28,11 +29,12 @@ SoftwareSerial mySerial(TX_Debug, RX_Debug);
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
+IRSensor centerIRSensor(centerIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
 Debugger debugger(TX_Debug, RX_Debug);
 
-FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
+FSM_star fsm(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl);
 FSM_dev fsm_dev(ultrasonicSensor, motorControl);
 
 void debug()
@@ -72,13 +74,14 @@ void setup()
   motorControl.init();
   ultrasonicSensor.init();
   leftIRSensor.init();
+  centerIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
 }
 
 void loop()
 {
-  // fsm.update();
-  fsm_dev.update();
+  fsm.followLine();
+  //fsm_dev.update();
   debug();
 }

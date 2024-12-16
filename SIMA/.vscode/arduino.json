@@ -1,0 +1,5 @@
+{
+    "port": "COM5",
+    "board": "arduino:avr:uno",
+    "sketch": "SIMA2\\SIMA2.ino"
+}
