@@ -7,7 +7,7 @@ MotorControl::MotorControl()
     AFMS = Adafruit_MotorShield();
     leftMotor = AFMS.getMotor(4);
     rightMotor = AFMS.getMotor(3);
-    motorSpeed = 30;
+    motorSpeed = 40;
 }
 
 void MotorControl::init()
@@ -25,8 +25,8 @@ void MotorControl::moveForward()
 
 void MotorControl::moveBackward()
 {
-    leftMotor->setSpeed(motorSpeed/2);
-    rightMotor->setSpeed(motorSpeed/2);
+    leftMotor->setSpeed(motorSpeed / 2);
+    rightMotor->setSpeed(motorSpeed / 2);
     leftMotor->run(BACKWARD);
     rightMotor->run(BACKWARD);
 }

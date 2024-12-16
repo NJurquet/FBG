@@ -50,10 +50,9 @@ private:
         AVOID_OBSTACLE,
         STOP
     } currentState;
-    const unsigned long startDelay = 0000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 100000; // 100 seconds in milliseconds
-    unsigned long avoidTime;
-    unsigned long onTheEdgeTime;
+    const unsigned long startDelay = 1000; // 85 seconds in milliseconds
+    const unsigned long stopTime = 50000;  // 100 seconds in milliseconds
+    unsigned long onTheEdgeStartTime;
 
     /**
      * @brief Go forward a certain time to be as close to the edge as possible.

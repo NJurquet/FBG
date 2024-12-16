@@ -7,10 +7,10 @@
 
 /**
  * @brief Constructor for the Finite State Machine (FSM_star) class.
- * 
+ *
  * Initializes the FSM_star with ultrasonic and IR sensors, motor control,
  * and sets the initial state to INIT.
- * 
+ *
  * @param us UltrasonicSensor object for distance measurement
  * @param leftIR Left IR sensor for line tracking
  * @param centerIR center IR sensor for line tracking
@@ -22,7 +22,7 @@ FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSe
 
 /**
  * @brief Main update method for the Finite State Machine.
- * 
+ *
  * Manages the state transitions and actions based on the current state
  * and elapsed time. Controls the robot's behavior through different states
  * such as initialization, waiting, obstacle checking, line following,
@@ -31,6 +31,11 @@ FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSe
 void FSM_star::update()
 {
     unsigned long currentTime = millis();
+
+    if (currentTime >= stopTime)
+    {
+        currentState = STOP;
+    }
 
     switch (currentState)
     {
@@ -46,66 +51,30 @@ void FSM_star::update()
         break;
 
     case CHECK_OBSTACLE:
-        if (currentTime < stopTime)
-        {
-            checkObstacle();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        checkObstacle();
         break;
 
     case FOLLOW_LINE:
-        if (currentTime < stopTime)
-        {
-            followLine();
-            currentState = CHECK_OBSTACLE;
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        followLine();
         break;
 
     case ON_THE_EDGE:
-        if (currentTime < stopTime)
-        {
-            if (currentTime > onTheEdgeTime + 1000)
-            {
-                currentState = STOP;
-            }
-            else 
-            {
-                onTheEdge();
-            }
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        onTheEdge();
         break;
 
     case AVOID_OBSTACLE:
-        if (currentTime < stopTime)
-        {
-            avoidObstacle();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        avoidObstacle();
         break;
 
     case STOP:
-        stopMotors ();
+        stopMotors();
         break;
     }
 }
 
 /**
  * @brief Checks for obstacles using the ultrasonic sensor.
- * 
+ *
  * Reads the distance from the ultrasonic sensor and determines
  * the next state based on the measured distance:
  * - If an obstacle is closer than 20 cm, transitions to AVOID_OBSTACLE
@@ -114,17 +83,8 @@ void FSM_star::update()
 void FSM_star::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
-    if (distance < 20) // If obstacle is closer than 20 cm
+    if (distance < 10) // If obstacle is closer than 10 cm
     {
-        const int TX_Debug = 9;
-        const int RX_Debug = 10;
-        SoftwareSerial mySerial(TX_Debug, RX_Debug);
-
-        Serial.begin(9600);
-        mySerial.begin(9600);
-        Serial.println(distance);
-
-        avoidTime = millis();
         currentState = AVOID_OBSTACLE;
     }
     else
@@ -135,28 +95,21 @@ void FSM_star::checkObstacle()
 
 /**
  * @brief Handles obstacle avoidance behavior.
- * 
+ *
  * Currently a placeholder method for implementing obstacle avoidance strategy.
  * Temporarily transitions back to CHECK_OBSTACLE state.
- * 
+ *
  * @todo Implement a comprehensive obstacle avoidance algorithm
  */
 void FSM_star::avoidObstacle()
 {
-    unsigned long currentTime = millis(); 
-    while (currentTime < avoidTime + 1500)
-    {
-        motorControl.moveBackward();
-        motorControl.rotateRight();
-        currentTime = millis();
-    }
-
+    motorControl.stop();
     currentState = CHECK_OBSTACLE;
 }
 
 /**
  * @brief Manages line-following behavior using IR sensors.
- * 
+ *
  * Reads the state of left and right IR sensors and controls
  * the robot's movement accordingly:
  * - If both sensors are on white: move forward
@@ -166,31 +119,51 @@ void FSM_star::avoidObstacle()
  */
 void FSM_star::followLine()
 {
-    bool leftIR = leftIRSensor.read(); //Is 1 if it detects white
-    bool centerIR = centerIRSensor.read(); //Is 1 if it detects white
-    bool rightIR = rightIRSensor.read(); //Is 1 if it detects white
+    bool leftIR = leftIRSensor.read();     // Is 1 if it detects black
+    bool centerIR = centerIRSensor.read(); // Is 1 if it detects black
+    bool rightIR = rightIRSensor.read();   // Is 1 if it detects black
 
-    if (leftIR  && rightIR  && !centerIR) // If Left and Right sensors are on white and center sensor is on black
+    if (!leftIR && !rightIR && centerIR) // If Left and Right sensors are on white and center sensor is on black
     {
+        motorControl.setSpeed(40);
         motorControl.moveForward();
         Serial.println("Moving forward");
     }
-    else if (!leftIR && centerIR)  // If left sensor detects the black line and the center sensor detect the white line
+    else if (leftIR && !centerIR) // If left sensor detects the black line and the center sensor detect the white line
     {
+        motorControl.setSpeed(20);
         motorControl.rotateRight();
         Serial.println("Rotating left");
     }
-    else if (!rightIR && centerIR) // If right sensor detects the black line
+    else if (rightIR && !centerIR) // If right sensor detects the black line & center sensor detects the white line
     {
+        motorControl.setSpeed(20);
         motorControl.rotateLeft();
         Serial.println("Rotating right");
     }
-    else if (!leftIR && !rightIR & !centerIR) // If both sensors detect the black line
+    else if (leftIR && rightIR & centerIR) // If all sensors detect the black line
     {
-        // TODO: Implement a solution for line reunion
-        motorControl.stop();
+        // Move to the left until finding the line
+        motorControl.setSpeed(20);
+        motorControl.rotateLeft();
+        Serial.println("No line detected, rotating left");
     }
 
+    else if (leftIR && centerIR) // If left & center sensors detect the black line -> potentially on the left curved part of the line
+    {
+        motorControl.setSpeed(20);
+        motorControl.rotateLeft();
+    }
+
+    currentState = CHECK_OBSTACLE;
+
+    if (!leftIR && !rightIR && !centerIR) // If all sensors are on white -> end of line
+    {
+        motorControl.setSpeed(20);
+        motorControl.moveForward();
+        onTheEdgeStartTime = millis();
+        currentState = ON_THE_EDGE;
+    }
 }
 
 /**
@@ -198,12 +171,20 @@ void FSM_star::followLine()
  */
 void FSM_star::onTheEdge()
 {
-    motorControl.moveForward();
+    if (millis() - onTheEdgeStartTime < 1000)
+    {
+        motorControl.setSpeed(20);
+        motorControl.moveForward();
+    }
+    else
+    {
+        currentState = STOP;
+    }
 }
 
 /**
  * @brief Stops the robot's motors.
- * 
+ *
  * Calls the stop method of the motor control object
  * to halt all motor movement.
  */
