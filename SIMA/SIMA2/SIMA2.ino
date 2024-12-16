@@ -39,7 +39,7 @@ int zoneNumber = 1;
 bool leftStart = true;
 
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, zoneNumber, leftStart);
-FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
+FSM_star_star fsm_star(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl);
 
 FSM_dev fsm_dev(ultrasonicSensor, motorControl);
 
@@ -93,7 +93,7 @@ void setup()
 
 void loop()
 {
-  fsm_groupie.update();
-  //fsm_dev.update();
+  // fsm.update();
+  fsm_dev.update();
   debug();
 }

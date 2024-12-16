@@ -21,16 +21,22 @@ public:
     /**
      * @brief Constructor for the FSM_star class.
      */
-    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc);
+    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc);
 
     /**
      * @brief Updates the state of the FSM_star.
      */
     void update();
 
+    /**
+     * @brief Follow the white lines.
+     */
+    void followLine();
+
 private:
     UltrasonicSensor ultrasonicSensor;
     IRSensor leftIRSensor;
+    IRSensor centerIRSensor;
     IRSensor rightIRSensor;
     MotorControl motorControl;
     enum State
@@ -54,11 +60,6 @@ private:
      * @brief Avoids obstacles in front of the robot.
      */
     void avoidObstacle();
-
-    /**
-     * @brief Follows a line based on the IR sensors readings.
-     */
-    void followLine();
 
     /**
      * @brief Stops the motors of the robot.

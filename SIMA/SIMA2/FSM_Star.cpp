@@ -12,11 +12,12 @@
  * 
  * @param us UltrasonicSensor object for distance measurement
  * @param leftIR Left IR sensor for line tracking
+ * @param centerIR center IR sensor for line tracking
  * @param rightIR Right IR sensor for line tracking
  * @param mc MotorControl object for robot movement
  */
-FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc)
-    : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), currentState(INIT) {}
+FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc)
+    : ultrasonicSensor(us), leftIRSensor(leftIR), centerIRSensor(centerIR), rightIRSensor(rightIR), motorControl(mc), currentState(INIT) {}
 
 /**
  * @brief Main update method for the Finite State Machine.
@@ -78,7 +79,7 @@ void FSM_star::update()
         break;
 
     case STOP:
-        stopMotors();
+        stopMotors ();
         break;
     }
 }
@@ -130,29 +131,31 @@ void FSM_star::avoidObstacle()
  */
 void FSM_star::followLine()
 {
-    bool leftIR = leftIRSensor.read();
-    bool rightIR = rightIRSensor.read();
+    bool leftIR = leftIRSensor.read(); //Is 1 if it detects white
+    bool centerIR = centerIRSensor.read(); //Is 1 if it detects white
+    bool rightIR = rightIRSensor.read(); //Is 1 if it detects white
 
-    if (leftIR == 0 && rightIR == 0) // If both sensors do not detect the black line (detect white lines)
+    if (leftIR  && rightIR  && !centerIR) // If Left and Right sensors are on white and center sensor is on black
     {
         motorControl.moveForward();
         Serial.println("Moving forward");
     }
-    else if (leftIR && !rightIR) // If left sensor detects the black line
-    {
-        motorControl.rotateLeft();
-        Serial.println("Rotating left");
-    }
-    else if (!leftIR && rightIR) // If right sensor detects the black line
+    else if (!leftIR && centerIR)  // If left sensor detects the black line and the center sensor detect the white line
     {
         motorControl.rotateRight();
+        Serial.println("Rotating left");
+    }
+    else if (!rightIR && centerIR) // If right sensor detects the black line
+    {
+        motorControl.rotateLeft();
         Serial.println("Rotating right");
     }
-    else if (leftIR && rightIR) // If both sensors detect the black line
+    else if (!leftIR && !rightIR & !centerIR) // If both sensors detect the black line
     {
         // TODO: Implement a solution for line reunion
         motorControl.stop();
     }
+
 }
 
 /**
