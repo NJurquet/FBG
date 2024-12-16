@@ -36,7 +36,7 @@ MotorControl motorControl;
 Debugger debugger(TX_Debug, RX_Debug);
 
 bool groupie = true;
-int zoneNumber = 1;
+int zoneNumber = 2;
 bool leftStart = true;
 
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, zoneNumber, leftStart);
@@ -90,12 +90,13 @@ void setup()
   centerIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
+  
 }
 
 void loop()
 {
-  //fsm_groupie.update();
-  fsm_star.update();
+  
+  fsm_groupie.update();
   //fsm_dev.update();
   debug();
 }

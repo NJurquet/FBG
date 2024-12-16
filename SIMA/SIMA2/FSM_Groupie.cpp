@@ -32,6 +32,13 @@ FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR
 void FSM_groupie::update()
 {
     unsigned long currentTime = millis();
+    
+
+
+    if (currentTime >= stopTime)
+    {
+        currentState = STOP;
+    }
 
     switch (currentState)
     {
@@ -40,80 +47,34 @@ void FSM_groupie::update()
         break;
 
     case WAIT:
-        if (currentTime >= startDelay)
-        {
-            currentState = CHECK_OBSTACLE;
-        }
+        
+        currentState = CHECK_OBSTACLE;
         break;
 
     case CHECK_OBSTACLE:
-        if (currentTime < stopTime)
-        {
-            checkObstacle();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        
+        checkObstacle();
         break;
 
     case FOLLOW_LINE:
-        if (currentTime < stopTime)
-        {
-            followLine();
-            currentState = CHECK_OBSTACLE;
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        
+        followLine();
         break;
     
     case ENTER_ZONE:
-        if (currentTime < stopTime)
-        {
-            if (currentTime + 1500 < enterZoneTime)
-            {
-                enterZone();
-            }
-            else 
-            {
-                currentState = ENTERING_ZONE;
-            }
-        }
-        else
-        {
-            currentState = STOP;
-        }
+
+        enterZone();
         break;
 
     case ENTERING_ZONE:
-        if (currentTime < stopTime)
-        {
-            if (currentTime + 2500 < enterZoneTime)
-            {
-                enteringZone();
-            }
-            else 
-            {
-                currentState = STOP;
-            }
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        
+        
+        enteringZone();
         break;
 
     case AVOID_OBSTACLE:
-        if (currentTime < stopTime)
-        {
-            avoidObstacle();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        
+        avoidObstacle();
         break;
 
     case STOP:
@@ -127,15 +88,14 @@ void FSM_groupie::update()
  * 
  * Reads the distance from the ultrasonic sensor and determines
  * the next state based on the measured distance:
- * - If an obstacle is closer than 20 cm, transitions to AVOID_OBSTACLE
+ * - If an obstacle is closer than 10 cm, transitions to AVOID_OBSTACLE
  * - Otherwise, transitions to FOLLOW_LINE
  */
 void FSM_groupie::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
-    if (distance < 20) // If obstacle is closer than 20 cm
+    if (distance < 10) // If obstacle is closer than 10 cm
     {
-        avoidTime = millis();
         currentState = AVOID_OBSTACLE;
     }
     else
@@ -154,13 +114,7 @@ void FSM_groupie::checkObstacle()
  */
 void FSM_groupie::avoidObstacle()
 {
-    unsigned long currentTime = millis(); 
-    while (currentTime < avoidTime + 1500)
-    {
-        motorControl.moveBackward();
-        motorControl.rotateRight();
-        currentTime = millis();
-    }
+    motorControl.stop();
     currentState = CHECK_OBSTACLE;
 }
 
@@ -180,22 +134,25 @@ void FSM_groupie::followLine()
     bool centerIR = centerIRSensor.read();
     bool rightIR = rightIRSensor.read();
 
-    if (leftIR && rightIR && !centerIR) // If both extreme sensors do not detect the black line (detect white lines) & center detects black line
+    if ((!leftIR && !rightIR && !centerIR) || (!leftIR && !rightIR && centerIR)) // If both extreme sensors do not detect the black line (detect white lines) & center detects black line
     {
         motorControl.moveForward();
         Serial.println("Moving forward");
+        currentState = CHECK_OBSTACLE;
     }
-    else if (!leftIR && centerIR) // If left detect black & center detect white we turn right
+    else if (leftIR && !centerIR) // If left detect black & center detect white we turn right
     {
         motorControl.rotateRight();
         Serial.println("Rotating left");
+        currentState = CHECK_OBSTACLE;
     }
-    else if (!rightIR && centerIR) // If right detect black & center detect white we turn left
+    else if (rightIR && !centerIR) // If right detect black & center detect white we turn left
     {
         motorControl.rotateLeft();
         Serial.println("Rotating right");
+        currentState = CHECK_OBSTACLE;
     }
-    else if (!leftIR && !rightIR && !centerIR) // If all sensors detect the black line
+    else if (leftIR && rightIR && centerIR) // If all sensors detect the black line
     {
         zoneCounter++;
         if (zoneCounter == zoneNumber)
@@ -212,14 +169,16 @@ void FSM_groupie::followLine()
  */
 void FSM_groupie::enterZone()
 {
-    if (leftStart)
-    {
-        motorControl.rotateLeft();
+    unsigned long startTime = millis();  // Capture the current time
+    while (millis() - startTime < 2000) {  // Run the loop for 1000 milliseconds (1 second)
+        if (leftStart) {
+            motorControl.rotateLeft();
+        } else {
+            motorControl.rotateRight();
+        }
+    delay(10);  // Small delay to reduce CPU usage
     }
-    else
-    {
-        motorControl.rotateRight();
-    }
+    currentState = ENTERING_ZONE;
 }
 
 /**
@@ -227,7 +186,12 @@ void FSM_groupie::enterZone()
  */
 void FSM_groupie::enteringZone()
 {
-    motorControl.moveForward();
+    unsigned long startTime = millis();  // Capture the current time
+    while (millis() - startTime < 1500) {  // Run the loop for 1000 milliseconds (1 second)
+        motorControl.moveForward();
+        delay(10);  // Small delay to reduce CPU usage
+    }
+    currentState = STOP;
 }
 
 /**
