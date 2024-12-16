@@ -11,6 +11,7 @@
 
 // IR sensor pins
 const int leftIRPin = A0;
+const int centerIRPin = A2;
 const int rightIRPin = A1;
 
 // Ultrasonic sensor pins
@@ -28,11 +29,18 @@ SoftwareSerial mySerial(TX_Debug, RX_Debug);
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
+IRSensor centerIRSensor(centerIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
 Debugger debugger(TX_Debug, RX_Debug);
 
-FSM fsm(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
+bool groupie = true;
+int zoneNumber = 1;
+bool leftStart = true;
+
+FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, zoneNumber, leftStart);
+FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl);
+
 FSM_dev fsm_dev(ultrasonicSensor, motorControl);
 
 void debug()
@@ -62,6 +70,12 @@ void debug()
 
 void setup()
 {
+  // if (groupie){
+  //   fsm = &fsm_groupie;
+  // }
+  // else{
+  //   fsm = &fsm_star;
+  // }
   delay(1000);
   while (!Serial)
     ;
@@ -72,13 +86,14 @@ void setup()
   motorControl.init();
   ultrasonicSensor.init();
   leftIRSensor.init();
+  centerIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
 }
 
 void loop()
 {
-  // fsm.update();
-  fsm_dev.update();
+  fsm_groupie.update();
+  //fsm_dev.update();
   debug();
 }

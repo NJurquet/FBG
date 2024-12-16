@@ -39,6 +39,11 @@ public:
     void moveForward();
 
     /**
+     * @brief Moves the robot backward.
+     */
+    void moveBackward();
+
+    /**
      * @brief Rotates the robot to the left.
      */
     void rotateLeft();

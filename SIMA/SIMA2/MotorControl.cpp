@@ -23,6 +23,14 @@ void MotorControl::moveForward()
     rightMotor->run(FORWARD);
 }
 
+void MotorControl::moveBackward()
+{
+    leftMotor->setSpeed(motorSpeed/2);
+    rightMotor->setSpeed(motorSpeed/2);
+    leftMotor->run(BACKWARD);
+    rightMotor->run(BACKWARD);
+}
+
 void MotorControl::rotateLeft()
 {
     leftMotor->setSpeed(motorSpeed);

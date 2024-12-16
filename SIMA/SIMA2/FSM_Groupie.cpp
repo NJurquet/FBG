@@ -12,11 +12,14 @@
  * 
  * @param us UltrasonicSensor object for distance measurement
  * @param leftIR Left IR sensor for line tracking
+ * @param centerIR Center IR sensor for lint tracking
  * @param rightIR Right IR sensor for line tracking
  * @param mc MotorControl object for robot movement
+ * @param zN Integer that determines which zone is the target of the groupie
+ * @param lS Boolean that determines if the groupie starts on the left side of the arena
  */
-FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc)
-    : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), currentState(INIT) {}
+FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, int zN, bool lS)
+    : ultrasonicSensor(us), leftIRSensor(leftIR), centerIRSensor(centerIR), rightIRSensor(rightIR), motorControl(mc), zoneNumber(zN), leftStart(lS), currentState(INIT) {}
 
 /**
  * @brief Main update method for the Finite State Machine.
@@ -59,6 +62,42 @@ void FSM_groupie::update()
         {
             followLine();
             currentState = CHECK_OBSTACLE;
+        }
+        else
+        {
+            currentState = STOP;
+        }
+        break;
+    
+    case ENTER_ZONE:
+        if (currentTime < stopTime)
+        {
+            if (currentTime + 1500 < enterZoneTime)
+            {
+                enterZone();
+            }
+            else 
+            {
+                currentState = ENTERING_ZONE;
+            }
+        }
+        else
+        {
+            currentState = STOP;
+        }
+        break;
+
+    case ENTERING_ZONE:
+        if (currentTime < stopTime)
+        {
+            if (currentTime + 2500 < enterZoneTime)
+            {
+                enteringZone();
+            }
+            else 
+            {
+                currentState = STOP;
+            }
         }
         else
         {
@@ -114,7 +153,14 @@ void FSM_groupie::checkObstacle()
  */
 void FSM_groupie::avoidObstacle()
 {
-    // TODO: Implement obstacle avoidance
+    unsigned long avoidTime = millis(); 
+    unsigned long currentTime = millis(); 
+    while (currentTime < avoidTime + 1000)
+    {
+        motorControl.moveBackward();
+        motorControl.rotateRight();
+        currentTime = millis();
+    }
     currentState = CHECK_OBSTACLE;
 }
 
@@ -129,30 +175,59 @@ void FSM_groupie::avoidObstacle()
  * - If both sensors detect black line: stop (to be improved)
  */
 void FSM_groupie::followLine()
-{
+{    
     bool leftIR = leftIRSensor.read();
+    bool centerIR = centerIRSensor.read();
     bool rightIR = rightIRSensor.read();
 
-    if (leftIR == 0 && rightIR == 0) // If both sensors do not detect the black line (detect white lines)
+    if (leftIR && rightIR && !centerIR) // If both extreme sensors do not detect the black line (detect white lines) & center detects black line
     {
         motorControl.moveForward();
         Serial.println("Moving forward");
     }
-    else if (leftIR && !rightIR) // If left sensor detects the black line
-    {
-        motorControl.rotateLeft();
-        Serial.println("Rotating left");
-    }
-    else if (!leftIR && rightIR) // If right sensor detects the black line
+    else if (!leftIR && centerIR) // If left detect black & center detect white we turn right
     {
         motorControl.rotateRight();
+        Serial.println("Rotating left");
+    }
+    else if (!rightIR && centerIR) // If right detect black & center detect white we turn left
+    {
+        motorControl.rotateLeft();
         Serial.println("Rotating right");
     }
-    else if (leftIR && rightIR) // If both sensors detect the black line
+    else if (!leftIR && !rightIR && !centerIR) // If all sensors detect the black line
     {
-        // TODO: Implement a solution for line reunion
-        motorControl.stop();
+        zoneCounter++;
+        if (zoneCounter == zoneNumber)
+        {
+            currentState = ENTER_ZONE;
+            enterZoneTime = millis();
+        }
+        Serial.println("Detected perpendicular line");
     }
+}
+
+/**
+ * @brief Turns the robot in the right direction to begin entering the zone.
+ */
+void FSM_groupie::enterZone()
+{
+    if (leftStart)
+    {
+        motorControl.rotateLeft();
+    }
+    else
+    {
+        motorControl.rotateRight();
+    }
+}
+
+/**
+ * @brief Drives the robot forward to be in the middle of the zone.
+ */
+void FSM_groupie::enteringZone()
+{
+    motorControl.moveForward();
 }
 
 /**

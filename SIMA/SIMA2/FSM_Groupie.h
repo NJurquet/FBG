@@ -14,6 +14,8 @@
  * @param leftIRSensor An instance of the IRSensor class for detecting the left side of the line.
  * @param rightIRSensor An instance of the IRSensor class for detecting the right side of the line.
  * @param motorControl An instance of the MotorControl class for controlling the robot's motors/movements.
+ * @param zoneNumber Integer that determines which zone is the target of the groupie.
+ * @param leftStart Boolean that determines if the groupie begins on the left side of the arena.
  */
 class FSM_groupie
 {
@@ -21,7 +23,7 @@ public:
     /**
      * @brief Constructor for the FSM_groupie class.
      */
-    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc);
+    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, int zN, bool lS);
 
     /**
      * @brief Updates the state of the FSM_groupie.
@@ -31,19 +33,26 @@ public:
 private:
     UltrasonicSensor ultrasonicSensor;
     IRSensor leftIRSensor;
+    IRSensor centerIRSensor;
     IRSensor rightIRSensor;
     MotorControl motorControl;
+    int zoneNumber;
+    bool leftStart;
     enum State
     {
         INIT,
         WAIT,
         CHECK_OBSTACLE,
         FOLLOW_LINE,
+        ENTER_ZONE,
+        ENTERING_ZONE,
         AVOID_OBSTACLE,
         STOP
     } currentState;
-    const unsigned long startDelay = 5000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 100000; // 100 seconds in milliseconds
+    const unsigned long startDelay = 0000; // 85 seconds in milliseconds
+    const unsigned long stopTime = 1000000; // 100 seconds in milliseconds
+    unsigned long enterZoneTime;
+    int zoneCounter = 0;
 
     /**
      * @brief Checks for obstacles for a distance in front of the robot using ultrasonic sensor.
@@ -59,6 +68,16 @@ private:
      * @brief Follows a line based on the IR sensors readings.
      */
     void followLine();
+
+    /**
+     * @brief Turns to enter the pit when encounters the objective perpendicular line.
+     */
+    void enterZone();
+
+    /**
+     * @brief Moves the robot forward when entering the zone.
+     */
+    void enteringZone();
 
     /**
      * @brief Stops the motors of the robot.
