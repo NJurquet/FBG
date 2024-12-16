@@ -1,13 +1,13 @@
 #include <Arduino.h>
-#include "FSM.h"
+#include "FSM_star.h"
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 
 /**
- * @brief Constructor for the Finite State Machine (FSM) class.
+ * @brief Constructor for the Finite State Machine (FSM_star) class.
  * 
- * Initializes the FSM with ultrasonic and IR sensors, motor control,
+ * Initializes the FSM_star with ultrasonic and IR sensors, motor control,
  * and sets the initial state to INIT.
  * 
  * @param us UltrasonicSensor object for distance measurement
@@ -15,7 +15,7 @@
  * @param rightIR Right IR sensor for line tracking
  * @param mc MotorControl object for robot movement
  */
-FSM::FSM(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc)
+FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc)
     : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), currentState(INIT) {}
 
 /**
@@ -26,7 +26,7 @@ FSM::FSM(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc
  * such as initialization, waiting, obstacle checking, line following,
  * obstacle avoidance, and stopping.
  */
-void FSM::update()
+void FSM_star::update()
 {
     unsigned long currentTime = millis();
 
@@ -91,7 +91,7 @@ void FSM::update()
  * - If an obstacle is closer than 20 cm, transitions to AVOID_OBSTACLE
  * - Otherwise, transitions to FOLLOW_LINE
  */
-void FSM::checkObstacle()
+void FSM_star::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
     if (distance < 20) // If obstacle is closer than 20 cm
@@ -112,7 +112,7 @@ void FSM::checkObstacle()
  * 
  * @todo Implement a comprehensive obstacle avoidance algorithm
  */
-void FSM::avoidObstacle()
+void FSM_star::avoidObstacle()
 {
     // TODO: Implement obstacle avoidance
     currentState = CHECK_OBSTACLE;
@@ -128,7 +128,7 @@ void FSM::avoidObstacle()
  * - If right sensor detects black line: rotate right
  * - If both sensors detect black line: stop (to be improved)
  */
-void FSM::followLine()
+void FSM_star::followLine()
 {
     bool leftIR = leftIRSensor.read();
     bool rightIR = rightIRSensor.read();
@@ -161,7 +161,7 @@ void FSM::followLine()
  * Calls the stop method of the motor control object
  * to halt all motor movement.
  */
-void FSM::stopMotors()
+void FSM_star::stopMotors()
 {
     motorControl.stop();
 }

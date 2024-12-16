@@ -1,6 +1,7 @@
 // #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include "FSM.h"
+#include "FSM_groupie.h"
+#include "FSM_star.h"
 #include "FSM_dev.h"
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"

@@ -1,12 +1,12 @@
-#ifndef FSM_H
-#define FSM_H
+#ifndef FSM_groupie_H
+#define FSM_groupie_H
 
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 #include "MotorControl.h"
 
 /**
- * @brief State Machine (FSM) for controlling a robot's behavior based on sensor inputs.
+ * @brief State Machine (FSM_groupie) for controlling a robot's behavior based on sensor inputs.
  *
  * The class includes methods to update the state, check for obstacles, avoid obstacles, stop the motors, and follow a line.
  *
@@ -15,16 +15,16 @@
  * @param rightIRSensor An instance of the IRSensor class for detecting the right side of the line.
  * @param motorControl An instance of the MotorControl class for controlling the robot's motors/movements.
  */
-class FSM
+class FSM_groupie
 {
 public:
     /**
-     * @brief Constructor for the FSM class.
+     * @brief Constructor for the FSM_groupie class.
      */
-    FSM(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc);
+    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc);
 
     /**
-     * @brief Updates the state of the FSM.
+     * @brief Updates the state of the FSM_groupie.
      */
     void update();
 
@@ -66,4 +66,4 @@ private:
     void stopMotors();
 };
 
-#endif // FSM_H
+#endif // FSM_groupie_H
