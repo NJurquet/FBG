@@ -1,3 +1,4 @@
+#include <SoftwareSerial.h>
 #include <Arduino.h>
 #include "FSM_dev.h"
 #include "MotorControl.h"
@@ -57,6 +58,14 @@ void FSM_dev::checkObstacle()
     long distance = ultrasonicSensor.readDistance();
     if (distance < 15) // If obstacle is closer than 15 cm
     {
+        const int TX_Debug = 9;
+        const int RX_Debug = 10;
+        SoftwareSerial mySerial(TX_Debug, RX_Debug);
+
+        Serial.begin(9600);
+        mySerial.begin(9600);
+        Serial.println(distance);
+
         currentState = AVOID_OBSTACLE;
     }
     else

@@ -51,6 +51,7 @@ private:
     } currentState;
     const unsigned long startDelay = 0000; // 85 seconds in milliseconds
     const unsigned long stopTime = 1000000; // 100 seconds in milliseconds
+    unsigned long avoidTime;
     unsigned long enterZoneTime;
     int zoneCounter = 0;
 

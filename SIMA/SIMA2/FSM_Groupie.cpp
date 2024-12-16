@@ -135,6 +135,7 @@ void FSM_groupie::checkObstacle()
     long distance = ultrasonicSensor.readDistance();
     if (distance < 20) // If obstacle is closer than 20 cm
     {
+        avoidTime = millis();
         currentState = AVOID_OBSTACLE;
     }
     else
@@ -153,9 +154,8 @@ void FSM_groupie::checkObstacle()
  */
 void FSM_groupie::avoidObstacle()
 {
-    unsigned long avoidTime = millis(); 
     unsigned long currentTime = millis(); 
-    while (currentTime < avoidTime + 1000)
+    while (currentTime < avoidTime + 1500)
     {
         motorControl.moveBackward();
         motorControl.rotateRight();

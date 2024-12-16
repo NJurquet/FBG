@@ -11,8 +11,9 @@
  * The class includes methods to update the state, check for obstacles, avoid obstacles, stop the motors, and follow a line.
  *
  * @param ultrasonicSensor An instance of the UltrasonicSensor class for detecting obstacles.
- * @param leftIRSensor An instance of the IRSensor class for detecting the left side of the line.
- * @param rightIRSensor An instance of the IRSensor class for detecting the right side of the line.
+ * @param leftIRSensor An instance of the IRSensor class for detecting the left line.
+ * @param centerIRSensor An instance of the IRSensor class for detecting the center line.
+ * @param rightIRSensor An instance of the IRSensor class for detecting the right line.
  * @param motorControl An instance of the MotorControl class for controlling the robot's motors/movements.
  */
 class FSM_star
@@ -45,11 +46,19 @@ private:
         WAIT,
         CHECK_OBSTACLE,
         FOLLOW_LINE,
+        ON_THE_EDGE,
         AVOID_OBSTACLE,
         STOP
     } currentState;
-    const unsigned long startDelay = 5000; // 85 seconds in milliseconds
+    const unsigned long startDelay = 0000; // 85 seconds in milliseconds
     const unsigned long stopTime = 100000; // 100 seconds in milliseconds
+    unsigned long avoidTime;
+    unsigned long onTheEdgeTime;
+
+    /**
+     * @brief Go forward a certain time to be as close to the edge as possible.
+     */
+    void onTheEdge();
 
     /**
      * @brief Checks for obstacles for a distance in front of the robot using ultrasonic sensor.

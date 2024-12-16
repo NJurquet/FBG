@@ -1,3 +1,4 @@
+#include <SoftwareSerial.h>
 #include <Arduino.h>
 #include "FSM_star.h"
 #include "MotorControl.h"
@@ -67,6 +68,24 @@ void FSM_star::update()
         }
         break;
 
+    case ON_THE_EDGE:
+        if (currentTime < stopTime)
+        {
+            if (currentTime > onTheEdgeTime + 1000)
+            {
+                currentState = STOP;
+            }
+            else 
+            {
+                onTheEdge();
+            }
+        }
+        else
+        {
+            currentState = STOP;
+        }
+        break;
+
     case AVOID_OBSTACLE:
         if (currentTime < stopTime)
         {
@@ -97,6 +116,15 @@ void FSM_star::checkObstacle()
     long distance = ultrasonicSensor.readDistance();
     if (distance < 20) // If obstacle is closer than 20 cm
     {
+        const int TX_Debug = 9;
+        const int RX_Debug = 10;
+        SoftwareSerial mySerial(TX_Debug, RX_Debug);
+
+        Serial.begin(9600);
+        mySerial.begin(9600);
+        Serial.println(distance);
+
+        avoidTime = millis();
         currentState = AVOID_OBSTACLE;
     }
     else
@@ -115,7 +143,14 @@ void FSM_star::checkObstacle()
  */
 void FSM_star::avoidObstacle()
 {
-    // TODO: Implement obstacle avoidance
+    unsigned long currentTime = millis(); 
+    while (currentTime < avoidTime + 1500)
+    {
+        motorControl.moveBackward();
+        motorControl.rotateRight();
+        currentTime = millis();
+    }
+
     currentState = CHECK_OBSTACLE;
 }
 
@@ -156,6 +191,14 @@ void FSM_star::followLine()
         motorControl.stop();
     }
 
+}
+
+/**
+ * @brief Go forward a certain time to be as close to the edge as possible.
+ */
+void FSM_star::onTheEdge()
+{
+    motorControl.moveForward();
 }
 
 /**

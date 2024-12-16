@@ -10,6 +10,7 @@
 #include "Debug.h"
 
 // IR sensor pins
+
 const int leftIRPin = A0;
 const int centerIRPin = A2;
 const int rightIRPin = A1;
@@ -39,7 +40,7 @@ int zoneNumber = 1;
 bool leftStart = true;
 
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, zoneNumber, leftStart);
-FSM_star_star fsm_star(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl);
+FSM_star fsm_star(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl);
 
 FSM_dev fsm_dev(ultrasonicSensor, motorControl);
 
@@ -93,7 +94,8 @@ void setup()
 
 void loop()
 {
-  // fsm.update();
-  fsm_dev.update();
+  //fsm_groupie.update();
+  fsm_star.update();
+  //fsm_dev.update();
   debug();
 }
