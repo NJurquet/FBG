@@ -49,8 +49,8 @@ private:
         AVOID_OBSTACLE,
         STOP
     } currentState;
-    const unsigned long startDelay = 0000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 1000000; // 100 seconds in milliseconds
+    const unsigned long startDelay = 5000; // 85 seconds in milliseconds
+    const unsigned long stopTime = 15000; // 100 seconds in milliseconds
     unsigned long avoidTime;
     unsigned long enterZoneTime;
     int zoneCounter = 0;
