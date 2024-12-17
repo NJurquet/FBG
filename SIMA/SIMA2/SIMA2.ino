@@ -22,7 +22,7 @@ const int echoPin = 12;
 
 // Celebretion pins
 const int celebrationLedPin = 13;
-const int celebrationServoPin = 14;
+const int celebrationServoPin = 6;
 
 // Hall sensor pins
 const int HallSensorPin = 2;
