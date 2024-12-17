@@ -7,6 +7,8 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 #include "HallSensor.h"
+#include "Led.h"
+#include "ServoMotor.h"
 #include "Debug.h"
 
 // IR sensor pins
@@ -17,6 +19,10 @@ const int rightIRPin = A1;
 // Ultrasonic sensor pins
 const int trigPin = 11;
 const int echoPin = 12;
+
+// Celebretion pins
+const int celebrationLedPin = 13;
+const int celebrationServoPin = 6;
 
 // Hall sensor pins
 const int HallSensorPin = 2;
@@ -32,14 +38,17 @@ IRSensor leftIRSensor(leftIRPin);
 IRSensor centerIRSensor(centerIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
+Led celebrationLed(celebrationLedPin);
+ServoMotor celebretionServo(celebrationServoPin);
+
 Debugger debugger(TX_Debug, RX_Debug);
 
 bool groupie = false;
 int zoneNumber = 2;
 bool leftStart = true;
 
-FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, zoneNumber, leftStart);
-FSM_star fsm_star(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl);
+FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart);
+FSM_star fsm_star(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
 
 FSM_dev fsm_dev(ultrasonicSensor, motorControl);
 
