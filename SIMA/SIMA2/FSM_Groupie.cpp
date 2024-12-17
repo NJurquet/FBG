@@ -42,10 +42,6 @@ void FSM_groupie::update()
 {
     currentTime = millis();
 
-    unsigned long currentTime = millis();
-    
-
-
     if (currentTime >= stopTime)
     {
         currentState = STOP;
@@ -233,7 +229,7 @@ void FSM_groupie::celebrate()
         servoCelebretion.setPosition(35);
         delay(500);
         ledCelebretion.turnOff();
-        delay(500);
         servoCelebretion.setPosition(-35);
+        delay(500);
     }
 }
