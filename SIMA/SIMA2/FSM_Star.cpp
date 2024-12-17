@@ -69,31 +69,11 @@ void FSM_star::update()
         break;
 
     case FOLLOW_LINE:
-    unsigned long checktime = millis();
-    while (millis() - checktime < 1000){
-        motorControl.moveForward();
-    }
+
 
         followLine();
         break;
 
-    case ON_THE_EDGE:
-        if (currentTime < stopTime)
-        {
-            if (currentTime > onTheEdgeTime + 1000)
-            {
-                currentState = STOP;
-            }
-            else 
-            {
-                onTheEdge();
-            }
-        }
-        else
-        {
-            currentState = STOP;
-        }
-        break;
 
     case AVOID_OBSTACLE:
         if (currentTime < stopTime)
@@ -190,12 +170,19 @@ void FSM_star::followLine()
         else
         {
             // Check if 1.5 seconds (1500 ms) have passed
-            if (millis() - blackStartTime >= 1500)
+            if (millis() - blackStartTime >= 750)
             {
                 // If black is detected for 1.5 seconds continuously, stop
                 motorControl.stop();
                 Serial.println("All sensors detect black for 1.5s. Stopping.");
-                currentState = STOP;
+                while (millis() - blackStartTime < 30000)
+                {
+                    celebrate();
+
+                }
+                celebrate();
+
+                
                 return;
             }
         }
@@ -263,7 +250,7 @@ void FSM_star::stopMotors()
 void FSM_star::celebrate()
 {
     servoCelebretion.setPosition(0);
-    while(true){
+    while(true){ 
         ledCelebretion.turnOn();
         servoCelebretion.setPosition(35);
         delay(500);
