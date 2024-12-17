@@ -12,7 +12,6 @@
 #include "Debug.h"
 
 // IR sensor pins
-
 const int leftIRPin = A0;
 const int centerIRPin = A2;
 const int rightIRPin = A1;
@@ -44,8 +43,8 @@ ServoMotor celebretionServo(celebrationServoPin);
 
 Debugger debugger(TX_Debug, RX_Debug);
 
-bool groupie = true;
-int zoneNumber = 1;
+bool groupie = false;
+int zoneNumber = 2;
 bool leftStart = true;
 
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart);
@@ -80,18 +79,14 @@ void debug()
 
 void setup()
 {
-  // if (groupie){
-  //   fsm = &fsm_groupie;
-  // }
-  // else{
-  //   fsm = &fsm_star;
-  // }
   delay(1000);
   while (!Serial)
     ;
   Serial.begin(9600);
   mySerial.begin(9600);
+
   Serial.println(F("Initializing..."));
+  mySerial.println(F("Starting..."));
 
   motorControl.init();
   ultrasonicSensor.init();
@@ -103,8 +98,14 @@ void setup()
 
 void loop()
 {
-  //fsm_groupie.update();
-  fsm_star.update();
-  //fsm_dev.update();
+  if (groupie)
+  {
+    fsm_groupie.update();
+  }
+  else
+  {
+    fsm_star.update();
+  }
+  // fsm_dev.update();
   debug();
 }

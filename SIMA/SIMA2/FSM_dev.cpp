@@ -13,6 +13,7 @@ FSM_dev::FSM_dev(UltrasonicSensor us, MotorControl mc)
 void FSM_dev::update()
 {
     currentTime = millis();
+    Serial.println("Hello");
 
     if (currentTime >= stopTime || avoided > maxAvoided)
     {
@@ -56,16 +57,8 @@ void FSM_dev::move()
 void FSM_dev::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
-    if (distance < 15) // If obstacle is closer than 15 cm
+    if (distance < 10) // If obstacle is closer than 10 cm
     {
-        const int TX_Debug = 9;
-        const int RX_Debug = 10;
-        SoftwareSerial mySerial(TX_Debug, RX_Debug);
-
-        Serial.begin(9600);
-        mySerial.begin(9600);
-        Serial.println(distance);
-
         currentState = AVOID_OBSTACLE;
     }
     else

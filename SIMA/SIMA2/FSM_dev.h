@@ -46,12 +46,12 @@ private:
         ROTATING,
         STOP
     } currentState;
-    const unsigned long stopTime = 30000;    // Stops after 30 seconds
-    const unsigned long rotatingTime = 2500; // Rotates for 2.5 second
-    unsigned long rotatingStartTime;         // Start time for rotating
-    unsigned short avoided = 0;              // Number of avoided objects
-    const unsigned short maxAvoided = 5;     // Avoid 5 objects max
-    unsigned long currentTime;               // Current time in milliseconds
+    const unsigned long stopTime = 30000;   // Stops after 30 seconds
+    const unsigned long rotatingTime = 500; // Rotates for 2.5 second
+    unsigned long rotatingStartTime;        // Start time for rotating
+    unsigned short avoided = 0;             // Number of avoided objects
+    const unsigned short maxAvoided = 5;    // Avoid 5 objects max
+    unsigned long currentTime;              // Current time in milliseconds
 
     /**
      * @brief Moves the robot forward.
