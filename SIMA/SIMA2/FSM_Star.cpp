@@ -55,6 +55,11 @@ void FSM_star::update()
         break;
 
     case FOLLOW_LINE:
+    unsigned long checktime = millis();
+    while (millis() - checktime < 1000){
+        motorControl.moveForward();
+    }
+
         followLine();
         break;
 
@@ -129,6 +134,7 @@ void FSM_star::followLine()
     // If all sensors detect black
     if (leftIR && centerIR && rightIR)
     {
+        motorControl.moveForward();
         if (!checkingBlack)
         {
             // Start timing the continuous black detection
@@ -165,21 +171,22 @@ void FSM_star::followLine()
         motorControl.moveForward();
         Serial.println("Moving forward");
     }
-    else if (leftIR && !centerIR) // If left sensor detects the black line and the center sensor detects the white line
+    else if (leftIR && !centerIR) 
     {
         motorControl.rotateRight();
         Serial.println("Rotating left");
     }
-    else if (rightIR && !centerIR) // If right sensor detects the black line & center sensor detects the white line
+    else if (rightIR && !centerIR) 
     {
         motorControl.rotateLeft();
         Serial.println("Rotating right");
     }
+    /*
     else if (leftIR && centerIR) // If left & center sensors detect the black line -> potentially on the left curved part of the line
     {
         motorControl.rotateLeft();
         Serial.println("Left curve detected, rotating left");
-    }
+    }*/
 
     currentState = CHECK_OBSTACLE;
 
