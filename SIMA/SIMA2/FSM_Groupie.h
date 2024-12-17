@@ -4,6 +4,8 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 #include "MotorControl.h"
+#include "Led.h"
+#include "ServoMotor.h"
 
 /**
  * @brief State Machine (FSM_groupie) for controlling a robot's behavior based on sensor inputs.
@@ -23,7 +25,7 @@ public:
     /**
      * @brief Constructor for the FSM_groupie class.
      */
-    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, int zN, bool lS);
+    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS);
 
     /**
      * @brief Updates the state of the FSM_groupie.
@@ -36,6 +38,8 @@ private:
     IRSensor centerIRSensor;
     IRSensor rightIRSensor;
     MotorControl motorControl;
+    Led ledCelebretion;
+    ServoMotor servoCelebretion;
     int zoneNumber;
     bool leftStart;
     enum State
@@ -47,10 +51,12 @@ private:
         ENTER_ZONE,
         ENTERING_ZONE,
         AVOID_OBSTACLE,
-        STOP
+        STOP,
+        CELEBRATE
     } currentState;
-    const unsigned long startDelay = 0000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 1000000; // 100 seconds in milliseconds
+    const unsigned long startDelay = 0000; // 85 seconds in milliseconds / 0 seconds for testing
+    const unsigned long stopTime = 15000; // 100 seconds in milliseconds / 15 seconds for testing
+    unsigned long currentTime;
     unsigned long avoidTime;
     unsigned long enterZoneTime;
     int zoneCounter = 0;
@@ -84,6 +90,11 @@ private:
      * @brief Stops the motors of the robot.
      */
     void stopMotors();
+
+    /**
+     * @brief Celebrates for the show.
+     */
+    void celebrate();
 };
 
 #endif // FSM_groupie_H

@@ -18,8 +18,17 @@
  * @param zN Integer that determines which zone is the target of the groupie
  * @param lS Boolean that determines if the groupie starts on the left side of the arena
  */
-FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, int zN, bool lS)
-    : ultrasonicSensor(us), leftIRSensor(leftIR), centerIRSensor(centerIR), rightIRSensor(rightIR), motorControl(mc), zoneNumber(zN), leftStart(lS), currentState(INIT) {}
+FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS): 
+    ultrasonicSensor(us), 
+    leftIRSensor(leftIR), 
+    centerIRSensor(centerIR), 
+    rightIRSensor(rightIR), 
+    motorControl(mc),
+    ledCelebretion(lc),
+    servoCelebretion(sc),
+    zoneNumber(zN), 
+    leftStart(lS), 
+    currentState(INIT) {}
 
 /**
  * @brief Main update method for the Finite State Machine.
@@ -31,7 +40,7 @@ FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR
  */
 void FSM_groupie::update()
 {
-    unsigned long currentTime = millis();
+    currentTime = millis();
 
     switch (currentState)
     {
@@ -119,8 +128,12 @@ void FSM_groupie::update()
     case STOP:
         stopMotors();
         break;
+
+    case CELEBRATE:
+        celebrate();
+        break;
     }
-}
+} 
 
 /**
  * @brief Checks for obstacles using the ultrasonic sensor.
@@ -154,7 +167,7 @@ void FSM_groupie::checkObstacle()
  */
 void FSM_groupie::avoidObstacle()
 {
-    unsigned long currentTime = millis(); 
+    currentTime = millis(); 
     while (currentTime < avoidTime + 1500)
     {
         motorControl.moveBackward();
@@ -239,4 +252,22 @@ void FSM_groupie::enteringZone()
 void FSM_groupie::stopMotors()
 {
     motorControl.stop();
+
+    if (currentTime > stopTime)
+    {
+        currentState = CELEBRATE;
+    }
+}
+
+void FSM_groupie::celebrate()
+{
+    servoCelebretion.setPosition(0);
+    while(true){
+        ledCelebretion.turnOn();
+        servoCelebretion.setPosition(35);
+        delay(500);
+        ledCelebretion.turnOff();
+        delay(500);
+        servoCelebretion.setPosition(-35);
+    }
 }

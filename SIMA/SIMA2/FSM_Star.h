@@ -4,6 +4,8 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 #include "MotorControl.h"
+#include "Led.h"
+#include "ServoMotor.h"
 
 /**
  * @brief State Machine (FSM) for controlling a robot's behavior based on sensor inputs.
@@ -22,7 +24,7 @@ public:
     /**
      * @brief Constructor for the FSM_star class.
      */
-    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc);
+    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc);
 
     /**
      * @brief Updates the state of the FSM_star.
@@ -40,6 +42,8 @@ private:
     IRSensor centerIRSensor;
     IRSensor rightIRSensor;
     MotorControl motorControl;
+    Led ledCelebretion;
+    ServoMotor servoCelebretion;
     enum State
     {
         INIT,
@@ -48,10 +52,12 @@ private:
         FOLLOW_LINE,
         ON_THE_EDGE,
         AVOID_OBSTACLE,
-        STOP
+        STOP,
+        CELEBRATE
     } currentState;
-    const unsigned long startDelay = 0000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 100000; // 100 seconds in milliseconds
+    const unsigned long startDelay = 0000; // 85 seconds in milliseconds / 0 seconds for testing
+    const unsigned long stopTime = 15000; // 100 seconds in milliseconds / 15 seconds for testing
+    unsigned long currentTime;
     unsigned long avoidTime;
     unsigned long onTheEdgeTime;
 
@@ -74,6 +80,11 @@ private:
      * @brief Stops the motors of the robot.
      */
     void stopMotors();
+
+    /**
+     * @brief Celebrates for the show.
+     */
+    void celebrate();
 };
 
 #endif // FSM_star_H

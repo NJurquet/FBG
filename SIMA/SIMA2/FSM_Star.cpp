@@ -17,8 +17,15 @@
  * @param rightIR Right IR sensor for line tracking
  * @param mc MotorControl object for robot movement
  */
-FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc)
-    : ultrasonicSensor(us), leftIRSensor(leftIR), centerIRSensor(centerIR), rightIRSensor(rightIR), motorControl(mc), currentState(INIT) {}
+FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc): 
+    ultrasonicSensor(us), 
+    leftIRSensor(leftIR), 
+    centerIRSensor(centerIR), 
+    rightIRSensor(rightIR), 
+    motorControl(mc), 
+    ledCelebretion(lc), 
+    servoCelebretion(sc), 
+    currentState(INIT) {}
 
 /**
  * @brief Main update method for the Finite State Machine.
@@ -30,7 +37,7 @@ FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSe
  */
 void FSM_star::update()
 {
-    unsigned long currentTime = millis();
+    currentTime = millis();
 
     switch (currentState)
     {
@@ -100,6 +107,10 @@ void FSM_star::update()
     case STOP:
         stopMotors ();
         break;
+
+    case CELEBRATE:
+        celebrate();
+        break;
     }
 }
 
@@ -143,7 +154,7 @@ void FSM_star::checkObstacle()
  */
 void FSM_star::avoidObstacle()
 {
-    unsigned long currentTime = millis(); 
+    currentTime = millis(); 
     while (currentTime < avoidTime + 1500)
     {
         motorControl.moveBackward();
@@ -210,4 +221,22 @@ void FSM_star::onTheEdge()
 void FSM_star::stopMotors()
 {
     motorControl.stop();
+
+    if (currentTime > stopTime)
+    {
+        currentState = CELEBRATE;
+    }
+}
+
+void FSM_star::celebrate()
+{
+    servoCelebretion.setPosition(0);
+    while(true){
+        ledCelebretion.turnOn();
+        servoCelebretion.setPosition(35);
+        delay(500);
+        ledCelebretion.turnOff();
+        delay(500);
+        servoCelebretion.setPosition(-35);
+    }
 }
