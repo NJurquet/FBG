@@ -34,7 +34,7 @@ IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
 Debugger debugger(TX_Debug, RX_Debug);
 
-bool groupie = true;
+bool groupie = false;
 int zoneNumber = 2;
 bool leftStart = true;
 
@@ -75,6 +75,7 @@ void setup()
     ;
   Serial.begin(9600);
   mySerial.begin(9600);
+
   Serial.println(F("Initializing..."));
   mySerial.println(F("Starting..."));
 

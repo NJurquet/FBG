@@ -123,48 +123,77 @@ void FSM_star::followLine()
     bool centerIR = centerIRSensor.read(); // Is 1 if it detects black
     bool rightIR = rightIRSensor.read();   // Is 1 if it detects black
 
-    if (!leftIR && !rightIR && centerIR) // If Left and Right sensors are on white and center sensor is on black
+    static unsigned long blackStartTime = 0; // Start time when all sensors detect black
+    static bool checkingBlack = false;      // Whether we are in the process of checking for continuous black
+
+    // If all sensors detect black
+    if (leftIR && centerIR && rightIR)
     {
-        motorControl.setSpeed(40);
+        if (!checkingBlack)
+        {
+            // Start timing the continuous black detection
+            blackStartTime = millis();
+            checkingBlack = true;
+        }
+        else
+        {
+            // Check if 1.5 seconds (1500 ms) have passed
+            if (millis() - blackStartTime >= 1500)
+            {
+                // If black is detected for 1.5 seconds continuously, stop
+                motorControl.stop();
+                Serial.println("All sensors detect black for 1.5s. Stopping.");
+                currentState = STOP;
+                return;
+            }
+        }
+    }
+    else
+    {
+        // If not all sensors are on black, reset the black detection timer
+        checkingBlack = false;
+    }
+
+    // Normal line-following logic
+    if (!leftIR && !rightIR && !centerIR) // If all sensors are on white
+    {
         motorControl.moveForward();
         Serial.println("Moving forward");
     }
-    else if (leftIR && !centerIR) // If left sensor detects the black line and the center sensor detect the white line
+    else if (!leftIR && !rightIR && centerIR) // If Left and Right sensors are on white and center sensor is on black
     {
-        motorControl.setSpeed(20);
+        motorControl.moveForward();
+        Serial.println("Moving forward");
+    }
+    else if (leftIR && !centerIR) // If left sensor detects the black line and the center sensor detects the white line
+    {
         motorControl.rotateRight();
         Serial.println("Rotating left");
     }
     else if (rightIR && !centerIR) // If right sensor detects the black line & center sensor detects the white line
     {
-        motorControl.setSpeed(20);
         motorControl.rotateLeft();
         Serial.println("Rotating right");
     }
-    else if (leftIR && rightIR & centerIR) // If all sensors detect the black line
-    {
-        // Move to the left until finding the line
-        motorControl.setSpeed(20);
-        motorControl.rotateLeft();
-        Serial.println("No line detected, rotating left");
-    }
-
     else if (leftIR && centerIR) // If left & center sensors detect the black line -> potentially on the left curved part of the line
     {
-        motorControl.setSpeed(20);
         motorControl.rotateLeft();
+        Serial.println("Left curve detected, rotating left");
     }
 
     currentState = CHECK_OBSTACLE;
 
+    /*
     if (!leftIR && !rightIR && !centerIR) // If all sensors are on white -> end of line
     {
-        motorControl.setSpeed(20);
         motorControl.moveForward();
         onTheEdgeStartTime = millis();
         currentState = ON_THE_EDGE;
     }
+    */
 }
+
+
 
 /**
  * @brief Go forward a certain time to be as close to the edge as possible.

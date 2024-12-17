@@ -19,6 +19,7 @@ private:
      * @brief The speed of the motors.
      */
     int motorSpeed;
+    int motorRotationSpeed;
 
 public:
     /**
