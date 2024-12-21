@@ -13,7 +13,6 @@ FSM_dev::FSM_dev(UltrasonicSensor us, MotorControl mc)
 void FSM_dev::update()
 {
     currentTime = millis();
-    Serial.println("Hello");
 
     if (currentTime >= stopTime || avoided > maxAvoided)
     {
