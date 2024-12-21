@@ -17,14 +17,12 @@
  * @param rightIR Right IR sensor for line tracking
  * @param mc MotorControl object for robot movement
  */
-FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc) : ultrasonicSensor(us),
-                                                                                                                                        leftIRSensor(leftIR),
-                                                                                                                                        centerIRSensor(centerIR),
-                                                                                                                                        rightIRSensor(rightIR),
-                                                                                                                                        motorControl(mc),
-                                                                                                                                        ledCelebretion(lc),
-                                                                                                                                        servoCelebretion(sc),
-                                                                                                                                        currentState(INIT) {}
+FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc) : ultrasonicSensor(us), leftIRSensor(leftIR), centerIRSensor(centerIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc)
+{
+    currentState = INIT;
+    servoCelebretion.setPosition(0);
+    ledCelebretion.turnOff();
+}
 
 /**
  * @brief Main update method for the Finite State Machine.
@@ -57,30 +55,15 @@ void FSM_star::update()
         break;
 
     case CHECK_OBSTACLE:
-        if (currentTime < stopTime)
-        {
-            checkObstacle();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        checkObstacle();
         break;
 
     case FOLLOW_LINE:
-
         followLine();
         break;
 
     case AVOID_OBSTACLE:
-        if (currentTime < stopTime)
-        {
-            avoidObstacle();
-        }
-        else
-        {
-            currentState = STOP;
-        }
+        avoidObstacle();
         break;
 
     case STOP:
@@ -104,7 +87,7 @@ void FSM_star::update()
 void FSM_star::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
-    if (distance < 20) // If obstacle is closer than 20 cm
+    if (distance < 10) // If obstacle is closer than 10 cm
     {
         currentState = AVOID_OBSTACLE;
     }
@@ -124,14 +107,7 @@ void FSM_star::checkObstacle()
  */
 void FSM_star::avoidObstacle()
 {
-    currentTime = millis();
-    while (currentTime < avoidTime + 1500)
-    {
-        motorControl.moveBackward();
-        motorControl.rotateRight();
-        currentTime = millis();
-    }
-
+    motorControl.stop();
     currentState = CHECK_OBSTACLE;
 }
 
@@ -147,17 +123,14 @@ void FSM_star::avoidObstacle()
  */
 void FSM_star::followLine()
 {
-    bool leftIR = leftIRSensor.read();     // Is 1 if it detects white
-    bool centerIR = centerIRSensor.read(); // Is 1 if it detects white
-    bool rightIR = rightIRSensor.read();   // Is 1 if it detects white
+    bool leftIR = leftIRSensor.read();     // Is 1 if it detects black
+    bool centerIR = centerIRSensor.read(); // Is 1 if it detects black
+    bool rightIR = rightIRSensor.read();   // Is 1 if it detects black
 
-    static unsigned long blackStartTime = 0; // Start time when all sensors detect black
-    static bool checkingBlack = false;       // Whether we are in the process of checking for continuous black
-
-    // If all sensors detect black
-    if (leftIR && centerIR && rightIR)
+    if (leftIR && centerIR && rightIR) // If all sensors detect black
     {
         motorControl.moveForward();
+
         if (!checkingBlack)
         {
             // Start timing the continuous black detection
@@ -166,63 +139,48 @@ void FSM_star::followLine()
         }
         else
         {
-            // Check if 1.5 seconds (1500 ms) have passed
+            // Check if 750 ms have passed
             if (millis() - blackStartTime >= 750)
             {
-                // If black is detected for 1.5 seconds continuously, stop
-                motorControl.stop();
-                Serial.println("All sensors detect black for 1.5s. Stopping.");
-                while (millis() - blackStartTime < 30000)
-                {
-                    celebrate();
-                }
-                celebrate();
-
+                // If black is detected for 750 seconds continuously, stop
+                Serial.println(F("All sensors detected black for 750ms. Stopping."));
+                currentState = STOP;
                 return;
             }
         }
     }
     else
     {
-        // If not all sensors are on black, reset the black detection timer
+        // If all sensors are not on black, reset the black detection flag
         checkingBlack = false;
     }
 
     // Normal line-following logic
+
     if (!leftIR && !rightIR && !centerIR) // If all sensors are on white
     {
         motorControl.moveForward();
-        Serial.println("Moving forward");
+        Serial.println(F("Moving forward"));
     }
-    else if (!leftIR && !rightIR && centerIR) // If Left and Right sensors are on white and center sensor is on black
+    else if (!leftIR && !rightIR && centerIR) // If Left and right sensors are on white and center sensor is on black
     {
         motorControl.moveForward();
-        Serial.println("Moving forward");
+        Serial.println(F("Moving forward"));
     }
-    else if (leftIR && !centerIR)
+    else if (leftIR && !centerIR) // If left sensor detects black & center sensor detects white
     {
         motorControl.rotateRight();
-        Serial.println("Rotating right");
+        Serial.println(F("Rotating right"));
     }
-    else if (rightIR && !centerIR)
+    else if (rightIR && !centerIR) // If right sensor detects black & center sensor detects white
     {
         motorControl.rotateLeft();
-        Serial.println("Rotating left");
+        Serial.println(F("Rotating left"));
     }
-    /*
-    else if (leftIR && centerIR) // If left & center sensors detect the black line -> potentially on the left curved part of the line
+    else if (leftIR && centerIR && !rightIR) // If left & center sensors detect the black line -> continue to find another case
     {
-        motorControl.rotateLeft();
-        Serial.println("Left curve detected, rotating left");
-    }*/
-}
-
-/**
- * @brief Go forward a certain time to be as close to the edge as possible.
- */
-void FSM_star::onTheEdge()
-{
-    motorControl.moveForward();
+        motorControl.moveForward();
+    }
 }
 
 /**
@@ -234,23 +192,15 @@ void FSM_star::onTheEdge()
 void FSM_star::stopMotors()
 {
     motorControl.stop();
-
-    if (currentTime > stopTime)
-    {
-        currentState = CELEBRATE;
-    }
+    currentState = CELEBRATE;
 }
 
 void FSM_star::celebrate()
 {
-    servoCelebretion.setPosition(0);
-    while (true)
+    if (currentTime - lastCelebrationTime >= celebrationDelay)
     {
-        ledCelebretion.turnOn();
-        servoCelebretion.setPosition(35);
-        delay(500);
-        ledCelebretion.turnOff();
-        servoCelebretion.setPosition(-35);
-        delay(500);
+        ledCelebretion.toggle();
+        servoCelebretion.setPosition(celebrationAngle);
+        celebrationAngle = -celebrationAngle;
     }
 }

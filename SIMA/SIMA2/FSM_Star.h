@@ -31,11 +31,6 @@ public:
      */
     void update();
 
-    /**
-     * @brief Follow the white lines.
-     */
-    void followLine();
-
 private:
     UltrasonicSensor ultrasonicSensor;
     IRSensor leftIRSensor;
@@ -50,22 +45,18 @@ private:
         WAIT,
         CHECK_OBSTACLE,
         FOLLOW_LINE,
-        ON_THE_EDGE,
         AVOID_OBSTACLE,
         STOP,
         CELEBRATE
     } currentState;
     const unsigned long startDelay = 5000; // 85 seconds in milliseconds
     const unsigned long stopTime = 15000;  // 100 seconds in milliseconds
-    unsigned long onTheEdgeStartTime;
     unsigned long currentTime;
-    unsigned long onTheEdgeTime = 1000;
-    unsigned long avoidTime;
-
-    /**
-     * @brief Go forward a certain time to be as close to the edge as possible.
-     */
-    void onTheEdge();
+    unsigned long blackStartTime = 0; // Start time when all sensors detect black
+    bool checkingBlack = false;       // Whether we are in the process of checking for continuous black
+    const int celebrationDelay = 500; // 0.5 seconds
+    const unsigned long lastCelebrationTime = 0;
+    int celebrationAngle = 35;
 
     /**
      * @brief Checks for obstacles for a distance in front of the robot using ultrasonic sensor.
@@ -76,6 +67,11 @@ private:
      * @brief Avoids obstacles in front of the robot.
      */
     void avoidObstacle();
+
+    /**
+     * @brief Follow the white lines.
+     */
+    void followLine();
 
     /**
      * @brief Stops the motors of the robot.

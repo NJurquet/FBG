@@ -94,6 +94,7 @@ void setup()
   centerIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
+  celebretionServo.init();
 }
 
 void loop()
@@ -108,4 +109,4 @@ void loop()
   }
   // fsm_dev.update();
   debug();
-} 
+}
