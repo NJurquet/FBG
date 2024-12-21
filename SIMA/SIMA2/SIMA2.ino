@@ -24,13 +24,14 @@ const int echoPin = 12;
 const int celebrationLedPin = 13;
 const int celebrationServoPin = 6;
 
-// Hall sensor pins
+// Hall sensor pin
 const int HallSensorPin = 2;
 
 // RX/TX pins of Bluetooth module
 const int TX_Debug = 9;
 const int RX_Debug = 10;
 SoftwareSerial mySerial(TX_Debug, RX_Debug);
+Debugger debugger(TX_Debug, RX_Debug);
 
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
@@ -40,8 +41,6 @@ IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
 Led celebrationLed(celebrationLedPin);
 ServoMotor celebretionServo(celebrationServoPin);
-
-Debugger debugger(TX_Debug, RX_Debug);
 
 bool groupie = false;
 int zoneNumber = 2;

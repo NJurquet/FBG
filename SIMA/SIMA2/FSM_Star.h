@@ -12,11 +12,13 @@
  *
  * The class includes methods to update the state, check for obstacles, avoid obstacles, stop the motors, and follow a line.
  *
- * @param ultrasonicSensor An instance of the UltrasonicSensor class for detecting obstacles.
- * @param leftIRSensor An instance of the IRSensor class for detecting the left line.
- * @param centerIRSensor An instance of the IRSensor class for detecting the center line.
- * @param rightIRSensor An instance of the IRSensor class for detecting the right line.
- * @param motorControl An instance of the MotorControl class for controlling the robot's motors/movements.
+ * @param us An instance of the UltrasonicSensor class for detecting obstacles.
+ * @param leftIR An instance of the IRSensor class for detecting the left line.
+ * @param centerIR An instance of the IRSensor class for detecting the center line.
+ * @param rightIR An instance of the IRSensor class for detecting the right line.
+ * @param mc An instance of the MotorControl class for controlling the robot's motors/movements.
+ * @param lc An instance of the Led class for controlling the celebration LED.
+ * @param sc An instance of the ServoMotor class for controlling the celebration servo motor.
  */
 class FSM_star
 {
@@ -27,7 +29,7 @@ public:
     FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc);
 
     /**
-     * @brief Updates the state of the FSM_star.
+     * @brief Updates the state of the FSM_star and the robot's actions.
      */
     void update();
 
@@ -65,11 +67,13 @@ private:
 
     /**
      * @brief Avoids obstacles in front of the robot.
+     *
+     * @todo Implement a correct obstacle avoidance algorithm
      */
     void avoidObstacle();
 
     /**
-     * @brief Follow the white lines.
+     * @brief Manages line-following behavior using IR sensors.
      */
     void followLine();
 
@@ -79,7 +83,7 @@ private:
     void stopMotors();
 
     /**
-     * @brief Celebrates for the show.
+     * @brief Celebrates for the show by moving the servo motor and toggling the LED.
      */
     void celebrate();
 };

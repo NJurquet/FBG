@@ -5,18 +5,6 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 
-/**
- * @brief Constructor for the Finite State Machine (FSM_star) class.
- *
- * Initializes the FSM_star with ultrasonic and IR sensors, motor control,
- * and sets the initial state to INIT.
- *
- * @param us UltrasonicSensor object for distance measurement
- * @param leftIR Left IR sensor for line tracking
- * @param centerIR center IR sensor for line tracking
- * @param rightIR Right IR sensor for line tracking
- * @param mc MotorControl object for robot movement
- */
 FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc) : ultrasonicSensor(us), leftIRSensor(leftIR), centerIRSensor(centerIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc)
 {
     currentState = INIT;
@@ -24,14 +12,6 @@ FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSe
     ledCelebretion.turnOff();
 }
 
-/**
- * @brief Main update method for the Finite State Machine.
- *
- * Manages the state transitions and actions based on the current state
- * and elapsed time. Controls the robot's behavior through different states
- * such as initialization, waiting, obstacle checking, line following,
- * obstacle avoidance, and stopping.
- */
 void FSM_star::update()
 {
     currentTime = millis();
@@ -76,14 +56,6 @@ void FSM_star::update()
     }
 }
 
-/**
- * @brief Checks for obstacles using the ultrasonic sensor.
- *
- * Reads the distance from the ultrasonic sensor and determines
- * the next state based on the measured distance:
- * - If an obstacle is closer than 20 cm, transitions to AVOID_OBSTACLE
- * - Otherwise, transitions to FOLLOW_LINE
- */
 void FSM_star::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
@@ -97,30 +69,12 @@ void FSM_star::checkObstacle()
     }
 }
 
-/**
- * @brief Handles obstacle avoidance behavior.
- *
- * Currently a placeholder method for implementing obstacle avoidance strategy.
- * Temporarily transitions back to CHECK_OBSTACLE state.
- *
- * @todo Implement a comprehensive obstacle avoidance algorithm
- */
 void FSM_star::avoidObstacle()
 {
     motorControl.stop();
     currentState = CHECK_OBSTACLE;
 }
 
-/**
- * @brief Manages line-following behavior using IR sensors.
- *
- * Reads the state of left and right IR sensors and controls
- * the robot's movement accordingly:
- * - If both sensors are on white: move forward
- * - If left sensor detects black line: rotate left
- * - If right sensor detects black line: rotate right
- * - If both sensors detect black line: stop (to be improved)
- */
 void FSM_star::followLine()
 {
     bool leftIR = leftIRSensor.read();     // Is 1 if it detects black
@@ -183,12 +137,6 @@ void FSM_star::followLine()
     }
 }
 
-/**
- * @brief Stops the robot's motors.
- *
- * Calls the stop method of the motor control object
- * to halt all motor movement.
- */
 void FSM_star::stopMotors()
 {
     motorControl.stop();
