@@ -34,7 +34,7 @@ IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
 Debugger debugger(TX_Debug, RX_Debug);
 
-bool groupie = true;
+bool groupie = false;
 int zoneNumber = 2;
 bool leftStart = true;
 

@@ -133,26 +133,20 @@ void FSM_star::followLine()
     {
         motorControl.setSpeed(20);
         motorControl.rotateRight();
-        Serial.println("Rotating left");
+        Serial.println("Rotating right");
     }
     else if (rightIR && !centerIR) // If right sensor detects the black line & center sensor detects the white line
     {
         motorControl.setSpeed(20);
         motorControl.rotateLeft();
-        Serial.println("Rotating right");
+        Serial.println("Rotating left");
     }
     else if (leftIR && rightIR & centerIR) // If all sensors detect the black line
     {
         // Move to the left until finding the line
         motorControl.setSpeed(20);
-        motorControl.rotateLeft();
+        motorControl.moveForward();
         Serial.println("No line detected, rotating left");
-    }
-
-    else if (leftIR && centerIR) // If left & center sensors detect the black line -> potentially on the left curved part of the line
-    {
-        motorControl.setSpeed(20);
-        motorControl.rotateLeft();
     }
 
     currentState = CHECK_OBSTACLE;

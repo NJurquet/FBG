@@ -50,8 +50,8 @@ private:
         AVOID_OBSTACLE,
         STOP
     } currentState;
-    const unsigned long startDelay = 1000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 50000;  // 100 seconds in milliseconds
+    const unsigned long startDelay = 5000; // 85 seconds in milliseconds
+    const unsigned long stopTime = 15000;  // 100 seconds in milliseconds
     unsigned long onTheEdgeStartTime;
 
     /**
