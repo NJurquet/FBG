@@ -150,5 +150,6 @@ void FSM_star::celebrate()
         ledCelebretion.toggle();
         servoCelebretion.setPosition(celebrationAngle);
         celebrationAngle = -celebrationAngle;
+        lastCelebrationTime = currentTime;
     }
 }

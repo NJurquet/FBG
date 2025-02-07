@@ -27,8 +27,12 @@ FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR
     ledCelebretion(lc),
     servoCelebretion(sc),
     zoneNumber(zN), 
-    leftStart(lS), 
-    currentState(INIT) {}
+    leftStart(lS) 
+{
+    currentState = INIT;
+    servoCelebretion.setPosition(0);
+    ledCelebretion.turnOff();
+}
 
 /**
  * @brief Main update method for the Finite State Machine.
@@ -54,33 +58,29 @@ void FSM_groupie::update()
         break;
 
     case WAIT:
-        
-        currentState = CHECK_OBSTACLE;
+        if (currentTime >= startDelay)
+        {
+            currentState = CHECK_OBSTACLE;
+        }
         break;
 
     case CHECK_OBSTACLE:
-        
         checkObstacle();
         break;
 
     case FOLLOW_LINE:
-        
         followLine();
         break;
     
     case ENTER_ZONE:
-
         enterZone();
         break;
 
     case ENTERING_ZONE:
-        
-        
         enteringZone();
         break;
 
     case AVOID_OBSTACLE:
-        
         avoidObstacle();
         break;
 
@@ -223,13 +223,11 @@ void FSM_groupie::stopMotors()
 
 void FSM_groupie::celebrate()
 {
-    servoCelebretion.setPosition(0);
-    while(true){
-        ledCelebretion.turnOn();
-        servoCelebretion.setPosition(35);
-        delay(500);
-        ledCelebretion.turnOff();
-        servoCelebretion.setPosition(-35);
-        delay(500);
+    if (currentTime - lastCelebrationTime >= celebrationDelay)
+    {
+        ledCelebretion.toggle();
+        servoCelebretion.setPosition(celebrationAngle);
+        celebrationAngle = -celebrationAngle;
+        lastCelebrationTime = currentTime;
     }
 }
