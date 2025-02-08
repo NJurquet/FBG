@@ -27,19 +27,9 @@ void FSM_groupie::update()
         break;
 
     case WAIT:
-        if (topStartLine)
+        if ((topStartLine && currentTime >= startDelayTop) || (!topStartLine && currentTime >= startDelayBottom))
         {
-            if (currentTime >= startDelayTop)
-            {
-                currentState = CHECK_OBSTACLE;
-            }
-        }
-        else
-        {
-            if (currentTime >= startDelayBottom)
-            {
-                currentState = CHECK_OBSTACLE;
-            }
+            currentState = CHECK_OBSTACLE;
         }
         break;
 
