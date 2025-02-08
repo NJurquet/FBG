@@ -28,7 +28,7 @@ public:
     /**
      * @brief Constructor for the FSM_groupie class.
      */
-    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS);
+    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS);
 
     /**
      * @brief Updates the state of the FSM_groupie.
@@ -38,7 +38,6 @@ public:
 private:
     UltrasonicSensor ultrasonicSensor;
     IRSensor leftIRSensor;
-    IRSensor centerIRSensor;
     IRSensor rightIRSensor;
     MotorControl motorControl;
     Led ledCelebretion;

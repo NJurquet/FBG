@@ -4,11 +4,10 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 
-FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS)
+FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS)
 {
     ultrasonicSensor = us;
     leftIRSensor = leftIR;
-    centerIRSensor = centerIR;
     rightIRSensor = rightIR;
     motorControl = mc;
     ledCelebretion = lc;
@@ -88,30 +87,26 @@ void FSM_groupie::avoidObstacle()
 
 void FSM_groupie::followLine()
 {
-    bool leftIR = leftIRSensor.read();
-    bool centerIR = centerIRSensor.read();
-    bool rightIR = rightIRSensor.read();
+    bool leftIR = leftIRSensor.read();   // Is 1 if it detects black
+    bool rightIR = rightIRSensor.read(); // Is 1 if it detects black
 
-    if ((!leftIR && !rightIR && !centerIR) || (!leftIR && !rightIR && centerIR)) // If both extreme sensors do not detect the black line (detect white lines) & center detects black line
+    if (leftIR && rightIR) // If all sensors detect black
     {
         motorControl.moveForward();
-        Serial.println("Moving forward");
-        currentState = CHECK_OBSTACLE;
     }
-    else if (leftIR && !centerIR) // If left detect black & center detect white we turn right
-    {
-        motorControl.rotateRight();
-        Serial.println("Rotating left");
-        currentState = CHECK_OBSTACLE;
-    }
-    else if (rightIR && !centerIR) // If right detect black & center detect white we turn left
+    else if (!leftIR && rightIR) // If Left on white and right on black
     {
         motorControl.rotateLeft();
-        Serial.println("Rotating right");
-        currentState = CHECK_OBSTACLE;
     }
-    else if (leftIR && rightIR && centerIR) // If all sensors detect the black line
+    else if (leftIR && !rightIR) // If Left on black and right on white
     {
+        motorControl.rotateRight();
+    }
+    else if (!leftIR && !rightIR) // If all sensors are on white
+    {
+        motorControl.moveForward();
+
+        // TODO: Implement crossings and perpendicular line behaviour
         zoneCounter++;
         if (zoneCounter == zoneNumber)
         {
@@ -120,6 +115,8 @@ void FSM_groupie::followLine()
         }
         Serial.println("Detected perpendicular line");
     }
+
+    currentState = CHECK_OBSTACLE;
 }
 
 void FSM_groupie::enterZone()

@@ -97,6 +97,8 @@ void FSM_star::followLine()
     {
         motorControl.moveForward();
     }
+
+    currentState = CHECK_OBSTACLE;
 }
 
 void FSM_star::stopMotors()

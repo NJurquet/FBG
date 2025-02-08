@@ -35,7 +35,6 @@ Debugger debugger(TX_Debug, RX_Debug);
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
-IRSensor centerIRSensor(centerIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
 Led celebrationLed(celebrationLedPin);
@@ -45,8 +44,8 @@ bool groupie = false;
 int zoneNumber = 2;
 bool leftStart = true;
 
-FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart);
-FSM_star fsm_star(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
+FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart);
+FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
 
 void debug()
 {
@@ -87,7 +86,6 @@ void setup()
   motorControl.init();
   ultrasonicSensor.init();
   leftIRSensor.init();
-  centerIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
   celebretionServo.init();
