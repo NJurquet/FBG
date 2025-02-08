@@ -52,7 +52,7 @@ private:
     const unsigned long startDelay = 5000; // 85 seconds in milliseconds
     const unsigned long stopTime = 15000;  // 100 seconds in milliseconds
     unsigned long currentTime;
-    const int celebrationDelay = 500; // 0.5 seconds
+    const int celebrationDelay = 1000; // 1 seconds
     unsigned long lastCelebrationTime = 0;
     int celebrationAngle = 35;
 

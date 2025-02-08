@@ -61,7 +61,7 @@ private:
     unsigned long avoidTime;
     unsigned long enterZoneTime;
     int zoneCounter = 0;
-    const int celebrationDelay = 500; // 0.5 seconds
+    const int celebrationDelay = 1000; // 1 seconds
     unsigned long lastCelebrationTime = 0;
     int celebrationAngle = 35;
 
