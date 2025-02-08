@@ -8,7 +8,7 @@
 #include "ServoMotor.h"
 
 /**
- * @brief State Machine (FSM) for controlling a robot's behavior based on sensor inputs.
+ * @brief Finite State Machine (FSM) for controlling the Superstar robot's behavior based on sensor inputs.
  *
  * The class includes methods to update the state, check for obstacles, avoid obstacles, stop the motors, and follow a line.
  *

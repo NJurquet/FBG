@@ -4,20 +4,6 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 
-/**
- * @brief Constructor for the Finite State Machine (FSM_groupie) class.
- *
- * Initializes the FSM_groupie with ultrasonic and IR sensors, motor control,
- * and sets the initial state to INIT.
- *
- * @param us UltrasonicSensor object for distance measurement
- * @param leftIR Left IR sensor for line tracking
- * @param centerIR Center IR sensor for lint tracking
- * @param rightIR Right IR sensor for line tracking
- * @param mc MotorControl object for robot movement
- * @param zN Integer that determines which zone is the target of the groupie
- * @param lS Boolean that determines if the groupie starts on the left side of the arena
- */
 FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS)
 {
     ultrasonicSensor = us;
@@ -35,14 +21,6 @@ FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR
     ledCelebretion.turnOff();
 }
 
-/**
- * @brief Main update method for the Finite State Machine.
- *
- * Manages the state transitions and actions based on the current state
- * and elapsed time. Controls the robot's behavior through different states
- * such as initialization, waiting, obstacle checking, line following,
- * obstacle avoidance, and stopping.
- */
 void FSM_groupie::update()
 {
     currentTime = millis();
@@ -95,14 +73,6 @@ void FSM_groupie::update()
     }
 }
 
-/**
- * @brief Checks for obstacles using the ultrasonic sensor.
- *
- * Reads the distance from the ultrasonic sensor and determines
- * the next state based on the measured distance:
- * - If an obstacle is closer than 10 cm, transitions to AVOID_OBSTACLE
- * - Otherwise, transitions to FOLLOW_LINE
- */
 void FSM_groupie::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
@@ -110,30 +80,12 @@ void FSM_groupie::checkObstacle()
     currentState = distance < 10 ? AVOID_OBSTACLE : FOLLOW_LINE;
 }
 
-/**
- * @brief Handles obstacle avoidance behavior.
- *
- * Currently a placeholder method for implementing obstacle avoidance strategy.
- * Temporarily transitions back to CHECK_OBSTACLE state.
- *
- * @todo Implement a comprehensive obstacle avoidance algorithm
- */
 void FSM_groupie::avoidObstacle()
 {
     motorControl.stop();
     currentState = CHECK_OBSTACLE;
 }
 
-/**
- * @brief Manages line-following behavior using IR sensors.
- *
- * Reads the state of left and right IR sensors and controls
- * the robot's movement accordingly:
- * - If both sensors are on white: move forward
- * - If left sensor detects black line: rotate left
- * - If right sensor detects black line: rotate right
- * - If both sensors detect black line: stop (to be improved)
- */
 void FSM_groupie::followLine()
 {
     bool leftIR = leftIRSensor.read();
@@ -170,9 +122,6 @@ void FSM_groupie::followLine()
     }
 }
 
-/**
- * @brief Turns the robot in the right direction to begin entering the zone.
- */
 void FSM_groupie::enterZone()
 {
     unsigned long startTime = millis(); // Capture the current time
@@ -191,9 +140,6 @@ void FSM_groupie::enterZone()
     currentState = ENTERING_ZONE;
 }
 
-/**
- * @brief Drives the robot forward to be in the middle of the zone.
- */
 void FSM_groupie::enteringZone()
 {
     unsigned long startTime = millis(); // Capture the current time
@@ -205,12 +151,6 @@ void FSM_groupie::enteringZone()
     currentState = STOP;
 }
 
-/**
- * @brief Stops the robot's motors.
- *
- * Calls the stop method of the motor control object
- * to halt all motor movement.
- */
 void FSM_groupie::stopMotors()
 {
     motorControl.stop();

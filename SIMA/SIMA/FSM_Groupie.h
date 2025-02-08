@@ -8,16 +8,19 @@
 #include "ServoMotor.h"
 
 /**
- * @brief State Machine (FSM_groupie) for controlling a robot's behavior based on sensor inputs.
+ * @brief State Machine (FSM_groupie) for controlling the Groupies robot's behavior based on sensor inputs.
  *
  * The class includes methods to update the state, check for obstacles, avoid obstacles, stop the motors, and follow a line.
  *
- * @param ultrasonicSensor An instance of the UltrasonicSensor class for detecting obstacles.
- * @param leftIRSensor An instance of the IRSensor class for detecting the left side of the line.
- * @param rightIRSensor An instance of the IRSensor class for detecting the right side of the line.
- * @param motorControl An instance of the MotorControl class for controlling the robot's motors/movements.
- * @param zoneNumber Integer that determines which zone is the target of the groupie.
- * @param leftStart Boolean that determines if the groupie begins on the left side of the arena.
+ * @param us An instance of the UltrasonicSensor class for detecting obstacles.
+ * @param leftIR An instance of the IRSensor class for detecting the left side of the line.
+ * @param centerIR An instance of the IRSensor class for detecting the center line.
+ * @param rightIR An instance of the IRSensor class for detecting the right side of the line.
+ * @param mc An instance of the MotorControl class for controlling the robot's motors/movements.
+ * @param lc An instance of the Led class for controlling the celebration LED.
+ * @param sc An instance of the ServoMotor class for controlling the celebration servo motor.
+ * @param zN Integer that determines which zone is the target of the groupie (1 or 2).
+ * @param lS Boolean that determines if the groupie begins on the left side of the arena.
  */
 class FSM_groupie
 {
@@ -54,8 +57,8 @@ private:
         STOP,
         CELEBRATE
     } currentState;
-    const unsigned long startDelay = 0000; // 85 seconds in milliseconds / 0 seconds for testing
-    const unsigned long stopTime = 15000; // 100 seconds in milliseconds / 15 seconds for testing
+    const unsigned long startDelay = 5000; // 85 seconds in milliseconds / 0 seconds for testing
+    const unsigned long stopTime = 15000;  // 100 seconds in milliseconds / 15 seconds for testing
     unsigned long currentTime;
     unsigned long avoidTime;
     unsigned long enterZoneTime;
@@ -71,21 +74,23 @@ private:
 
     /**
      * @brief Avoids obstacles in front of the robot.
+     *
+     * @todo Implement a correct obstacle avoidance algorithm
      */
     void avoidObstacle();
 
     /**
-     * @brief Follows a line based on the IR sensors readings.
+     * @brief Manages line-following behavior using IR sensors.
      */
     void followLine();
 
     /**
-     * @brief Turns to enter the pit when encounters the objective perpendicular line.
+     * @brief Turns to enter a zone when encounters the objective perpendicular line.
      */
     void enterZone();
 
     /**
-     * @brief Moves the robot forward when entering the zone.
+     * @brief Moves the robot forward to be in the middle of the zone.
      */
     void enteringZone();
 
@@ -95,7 +100,7 @@ private:
     void stopMotors();
 
     /**
-     * @brief Celebrates for the show.
+     * @brief Celebrates for the show by moving the servo motor and toggling the LED.
      */
     void celebrate();
 };
