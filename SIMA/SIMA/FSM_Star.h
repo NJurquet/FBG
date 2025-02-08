@@ -57,7 +57,7 @@ private:
     unsigned long blackStartTime = 0; // Start time when all sensors detect black
     bool checkingBlack = false;       // Whether we are in the process of checking for continuous black
     const int celebrationDelay = 500; // 0.5 seconds
-    const unsigned long lastCelebrationTime = 0;
+    unsigned long lastCelebrationTime = 0;
     int celebrationAngle = 35;
 
     /**

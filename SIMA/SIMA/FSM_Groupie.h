@@ -60,6 +60,9 @@ private:
     unsigned long avoidTime;
     unsigned long enterZoneTime;
     int zoneCounter = 0;
+    const int celebrationDelay = 500; // 0.5 seconds
+    unsigned long lastCelebrationTime = 0;
+    int celebrationAngle = 35;
 
     /**
      * @brief Checks for obstacles for a distance in front of the robot using ultrasonic sensor.
