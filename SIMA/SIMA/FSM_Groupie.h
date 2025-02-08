@@ -20,6 +20,7 @@
  * @param sc An instance of the ServoMotor class for controlling the celebration servo motor.
  * @param zN Integer that determines which zone is the target of the groupie (1 or 2).
  * @param lS Boolean that determines if the groupie begins on the left side of the arena.
+ * @param tSL Boolean that determines if the groupie begins on the top or bottom start line.
  */
 class FSM_groupie
 {
@@ -27,7 +28,7 @@ public:
     /**
      * @brief Constructor for the FSM_groupie class.
      */
-    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS);
+    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS, bool tSL);
 
     /**
      * @brief Updates the state of the FSM_groupie.
@@ -43,24 +44,27 @@ private:
     ServoMotor servoCelebretion;
     const int zoneNumber;
     const bool leftStart;
+    const bool topStartLine;
     enum State
     {
         INIT,
         WAIT,
         CHECK_OBSTACLE,
         FOLLOW_LINE,
-        ENTER_ZONE,
+        TURN_TO_ZONE,
         ENTERING_ZONE,
         AVOID_OBSTACLE,
         STOP,
         CELEBRATE
     } currentState;
-    const unsigned long startDelay = 5000; // 85 seconds in milliseconds / 0 seconds for testing
-    const unsigned long stopTime = 15000;  // 100 seconds in milliseconds / 15 seconds for testing
+    const unsigned long startDelayBottom = 5000; // 85 seconds in milliseconds / 5 seconds for testing
+    const unsigned long startDelayTop = 7000;    // 87 seconds in milliseconds / 7 seconds for testing
+    const unsigned long stopTime = 15000;        // 100 seconds in milliseconds / 15 seconds for testing
     unsigned long currentTime;
     unsigned long avoidTime;
+    const int turnZoneTime = 6000; // Time after start at which to turn to the zone in milliseconds
     unsigned long enterZoneTime;
-    int zoneCounter = 0;
+    bool enterZone = false;
     const int celebrationDelay = 1000; // 1 seconds
     unsigned long lastCelebrationTime = 0;
     int celebrationAngle = 35;
@@ -85,7 +89,7 @@ private:
     /**
      * @brief Turns to enter a zone when encounters the objective perpendicular line.
      */
-    void enterZone();
+    void turnToZone();
 
     /**
      * @brief Moves the robot forward to be in the middle of the zone.

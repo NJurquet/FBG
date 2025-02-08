@@ -4,7 +4,7 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 
-FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS) : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc), zoneNumber(zN), leftStart(lS)
+FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS, bool tSL) : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc), zoneNumber(zN), leftStart(lS), topStartLine(tSL)
 {
     currentState = INIT;
     servoCelebretion.setPosition(0);
@@ -27,9 +27,19 @@ void FSM_groupie::update()
         break;
 
     case WAIT:
-        if (currentTime >= startDelay)
+        if (topStartLine)
         {
-            currentState = CHECK_OBSTACLE;
+            if (currentTime >= startDelayTop)
+            {
+                currentState = CHECK_OBSTACLE;
+            }
+        }
+        else
+        {
+            if (currentTime >= startDelayBottom)
+            {
+                currentState = CHECK_OBSTACLE;
+            }
         }
         break;
 
@@ -41,8 +51,8 @@ void FSM_groupie::update()
         followLine();
         break;
 
-    case ENTER_ZONE:
-        enterZone();
+    case TURN_TO_ZONE:
+        turnToZone();
         break;
 
     case ENTERING_ZONE:
@@ -67,7 +77,14 @@ void FSM_groupie::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
     // Checks if obstacle is closer than 10 cm
-    currentState = distance < 10 ? AVOID_OBSTACLE : FOLLOW_LINE;
+    if (distance < 10)
+    {
+        currentState = AVOID_OBSTACLE;
+    }
+    else
+    {
+        currentState = enterZone ? TURN_TO_ZONE : FOLLOW_LINE;
+    }
 }
 
 void FSM_groupie::avoidObstacle()
@@ -95,22 +112,34 @@ void FSM_groupie::followLine()
     }
     else if (!leftIR && !rightIR) // If all sensors are on white
     {
-        motorControl.moveForward();
-
-        // TODO: Implement crossings and perpendicular line behaviour
-        zoneCounter++;
-        if (zoneCounter == zoneNumber)
+        if (topStartLine)
         {
-            currentState = ENTER_ZONE;
-            enterZoneTime = millis();
+            if (currentTime - startDelayTop >= turnZoneTime)
+            {
+                enterZone = true;
+            }
+            else
+            {
+                motorControl.moveForward();
+            }
         }
-        Serial.println("Detected perpendicular line");
+        else
+        {
+            if (currentTime - startDelayBottom >= turnZoneTime)
+            {
+                enterZone = true;
+            }
+            else
+            {
+                motorControl.moveForward();
+            }
+        }
     }
 
     currentState = CHECK_OBSTACLE;
 }
 
-void FSM_groupie::enterZone()
+void FSM_groupie::turnToZone()
 {
     unsigned long startTime = millis(); // Capture the current time
     while (millis() - startTime < 2000)

@@ -40,9 +40,12 @@ MotorControl motorControl;
 Led celebrationLed(celebrationLedPin);
 ServoMotor celebretionServo(celebrationServoPin);
 
+// CONFIGURATION CONSTANTS ///////////////////////
 const bool groupie = false;
 const int zoneNumber = 2;
 const bool leftStart = true;
+const bool topStartLine = true;
+//////////////////////////////////////////////////
 
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart);
 FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
