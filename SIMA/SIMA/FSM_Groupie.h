@@ -41,8 +41,8 @@ private:
     MotorControl motorControl;
     Led ledCelebretion;
     ServoMotor servoCelebretion;
-    int zoneNumber;
-    bool leftStart;
+    const int zoneNumber;
+    const bool leftStart;
     enum State
     {
         INIT,
