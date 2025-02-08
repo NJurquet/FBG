@@ -26,7 +26,7 @@ public:
     /**
      * @brief Constructor for the FSM_star class.
      */
-    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc);
+    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc);
 
     /**
      * @brief Updates the state of the FSM_star and the robot's actions.
@@ -36,7 +36,6 @@ public:
 private:
     UltrasonicSensor ultrasonicSensor;
     IRSensor leftIRSensor;
-    IRSensor centerIRSensor;
     IRSensor rightIRSensor;
     MotorControl motorControl;
     Led ledCelebretion;
@@ -54,8 +53,6 @@ private:
     const unsigned long startDelay = 5000; // 85 seconds in milliseconds
     const unsigned long stopTime = 15000;  // 100 seconds in milliseconds
     unsigned long currentTime;
-    unsigned long blackStartTime = 0; // Start time when all sensors detect black
-    bool checkingBlack = false;       // Whether we are in the process of checking for continuous black
     const int celebrationDelay = 500; // 0.5 seconds
     unsigned long lastCelebrationTime = 0;
     int celebrationAngle = 35;
