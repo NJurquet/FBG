@@ -14,7 +14,6 @@
  *
  * @param us An instance of the UltrasonicSensor class for detecting obstacles.
  * @param leftIR An instance of the IRSensor class for detecting the left line.
- * @param centerIR An instance of the IRSensor class for detecting the center line.
  * @param rightIR An instance of the IRSensor class for detecting the right line.
  * @param mc An instance of the MotorControl class for controlling the robot's motors/movements.
  * @param lc An instance of the Led class for controlling the celebration LED.
