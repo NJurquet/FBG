@@ -2,7 +2,6 @@
 #include <SoftwareSerial.h>
 #include "FSM_groupie.h"
 #include "FSM_star.h"
-#include "FSM_dev.h"
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
@@ -49,22 +48,20 @@ bool leftStart = true;
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart);
 FSM_star fsm_star(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
 
-FSM_dev fsm_dev(ultrasonicSensor, motorControl);
-
 void debug()
 {
-  if (rotationChanged)
-  {
-    if (rotatingLeft)
-    {
-      mySerial.println(F("Changed rotation to left"));
-    }
-    else
-    {
-      mySerial.println(F("Changed rotation to right"));
-    }
-    rotationChanged = false; // Reset the flag
-  }
+  // if (rotationChanged)
+  // {
+  //   if (rotatingLeft)
+  //   {
+  //     mySerial.println(F("Changed rotation to left"));
+  //   }
+  //   else
+  //   {
+  //     mySerial.println(F("Changed rotation to right"));
+  //   }
+  //   rotationChanged = false; // Reset the flag
+  // }
 
   if (Serial.available())
   {
@@ -98,14 +95,7 @@ void setup()
 
 void loop()
 {
-  if (groupie)
-  {
-    fsm_groupie.update();
-  }
-  else
-  {
-    fsm_star.update();
-  }
-  // fsm_dev.update();
+  groupie ? fsm_groupie.update() : fsm_star.update();
+
   debug();
 }
