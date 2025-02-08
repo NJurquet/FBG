@@ -5,8 +5,16 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 
-FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc) : ultrasonicSensor(us), leftIRSensor(leftIR), centerIRSensor(centerIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc)
+FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc)
 {
+    ultrasonicSensor = us;
+    leftIRSensor = leftIR;
+    centerIRSensor = centerIR;
+    rightIRSensor = rightIR;
+    motorControl = mc;
+    ledCelebretion = lc;
+    servoCelebretion = sc;
+
     currentState = INIT;
     servoCelebretion.setPosition(0);
     ledCelebretion.turnOff();

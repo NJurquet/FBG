@@ -6,10 +6,10 @@
 
 /**
  * @brief Constructor for the Finite State Machine (FSM_groupie) class.
- * 
+ *
  * Initializes the FSM_groupie with ultrasonic and IR sensors, motor control,
  * and sets the initial state to INIT.
- * 
+ *
  * @param us UltrasonicSensor object for distance measurement
  * @param leftIR Left IR sensor for line tracking
  * @param centerIR Center IR sensor for lint tracking
@@ -18,17 +18,18 @@
  * @param zN Integer that determines which zone is the target of the groupie
  * @param lS Boolean that determines if the groupie starts on the left side of the arena
  */
-FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS): 
-    ultrasonicSensor(us), 
-    leftIRSensor(leftIR), 
-    centerIRSensor(centerIR), 
-    rightIRSensor(rightIR), 
-    motorControl(mc),
-    ledCelebretion(lc),
-    servoCelebretion(sc),
-    zoneNumber(zN), 
-    leftStart(lS) 
+FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS)
 {
+    ultrasonicSensor = us;
+    leftIRSensor = leftIR;
+    centerIRSensor = centerIR;
+    rightIRSensor = rightIR;
+    motorControl = mc;
+    ledCelebretion = lc;
+    servoCelebretion = sc;
+    zoneNumber = zN;
+    leftStart = lS;
+
     currentState = INIT;
     servoCelebretion.setPosition(0);
     ledCelebretion.turnOff();
@@ -36,7 +37,7 @@ FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR
 
 /**
  * @brief Main update method for the Finite State Machine.
- * 
+ *
  * Manages the state transitions and actions based on the current state
  * and elapsed time. Controls the robot's behavior through different states
  * such as initialization, waiting, obstacle checking, line following,
@@ -71,7 +72,7 @@ void FSM_groupie::update()
     case FOLLOW_LINE:
         followLine();
         break;
-    
+
     case ENTER_ZONE:
         enterZone();
         break;
@@ -92,11 +93,11 @@ void FSM_groupie::update()
         celebrate();
         break;
     }
-} 
+}
 
 /**
  * @brief Checks for obstacles using the ultrasonic sensor.
- * 
+ *
  * Reads the distance from the ultrasonic sensor and determines
  * the next state based on the measured distance:
  * - If an obstacle is closer than 10 cm, transitions to AVOID_OBSTACLE
@@ -111,10 +112,10 @@ void FSM_groupie::checkObstacle()
 
 /**
  * @brief Handles obstacle avoidance behavior.
- * 
+ *
  * Currently a placeholder method for implementing obstacle avoidance strategy.
  * Temporarily transitions back to CHECK_OBSTACLE state.
- * 
+ *
  * @todo Implement a comprehensive obstacle avoidance algorithm
  */
 void FSM_groupie::avoidObstacle()
@@ -125,7 +126,7 @@ void FSM_groupie::avoidObstacle()
 
 /**
  * @brief Manages line-following behavior using IR sensors.
- * 
+ *
  * Reads the state of left and right IR sensors and controls
  * the robot's movement accordingly:
  * - If both sensors are on white: move forward
@@ -134,7 +135,7 @@ void FSM_groupie::avoidObstacle()
  * - If both sensors detect black line: stop (to be improved)
  */
 void FSM_groupie::followLine()
-{    
+{
     bool leftIR = leftIRSensor.read();
     bool centerIR = centerIRSensor.read();
     bool rightIR = rightIRSensor.read();
@@ -174,14 +175,18 @@ void FSM_groupie::followLine()
  */
 void FSM_groupie::enterZone()
 {
-    unsigned long startTime = millis();  // Capture the current time
-    while (millis() - startTime < 2000) {  // Run the loop for 1000 milliseconds (1 second)
-        if (leftStart) {
+    unsigned long startTime = millis(); // Capture the current time
+    while (millis() - startTime < 2000)
+    { // Run the loop for 1000 milliseconds (1 second)
+        if (leftStart)
+        {
             motorControl.rotateLeft();
-        } else {
+        }
+        else
+        {
             motorControl.rotateRight();
         }
-    delay(10);  // Small delay to reduce CPU usage
+        delay(10); // Small delay to reduce CPU usage
     }
     currentState = ENTERING_ZONE;
 }
@@ -191,17 +196,18 @@ void FSM_groupie::enterZone()
  */
 void FSM_groupie::enteringZone()
 {
-    unsigned long startTime = millis();  // Capture the current time
-    while (millis() - startTime < 1500) {  // Run the loop for 1000 milliseconds (1 second)
+    unsigned long startTime = millis(); // Capture the current time
+    while (millis() - startTime < 1500)
+    { // Run the loop for 1000 milliseconds (1 second)
         motorControl.moveForward();
-        delay(10);  // Small delay to reduce CPU usage
+        delay(10); // Small delay to reduce CPU usage
     }
     currentState = STOP;
 }
 
 /**
  * @brief Stops the robot's motors.
- * 
+ *
  * Calls the stop method of the motor control object
  * to halt all motor movement.
  */
