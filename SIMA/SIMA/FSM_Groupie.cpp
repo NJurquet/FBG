@@ -105,14 +105,8 @@ void FSM_groupie::update()
 void FSM_groupie::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
-    if (distance < 10) // If obstacle is closer than 10 cm
-    {
-        currentState = AVOID_OBSTACLE;
-    }
-    else
-    {
-        currentState = FOLLOW_LINE;
-    }
+    // Checks if obstacle is closer than 10 cm
+    currentState = distance < 10 ? AVOID_OBSTACLE : FOLLOW_LINE;
 }
 
 /**
