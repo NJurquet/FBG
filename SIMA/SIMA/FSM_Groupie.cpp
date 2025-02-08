@@ -4,17 +4,8 @@
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
 
-FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS)
+FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS) : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc), zoneNumber(zN), leftStart(lS)
 {
-    ultrasonicSensor = us;
-    leftIRSensor = leftIR;
-    rightIRSensor = rightIR;
-    motorControl = mc;
-    ledCelebretion = lc;
-    servoCelebretion = sc;
-    zoneNumber = zN;
-    leftStart = lS;
-
     currentState = INIT;
     servoCelebretion.setPosition(0);
     ledCelebretion.turnOff();
