@@ -51,9 +51,9 @@ private:
         INIT,
         WAIT,
         CHECK_OBSTACLE,
+        AVOID_OBSTACLE,
         FOLLOW_LINE,
         ENTER_ZONE,
-        AVOID_OBSTACLE,
         STOP,
         CELEBRATE
     } currentState;

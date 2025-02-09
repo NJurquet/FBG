@@ -28,7 +28,7 @@ void FSM_groupie::update()
 
     case WAIT:
         if ((topStartLine && currentTime >= startDelayTop) || (!topStartLine && currentTime >= startDelayBottom))
-        {
+        { // Make sure to repect starting delay for each groupie
             currentState = CHECK_OBSTACLE;
         }
         break;
@@ -37,16 +37,16 @@ void FSM_groupie::update()
         checkObstacle();
         break;
 
+    case AVOID_OBSTACLE:
+        avoidObstacle();
+        break;
+
     case FOLLOW_LINE:
         followLine();
         break;
 
     case ENTER_ZONE:
         enterZone();
-        break;
-
-    case AVOID_OBSTACLE:
-        avoidObstacle();
         break;
 
     case STOP:
@@ -101,24 +101,24 @@ void FSM_groupie::followLine()
         if (topStartLine)
         {
             if (currentTime - startDelayTop >= turnZoneDelay)
-            {
+            { // If at the minimum time for detecting a zone turn, start turning
                 enteringZone = true;
                 enterZoneTime = currentTime;
             }
             else
-            {
+            { // It's not yet time to detect a zone turn, keep moving forward
                 motorControl.moveForward();
             }
         }
         else
         {
             if (currentTime - startDelayBottom >= turnZoneDelay)
-            {
+            { // If at the minimum time for detecting a zone turn, start turning
                 enteringZone = true;
                 enterZoneTime = currentTime;
             }
             else
-            {
+            { // It's not yet time to detect a zone turn, keep moving forward
                 motorControl.moveForward();
             }
         }
@@ -132,31 +132,29 @@ void FSM_groupie::enterZone()
     if (topStartLine)
     {
         if (currentTime - enterZoneTime <= firstZoneTurnTime)
-        {
+        { // Turn to the zone for a set of time
             motorControl.setRotationSpeed(0.5);
             leftStart ? motorControl.rotateLeft() : motorControl.rotateRight();
             currentState = CHECK_OBSTACLE;
         }
         else
-        {
+        { // When reaching the zone, stop
             currentState = STOP;
         }
     }
     else
     {
         if (currentTime - enterZoneTime <= secondZoneTurnTime)
-        {
+        { // Turn to the zone for a set of time
             motorControl.setRotationSpeed(0.8);
             leftStart ? motorControl.rotateLeft() : motorControl.rotateRight();
             currentState = CHECK_OBSTACLE;
         }
         else
-        {
+        { // When reaching the zone, stop
             currentState = STOP;
         }
     }
-
-    currentState = STOP;
 }
 
 void FSM_groupie::stopMotors()
