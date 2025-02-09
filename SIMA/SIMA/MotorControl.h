@@ -67,11 +67,11 @@ public:
     int getSpeed();
 
     /**
-     * @brief Sets the speed of the motors.
+     * @brief Sets the rotation speed of the motors as a ratio of the main speed.
      *
-     * @param speed The 8-bit PWM value, 0 is off, 255 is on.
+     * @param speedRatio The ratio of the main speed to apply.
      */
-    void setSpeed(int speed);
+    void setRotationSpeed(double speedRatio);
 };
 
 #endif // MOTORCONTROL_H
