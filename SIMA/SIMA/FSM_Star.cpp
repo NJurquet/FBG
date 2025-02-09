@@ -8,6 +8,7 @@
 FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc) : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc)
 {
     currentState = INIT;
+    previousState = INIT;
     servoCelebretion.setPosition(0);
     ledCelebretion.turnOff();
 }
@@ -30,6 +31,7 @@ void FSM_star::update()
     case WAIT:
         if (currentTime >= startDelay)
         {
+            previousState = currentState;
             currentState = CHECK_OBSTACLE;
         }
         break;
@@ -38,12 +40,12 @@ void FSM_star::update()
         checkObstacle();
         break;
 
-    case FOLLOW_LINE:
-        followLine();
-        break;
-
     case AVOID_OBSTACLE:
         avoidObstacle();
+        break;
+
+    case FOLLOW_LINE:
+        followLine();
         break;
 
     case STOP:
@@ -60,17 +62,43 @@ void FSM_star::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
     // Checks if obstacle is closer than 10 cm
-    currentState = distance < 10 ? AVOID_OBSTACLE : FOLLOW_LINE;
+    if (distance < 10)
+    { // If a new obstacle is detected, start counting the time
+        if (previousState != AVOID_OBSTACLE)
+        {
+            obstacleStartTime = currentTime;
+        }
+        previousState = currentState;
+        currentState = AVOID_OBSTACLE;
+    }
+    else
+    { // If the robot finished avoiding the obstacle, add the time to the total obstacle time
+        if (previousState == AVOID_OBSTACLE)
+        {
+            totalObstacleTime += currentTime - obstacleStartTime;
+        }
+        previousState = currentState;
+        currentState = FOLLOW_LINE;
+    }
 }
 
 void FSM_star::avoidObstacle()
 {
     motorControl.stop();
+    previousState = currentState;
     currentState = CHECK_OBSTACLE;
 }
 
 void FSM_star::followLine()
 {
+    // If it is the time at which the superstar should reach the edge (removing the time spent avoiding obstacles), stop
+    if (currentTime - startDelay - totalObstacleTime >= edgeStopTime)
+    {
+        previousState = currentState;
+        currentState = STOP;
+        return;
+    }
+
     bool leftIR = leftIRSensor.read();   // Is 1 if it detects black
     bool rightIR = rightIRSensor.read(); // Is 1 if it detects black
 
@@ -91,6 +119,7 @@ void FSM_star::followLine()
         motorControl.moveForward();
     }
 
+    previousState = currentState;
     currentState = CHECK_OBSTACLE;
 }
 

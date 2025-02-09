@@ -39,22 +39,28 @@ private:
     MotorControl motorControl;
     Led ledCelebretion;
     ServoMotor servoCelebretion;
+
     enum State
     {
         INIT,
         WAIT,
         CHECK_OBSTACLE,
-        FOLLOW_LINE,
         AVOID_OBSTACLE,
+        FOLLOW_LINE,
         STOP,
         CELEBRATE
     } currentState;
-    const unsigned long startDelay = 5000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 15000;  // 100 seconds in milliseconds
-    unsigned long currentTime;
-    const int celebrationDelay = 1000; // 1 seconds
-    unsigned long lastCelebrationTime = 0;
-    int celebrationAngle = 35;
+    State previousState;
+    const unsigned long startDelay = 5000;   // 85 seconds in milliseconds / 5 seconds for testing
+    const unsigned long stopTime = 15000;    // 100 seconds in milliseconds / 15 seconds for testing
+    const unsigned long edgeStopTime = 9000; // 9 seconds in milliseconds
+    unsigned long currentTime;               // Time from the start of the program in milliseconds
+    unsigned long obstacleStartTime = 0;     // Time when a new obstacle is detected in milliseconds
+    unsigned long totalObstacleTime = 0;     // Total time spent avoiding obstacles in milliseconds
+
+    const int celebrationDelay = 1000;     // 1 seconds
+    unsigned long lastCelebrationTime = 0; // Time when the last celebration happened in milliseconds
+    int celebrationAngle = 35;             // Angle at which the servo motor will alternate
 
     /**
      * @brief Checks for obstacles for a distance in front of the robot using ultrasonic sensor.
