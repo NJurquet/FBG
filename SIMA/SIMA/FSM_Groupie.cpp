@@ -65,7 +65,7 @@ void FSM_groupie::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
     // Checks if obstacle is closer than 10 cm
-    if (distance < 10)
+    if (distance < obstacleDistance)
     {
         // If a new obstacle is detected, start counting the time
         if (previousState != AVOID_OBSTACLE)

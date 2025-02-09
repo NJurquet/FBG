@@ -57,6 +57,7 @@ private:
     unsigned long currentTime;               // Time from the start of the program in milliseconds
     unsigned long obstacleStartTime = 0;     // Time when a new obstacle is detected in milliseconds
     unsigned long totalObstacleTime = 0;     // Total time spent avoiding obstacles in milliseconds
+    const int obstacleDistance = 10;         // Distance in cm from which it will be detected as an obstacle
 
     const int celebrationDelay = 1000;     // 1 seconds
     unsigned long lastCelebrationTime = 0; // Time when the last celebration happened in milliseconds
