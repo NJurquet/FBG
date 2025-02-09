@@ -57,21 +57,23 @@ private:
         STOP,
         CELEBRATE
     } currentState;
+    State previousState;
     const unsigned long startDelayBottom = 5000; // 85 seconds in milliseconds / 5 seconds for testing
     const unsigned long startDelayTop = 7000;    // 87 seconds in milliseconds / 7 seconds for testing
     const unsigned long stopTime = 15000;        // 100 seconds in milliseconds / 15 seconds for testing
-    unsigned long currentTime;
-    unsigned long avoidTime;
+    unsigned long currentTime;                   // Time from the start of the program in milliseconds
+    unsigned long obstacleStartTime = 0;         // Time when a new obstacle is detected in milliseconds
+    unsigned long totalObstacleTime = 0;         // Total time spent avoiding obstacles in milliseconds
 
     const int turnZoneDelay = 6000;      // Time after start at which it can start detecting a zone turn in milliseconds
     const int firstZoneTurnTime = 1000;  // Time needed to turn to the first zone in milliseconds
     const int secondZoneTurnTime = 3000; // Time needed to turn to the second zone in milliseconds
-    unsigned long enterZoneTime;
-    bool enteringZone = false;
+    unsigned long enterZoneTime;         // Time when the robot starts turning to the zone in milliseconds
+    bool enteringZone = false;           // Flag to know if the robot is turning to the zone
 
-    const int celebrationDelay = 1000; // 1 seconds
-    unsigned long lastCelebrationTime = 0;
-    int celebrationAngle = 35;
+    const int celebrationDelay = 1000;     // 1 seconds
+    unsigned long lastCelebrationTime = 0; // Time when the last celebration happened in milliseconds
+    int celebrationAngle = 35;             // Angle at which the servo motor will alternate
 
     /**
      * @brief Checks for obstacles for a distance in front of the robot using ultrasonic sensor.
