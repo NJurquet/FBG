@@ -151,7 +151,7 @@ void FSM_groupie::enterZone()
     {
         if (currentTime - enterZoneTime - totalObstacleTime <= firstZoneTurnTime)
         { // Turn to the zone for a set of time (removing the time spent avoiding obstacles)
-            motorControl.setRotationSpeed(0.5);
+            motorControl.setRotationSpeed(topRotationSpeedRatio);
             leftStart ? motorControl.rotateLeft() : motorControl.rotateRight();
             previousState = currentState;
             currentState = CHECK_OBSTACLE;
@@ -166,7 +166,7 @@ void FSM_groupie::enterZone()
     {
         if (currentTime - enterZoneTime - totalObstacleTime <= secondZoneTurnTime)
         { // Turn to the zone for a set of time (removing the time spent avoiding obstacles)
-            motorControl.setRotationSpeed(0.8);
+            motorControl.setRotationSpeed(bottomRotationSpeedRatio);
             leftStart ? motorControl.rotateLeft() : motorControl.rotateRight();
             previousState = currentState;
             currentState = CHECK_OBSTACLE;

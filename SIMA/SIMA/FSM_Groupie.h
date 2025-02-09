@@ -65,11 +65,13 @@ private:
     unsigned long obstacleStartTime = 0;         // Time when a new obstacle is detected in milliseconds
     unsigned long totalObstacleTime = 0;         // Total time spent avoiding obstacles in milliseconds
 
-    const int turnZoneDelay = 6000;      // Time after start at which it can start detecting a zone turn in milliseconds
-    const int firstZoneTurnTime = 1000;  // Time needed to turn to the first zone in milliseconds
-    const int secondZoneTurnTime = 3000; // Time needed to turn to the second zone in milliseconds
-    unsigned long enterZoneTime;         // Time when the robot starts turning to the zone in milliseconds
-    bool enteringZone = false;           // Flag to know if the robot is turning to the zone
+    const int turnZoneDelay = 6000;              // Time after start at which it can start detecting a zone turn in milliseconds
+    const int firstZoneTurnTime = 1000;          // Time needed to turn to the first zone in milliseconds
+    const int secondZoneTurnTime = 3000;         // Time needed to turn to the second zone in milliseconds
+    unsigned long enterZoneTime;                 // Time when the robot starts turning to the zone in milliseconds
+    bool enteringZone = false;                   // Flag to know if the robot is turning to the zone
+    const double topRotationSpeedRatio = 0.5;    // Ratio of the main speed to apply when turning to the first zone
+    const double bottomRotationSpeedRatio = 0.8; // Ratio of the main speed to apply when turning to the second zone
 
     const int celebrationDelay = 1000;     // 1 seconds
     unsigned long lastCelebrationTime = 0; // Time when the last celebration happened in milliseconds
