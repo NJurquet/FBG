@@ -45,14 +45,14 @@ private:
     const int zoneNumber;
     const bool leftStart;
     const bool topStartLine;
+
     enum State
     {
         INIT,
         WAIT,
         CHECK_OBSTACLE,
         FOLLOW_LINE,
-        TURN_TO_ZONE,
-        ENTERING_ZONE,
+        ENTER_ZONE,
         AVOID_OBSTACLE,
         STOP,
         CELEBRATE
@@ -62,9 +62,13 @@ private:
     const unsigned long stopTime = 15000;        // 100 seconds in milliseconds / 15 seconds for testing
     unsigned long currentTime;
     unsigned long avoidTime;
-    const int turnZoneTime = 6000; // Time after start at which to turn to the zone in milliseconds
+
+    const int turnZoneDelay = 6000;      // Time after start at which it can start detecting a zone turn in milliseconds
+    const int firstZoneTurnTime = 1000;  // Time needed to turn to the first zone in milliseconds
+    const int secondZoneTurnTime = 3000; // Time needed to turn to the second zone in milliseconds
     unsigned long enterZoneTime;
-    bool enterZone = false;
+    bool enteringZone = false;
+
     const int celebrationDelay = 1000; // 1 seconds
     unsigned long lastCelebrationTime = 0;
     int celebrationAngle = 35;
@@ -87,14 +91,9 @@ private:
     void followLine();
 
     /**
-     * @brief Turns to enter a zone when encounters the objective perpendicular line.
+     * @brief Moves the robot to be in the middle of the aimed zone.
      */
-    void turnToZone();
-
-    /**
-     * @brief Moves the robot forward to be in the middle of the zone.
-     */
-    void enteringZone();
+    void enterZone();
 
     /**
      * @brief Stops the motors of the robot.

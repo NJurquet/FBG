@@ -41,12 +41,8 @@ void FSM_groupie::update()
         followLine();
         break;
 
-    case TURN_TO_ZONE:
-        turnToZone();
-        break;
-
-    case ENTERING_ZONE:
-        enteringZone();
+    case ENTER_ZONE:
+        enterZone();
         break;
 
     case AVOID_OBSTACLE:
@@ -73,7 +69,7 @@ void FSM_groupie::checkObstacle()
     }
     else
     {
-        currentState = enterZone ? TURN_TO_ZONE : FOLLOW_LINE;
+        currentState = enteringZone ? ENTER_ZONE : FOLLOW_LINE;
     }
 }
 
@@ -104,9 +100,10 @@ void FSM_groupie::followLine()
     {
         if (topStartLine)
         {
-            if (currentTime - startDelayTop >= turnZoneTime)
+            if (currentTime - startDelayTop >= turnZoneDelay)
             {
-                enterZone = true;
+                enteringZone = true;
+                enterZoneTime = currentTime;
             }
             else
             {
@@ -115,9 +112,10 @@ void FSM_groupie::followLine()
         }
         else
         {
-            if (currentTime - startDelayBottom >= turnZoneTime)
+            if (currentTime - startDelayBottom >= turnZoneDelay)
             {
-                enterZone = true;
+                enteringZone = true;
+                enterZoneTime = currentTime;
             }
             else
             {
@@ -129,43 +127,42 @@ void FSM_groupie::followLine()
     currentState = CHECK_OBSTACLE;
 }
 
-void FSM_groupie::turnToZone()
+void FSM_groupie::enterZone()
 {
-    unsigned long startTime = millis(); // Capture the current time
-    while (millis() - startTime < 2000)
-    { // Run the loop for 1000 milliseconds (1 second)
-        if (leftStart)
+    if (topStartLine)
+    {
+        if (currentTime - enterZoneTime <= firstZoneTurnTime)
         {
-            motorControl.rotateLeft();
+            motorControl.setRotationSpeed(0.5);
+            leftStart ? motorControl.rotateLeft() : motorControl.rotateRight();
+            currentState = CHECK_OBSTACLE;
         }
         else
         {
-            motorControl.rotateRight();
+            currentState = STOP;
         }
-        delay(10); // Small delay to reduce CPU usage
     }
-    currentState = ENTERING_ZONE;
-}
+    else
+    {
+        if (currentTime - enterZoneTime <= secondZoneTurnTime)
+        {
+            motorControl.setRotationSpeed(0.8);
+            leftStart ? motorControl.rotateLeft() : motorControl.rotateRight();
+            currentState = CHECK_OBSTACLE;
+        }
+        else
+        {
+            currentState = STOP;
+        }
+    }
 
-void FSM_groupie::enteringZone()
-{
-    unsigned long startTime = millis(); // Capture the current time
-    while (millis() - startTime < 1500)
-    { // Run the loop for 1000 milliseconds (1 second)
-        motorControl.moveForward();
-        delay(10); // Small delay to reduce CPU usage
-    }
     currentState = STOP;
 }
 
 void FSM_groupie::stopMotors()
 {
     motorControl.stop();
-
-    if (currentTime > stopTime)
-    {
-        currentState = CELEBRATE;
-    }
+    currentState = CELEBRATE;
 }
 
 void FSM_groupie::celebrate()
