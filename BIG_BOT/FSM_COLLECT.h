@@ -11,7 +11,7 @@ public:
 private:
     enum State
     {
-        INIT,
+        INIT,               // Maybe use more states ?
         ELEVATE_FORK,
         GRAB_CANS
         

@@ -11,7 +11,7 @@ FSM_DROP();
 private:
     enum State
     {
-        INIT,
+        INIT,                       // Maybe use more generic states ?
         RELEASE_OUTTER_CANS,
         SLOW_MOVE,
         PUSH_TOP_PLANK,
