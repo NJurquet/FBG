@@ -2,7 +2,6 @@
 #include <SoftwareSerial.h>
 #include "FSM_groupie.h"
 #include "FSM_star.h"
-#include "FSM_dev.h"
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
@@ -36,35 +35,35 @@ Debugger debugger(TX_Debug, RX_Debug);
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
 IRSensor leftIRSensor(leftIRPin);
-IRSensor centerIRSensor(centerIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
 Led celebrationLed(celebrationLedPin);
 ServoMotor celebretionServo(celebrationServoPin);
 
-bool groupie = false;
-int zoneNumber = 2;
-bool leftStart = true;
+// CONFIGURATION CONSTANTS ///////////////////////
+const bool groupie = false;
+const int zoneNumber = 2;
+const bool leftStart = true;
+const bool topStartLine = true;
+//////////////////////////////////////////////////
 
-FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart);
-FSM_star fsm_star(ultrasonicSensor, leftIRSensor, centerIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
-
-FSM_dev fsm_dev(ultrasonicSensor, motorControl);
+FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart, topStartLine);
+FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
 
 void debug()
 {
-  if (rotationChanged)
-  {
-    if (rotatingLeft)
-    {
-      mySerial.println(F("Changed rotation to left"));
-    }
-    else
-    {
-      mySerial.println(F("Changed rotation to right"));
-    }
-    rotationChanged = false; // Reset the flag
-  }
+  // if (rotationChanged)
+  // {
+  //   if (rotatingLeft)
+  //   {
+  //     mySerial.println(F("Changed rotation to left"));
+  //   }
+  //   else
+  //   {
+  //     mySerial.println(F("Changed rotation to right"));
+  //   }
+  //   rotationChanged = false; // Reset the flag
+  // }
 
   if (Serial.available())
   {
@@ -90,7 +89,6 @@ void setup()
   motorControl.init();
   ultrasonicSensor.init();
   leftIRSensor.init();
-  centerIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
   celebretionServo.init();
@@ -98,14 +96,7 @@ void setup()
 
 void loop()
 {
-  if (groupie)
-  {
-    fsm_groupie.update();
-  }
-  else
-  {
-    fsm_star.update();
-  }
-  // fsm_dev.update();
+  groupie ? fsm_groupie.update() : fsm_star.update();
+
   debug();
 }

@@ -8,13 +8,12 @@
 #include "ServoMotor.h"
 
 /**
- * @brief State Machine (FSM) for controlling a robot's behavior based on sensor inputs.
+ * @brief Finite State Machine (FSM) for controlling the Superstar robot's behavior based on sensor inputs.
  *
  * The class includes methods to update the state, check for obstacles, avoid obstacles, stop the motors, and follow a line.
  *
  * @param us An instance of the UltrasonicSensor class for detecting obstacles.
  * @param leftIR An instance of the IRSensor class for detecting the left line.
- * @param centerIR An instance of the IRSensor class for detecting the center line.
  * @param rightIR An instance of the IRSensor class for detecting the right line.
  * @param mc An instance of the MotorControl class for controlling the robot's motors/movements.
  * @param lc An instance of the Led class for controlling the celebration LED.
@@ -26,7 +25,7 @@ public:
     /**
      * @brief Constructor for the FSM_star class.
      */
-    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor centerIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc);
+    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc);
 
     /**
      * @brief Updates the state of the FSM_star and the robot's actions.
@@ -36,29 +35,33 @@ public:
 private:
     UltrasonicSensor ultrasonicSensor;
     IRSensor leftIRSensor;
-    IRSensor centerIRSensor;
     IRSensor rightIRSensor;
     MotorControl motorControl;
     Led ledCelebretion;
     ServoMotor servoCelebretion;
+
     enum State
     {
         INIT,
         WAIT,
         CHECK_OBSTACLE,
-        FOLLOW_LINE,
         AVOID_OBSTACLE,
+        FOLLOW_LINE,
         STOP,
         CELEBRATE
     } currentState;
-    const unsigned long startDelay = 5000; // 85 seconds in milliseconds
-    const unsigned long stopTime = 15000;  // 100 seconds in milliseconds
-    unsigned long currentTime;
-    unsigned long blackStartTime = 0; // Start time when all sensors detect black
-    bool checkingBlack = false;       // Whether we are in the process of checking for continuous black
-    const int celebrationDelay = 500; // 0.5 seconds
-    const unsigned long lastCelebrationTime = 0;
-    int celebrationAngle = 35;
+    State previousState;
+    const unsigned long startDelay = 5000;   // 85 seconds in milliseconds / 5 seconds for testing
+    const unsigned long stopTime = 15000;    // 100 seconds in milliseconds / 15 seconds for testing
+    const unsigned long edgeStopTime = 9000; // 9 seconds in milliseconds
+    unsigned long currentTime;               // Time from the start of the program in milliseconds
+    unsigned long obstacleStartTime = 0;     // Time when a new obstacle is detected in milliseconds
+    unsigned long totalObstacleTime = 0;     // Total time spent avoiding obstacles in milliseconds
+    const int obstacleDistance = 10;         // Distance in cm from which it will be detected as an obstacle
+
+    const int celebrationDelay = 1000;     // 1 seconds
+    unsigned long lastCelebrationTime = 0; // Time when the last celebration happened in milliseconds
+    int celebrationAngle = 35;             // Angle at which the servo motor will alternate
 
     /**
      * @brief Checks for obstacles for a distance in front of the robot using ultrasonic sensor.
