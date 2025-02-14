@@ -7,7 +7,7 @@ MotorControl::MotorControl()
     AFMS = Adafruit_MotorShield();
     leftMotor = AFMS.getMotor(4);
     rightMotor = AFMS.getMotor(3);
-    motorSpeed = 90;
+    motorSpeed = 85;
     motorRotationSpeed = 50;
 }
 

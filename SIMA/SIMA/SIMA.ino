@@ -12,7 +12,6 @@
 
 // IR sensor pins
 const int leftIRPin = A0;
-const int centerIRPin = A2;
 const int rightIRPin = A1;
 
 // Ultrasonic sensor pins
