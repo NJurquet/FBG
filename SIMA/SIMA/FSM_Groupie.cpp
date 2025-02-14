@@ -16,7 +16,7 @@ void FSM_groupie::update()
 {
     currentTime = millis();
 
-    if (currentTime >= stopTime)
+    if (currentTime >= stopTime && currentState != CELEBRATE)
     {
         currentState = STOP;
     }
@@ -136,7 +136,8 @@ void FSM_groupie::followLine()
             }
             else
             { // It's not yet time to detect a zone turn, keep moving forward
-                motorControl.moveForward();
+                // motorControl.moveForward();
+                leftStart ? motorControl.rotateRight() : motorControl.rotateLeft();
             }
         }
     }
