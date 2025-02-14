@@ -12,6 +12,7 @@ private:
     enum State
     {
         INIT,                       // Maybe use more generic states ?
+        CHECK_OBSTACLES,
         RELEASE_OUTTER_CANS,
         SLOW_MOVE,
         PUSH_TOP_PLANK,
