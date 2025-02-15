@@ -8,7 +8,7 @@ FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR,
 {
     currentState = INIT;
     previousState = INIT;
-    servoCelebretion.setPosition(0);
+    servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
 }
 
@@ -191,7 +191,7 @@ void FSM_groupie::celebrate()
     if (currentTime - lastCelebrationTime >= celebrationDelay)
     {
         ledCelebretion.toggle();
-        servoCelebretion.setPosition(celebrationAngle);
+        servoCelebretion.setPosition(90 + celebrationAngle);
         celebrationAngle = -celebrationAngle;
         lastCelebrationTime = currentTime;
     }

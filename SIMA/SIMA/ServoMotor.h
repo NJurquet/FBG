@@ -9,8 +9,12 @@ public:
 
     void init();
 
+    /**
+     * @brief Set the position of the servo motor.
+     *
+     * @param angle The angle in degrees (0° to 180°) to which the servo motor should be set.
+     */
     void setPosition(int angle);
-
 
 private:
     int pin;

@@ -90,6 +90,7 @@ void setup()
   leftIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
+  celebrationLed.init();
   celebretionServo.init();
 }
 
