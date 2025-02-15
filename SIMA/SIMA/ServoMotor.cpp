@@ -10,5 +10,5 @@ void ServoMotor::init()
 
 void ServoMotor::setPosition(int angle)
 {
-    servo.write(angle);
+    servo.write(constrain(angle, 0, 180));
 }

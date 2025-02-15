@@ -9,15 +9,16 @@ FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, Motor
 {
     currentState = INIT;
     previousState = INIT;
-    servoCelebretion.setPosition(0);
+    servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
+    motorControl.setRotationSpeed(rotationSpeedRatio);
 }
 
 void FSM_star::update()
 {
     currentTime = millis();
 
-    if (currentTime >= stopTime)
+    if (currentTime >= stopTime && currentState != CELEBRATE)
     {
         currentState = STOP;
     }
@@ -127,6 +128,7 @@ void FSM_star::stopMotors()
 {
     motorControl.stop();
     currentState = CELEBRATE;
+    Serial.println(F("Celebration"));
 }
 
 void FSM_star::celebrate()
@@ -134,7 +136,7 @@ void FSM_star::celebrate()
     if (currentTime - lastCelebrationTime >= celebrationDelay)
     {
         ledCelebretion.toggle();
-        servoCelebretion.setPosition(celebrationAngle);
+        servoCelebretion.setPosition(90 + celebrationAngle);
         celebrationAngle = -celebrationAngle;
         lastCelebrationTime = currentTime;
     }

@@ -12,7 +12,6 @@
 
 // IR sensor pins
 const int leftIRPin = A0;
-const int centerIRPin = A2;
 const int rightIRPin = A1;
 
 // Ultrasonic sensor pins
@@ -41,10 +40,10 @@ Led celebrationLed(celebrationLedPin);
 ServoMotor celebretionServo(celebrationServoPin);
 
 // CONFIGURATION CONSTANTS ///////////////////////
-const bool groupie = false;
-const int zoneNumber = 2;
-const bool leftStart = true;
+const bool groupie = true;
+const bool leftStart = false;
 const bool topStartLine = true;
+const int zoneNumber = topStartLine ? 1 : 2;
 //////////////////////////////////////////////////
 
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart, topStartLine);
@@ -91,6 +90,7 @@ void setup()
   leftIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
+  celebrationLed.init();
   celebretionServo.init();
 }
 

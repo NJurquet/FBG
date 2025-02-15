@@ -8,7 +8,7 @@ FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR,
 {
     currentState = INIT;
     previousState = INIT;
-    servoCelebretion.setPosition(0);
+    servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
 }
 
@@ -16,7 +16,7 @@ void FSM_groupie::update()
 {
     currentTime = millis();
 
-    if (currentTime >= stopTime)
+    if (currentTime >= stopTime && currentState != CELEBRATE)
     {
         currentState = STOP;
     }
@@ -136,7 +136,8 @@ void FSM_groupie::followLine()
             }
             else
             { // It's not yet time to detect a zone turn, keep moving forward
-                motorControl.moveForward();
+                // motorControl.moveForward();
+                leftStart ? motorControl.rotateRight() : motorControl.rotateLeft();
             }
         }
     }
@@ -190,7 +191,7 @@ void FSM_groupie::celebrate()
     if (currentTime - lastCelebrationTime >= celebrationDelay)
     {
         ledCelebretion.toggle();
-        servoCelebretion.setPosition(celebrationAngle);
+        servoCelebretion.setPosition(90 + celebrationAngle);
         celebrationAngle = -celebrationAngle;
         lastCelebrationTime = currentTime;
     }
