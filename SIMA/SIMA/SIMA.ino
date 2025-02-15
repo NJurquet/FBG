@@ -41,9 +41,9 @@ ServoMotor celebretionServo(celebrationServoPin);
 
 // CONFIGURATION CONSTANTS ///////////////////////
 const bool groupie = true;
-const int zoneNumber = 1;
 const bool leftStart = false;
 const bool topStartLine = true;
+const int zoneNumber = topStartLine ? 1 : 2;
 //////////////////////////////////////////////////
 
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart, topStartLine);
