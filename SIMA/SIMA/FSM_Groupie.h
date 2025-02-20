@@ -66,7 +66,7 @@ private:
     unsigned long totalObstacleTime = 0;         // Total time spent avoiding obstacles in milliseconds
     const int obstacleDistance = 10;             // Distance in cm from which it will be detected as an obstacle
 
-    const int turnZoneDelay = 3500;               // Time after start at which it can start detecting a zone turn in milliseconds
+    const int turnZoneDelay = 4000;               // Time after start at which it can start detecting a zone turn in milliseconds
     const int firstZoneTurnTime = 1000;           // Time needed to turn to the first zone in milliseconds
     const int secondZoneTurnTime = 2000;          // Time needed to turn to the second zone in milliseconds
     unsigned long enterZoneTime;                  // Time when the robot starts turning to the zone in milliseconds
