@@ -6,12 +6,13 @@ from dropStates import MoveToDrop, DropState
 
 class RobotFSM:
     def __init__(self):
-        self.state = DetectTargetsState()
-        self.state.enter()
+        self.current_state = DetectTargetsState()
+        self.current_state.enter()
 
     def on_event(self, event):
-        self.state = self.state.on_event(event)
-        self.state.enter()
+        self.current_state = self.current_state.on_event(event)
+        self.current_state.enter()
+
 
 # Example usage
 if __name__ == "__main__":
