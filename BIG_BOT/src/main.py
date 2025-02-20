@@ -1,11 +1,12 @@
-from src.FSM.FSM import RobotFSM
+from .fsm.FSM import RobotFSM
 
 
 def main():
     robot: RobotFSM = RobotFSM()
 
     while True:
-        robot.on_event("targets_detected")
+        robot.update()
+        # robot.on_event("targets_detected")
 
 
 if __name__ == "__main__":
