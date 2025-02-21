@@ -1,29 +1,33 @@
-from State import State
-from detectionStates import DetectTargetsState, CheckObstaclesState
+from .State import State
+from .detectionStates import DetectTargetsState, CheckObstaclesState
 
 
 class MoveState(State):
-    def __init__(self, command):
-        super().__init__("Move", command)
+    def __init__(self, fsm, command):
+        super().__init__(fsm, command)
+        # super().__init__("Move", command)
 
     def on_event(self, event):
         if event == 'stop':
-            return 
+            return
         elif event == 'obstacle_detected':
-            return 
+            return
         return self
 
     def enter(self):
         distance = self.command.get("distance")
-        if distance > 0:
+        if distance is not None and distance > 0:
             self.forward(distance)
         if distance == 0:
             print("Not moving")
-        if distance < 0:
+        if distance is not None and distance < 0:
             self.backward(distance)
 
+    def execute(self):
+        pass
+
     def exit(self):
-        return DetectTargetsState()
+        return DetectTargetsState(self.fsm)
 
     def forward(self, distance):
         print(f"Moving forward: distance {distance}")
@@ -33,21 +37,25 @@ class MoveState(State):
 
 
 class RotateState(State):
-    def __init__(self, command):
-        super().__init__("Rotate", command)
+    def __init__(self, fsm, command):
+        super().__init__(fsm, command)
+        # super().__init__("Rotate", command)
 
     def on_event(self, event):
         if event == 'stop':
-            return 
+            return
         elif event == 'obstacle_detected':
-            return 
+            return
         return self
 
     def enter(self):
         pass
 
+    def execute(self):
+        pass
+
     def exit(self):
-        return DetectTargetsState()
+        return DetectTargetsState(self.fsm)
 
     def rotate_left(self):
         print("Rotating left")
@@ -57,59 +65,71 @@ class RotateState(State):
 
 
 class AvoidObstacleState(State):
-    def __init__(self, command):
-        super().__init__("Avoid Obstacle", command)
+    def __init__(self, fsm, command):
+        super().__init__(fsm, command)
+        # super().__init__("Avoid Obstacle", command)
 
     def on_event(self, event):
         if event == 'obstacle_cleared':
-            return 
+            return
         return self
 
     def enter(self):
         pass
 
+    def execute(self):
+        pass
+
     def exit(self):
-        return DetectTargetsState()
+        return DetectTargetsState(self.fsm)
 
     def avoid_obstacle(self):
         print("Avoiding obstacle")
 
 
 class StopState(State):
-    def __init__(self, command):
-        super().__init__("Stop", command)
+    def __init__(self, fsm, command):
+        super().__init__(fsm, command)
+        # super().__init__("Stop", command)
 
     def on_event(self, event):
         if event == 'start_moving':
-            return 
+            return
         return self
 
     def enter(self):
         pass
 
+    def execute(self):
+        pass
+
     def exit(self):
-        return DetectTargetsState()
+        return DetectTargetsState(self.fsm)
 
     def stop(self):
         print("Stopping")
 
 
 class SlowMoveState(State):
-    def __init__(self, command):
-        super().__init__("Slow Move", command)
+    def __init__(self, fsm, command):
+        super().__init__(fsm, command)
+        # super().__init__("Slow Move", command)
 
     def on_event(self, event):
         if event == 'stop':
-            return 
+            return
         elif event == 'obstacle_detected':
-            return 
+            return
         return self
 
     def enter(self):
         pass
 
+    def execute(self):
+        pass
+
     def exit(self):
-        return DetectTargetsState()
+        return DetectTargetsState(self.fsm)
 
     def slow_forward(self):
         print("Slowly moving forward")
@@ -119,26 +139,28 @@ class SlowMoveState(State):
 
 
 class SlowRotateState(State):
-    def __init__(self, command):
-        super().__init__("Slow Rotate", command)
+    def __init__(self, fsm, command):
+        super().__init__(fsm, command)
+        # super().__init__("Slow Rotate", command)
 
     def on_event(self, event):
         if event == 'stop':
-            return 
+            return
         elif event == 'obstacle_detected':
-            return 
+            return
         return self
 
     def enter(self):
         pass
 
+    def execute(self):
+        pass
+
     def exit(self):
-        return DetectTargetsState()
+        return DetectTargetsState(self.fsm)
 
     def slow_rotate_left(self):
         print("Slowly rotating left")
 
     def slow_rotate_right(self):
         print("Slowly rotating right")
-
-
