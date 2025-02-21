@@ -2,13 +2,12 @@ from gpiozero import Motor
 from time import sleep
 from BigMotorControl import BigMotorControl
 
-motor1 = BigMotorControl(17, 27)
+motor1 = BigMotorControl(13, 19)
+speed = 0.0
 
-while True:
-    motor1.forward(0.5)
-    sleep(5)
-    motor1.forward(1)
-    sleep(5)
-    motor1.backward(0.5)
+while speed <1.0:
+    motor1.forward(speed)
+    speed+= 0.01
+    sleep(0.1)
 
 
