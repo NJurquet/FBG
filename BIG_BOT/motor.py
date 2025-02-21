@@ -1,17 +1,14 @@
 from gpiozero import Motor
 from time import sleep
-motor1 = Motor(forward=4, backward=14) #Pin numbers
+from BigMotorControl import BigMotorControl
 
+motor1 = BigMotorControl(17, 27)
 
-motor1.forward()
-test = 0 
-while test <3:
+while True:
+    motor1.forward(0.5)
     sleep(5)
-    motor1.reverse()
-    
-    test +=1
-
-motor1.stop()
-
+    motor1.forward(1)
+    sleep(5)
+    motor1.backward(0.5)
 
 
