@@ -22,8 +22,8 @@ class DetectTargetsState(State):    # Detection & Mapping of the environment
         from .movementStates import MoveState
         from .movementStates import StopState
 
-        if self.testIterations == 0:
-            move_command = {"forward_speed": 0.5}
+        if self.testIterations == 2:
+            move_command = {"forward_speed": 1}
             self.testIterations += 1
             moveState = MoveState(self.fsm, move_command, self.components)
             moveState.execute()
@@ -33,8 +33,8 @@ class DetectTargetsState(State):    # Detection & Mapping of the environment
             self.testIterations += 1
             return MoveState(self.fsm, move_command, self.components)
         
-        if self.testIterations == 4:
-            move_command = {"backward_speed": 0.5}
+        if self.testIterations == 0:
+            move_command = {"backward_speed": 1}
             self.testIterations += 1
             return MoveState(self.fsm, move_command, self.components)
         

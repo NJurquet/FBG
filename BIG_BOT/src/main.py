@@ -4,10 +4,10 @@ from .bigMotorControl import BigMotorControl
 
 
 def main():
-    LMotorFpin = 18
+    LMotorFpin = 13
     LMotorBpin = 19
-    RMotorFpin = 20
-    RMotorBpin = 21
+    RMotorFpin = 17
+    RMotorBpin = 27
     lMotorControl: BigMotorControl = BigMotorControl(LMotorFpin, LMotorBpin)
     rMotorControl: BigMotorControl = BigMotorControl(RMotorFpin, RMotorBpin)
 
