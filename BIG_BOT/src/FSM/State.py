@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 
 
 class State(ABC):
-    def __init__(self, fsm, command: dict[str, int] = {}):
+    def __init__(self, fsm, command: dict[str, int] = {}, components = []):
         self.fsm = fsm
-        # self.name = name
         self.command = command
+        self.components = components
 
     @abstractmethod
     def on_event(self, event):

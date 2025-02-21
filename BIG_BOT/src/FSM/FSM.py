@@ -6,16 +6,18 @@ from .movementStates import MoveState, StopState, RotateState, SlowMoveState, Sl
 
 
 class RobotFSM:
-    def __init__(self):
+    def __init__(self, lMotorControl, rMotorControl):
+        self.lMotorControl = lMotorControl
+        self.righMotorControl = rMotorControl
         # Save all states as attributes of the FSM
-        self.detect_targets_state = DetectTargetsState(self)
+        self.detect_targets_state = DetectTargetsState(self, {}, [lMotorControl, rMotorControl])
         self.check_obstacles_state = CheckObstaclesState(self)
         self.collect_state = CollectState(self)
         self.move_to_collect_state = MoveToCollectState(self)
         self.move_to_drop_state = MoveToDrop(self)
         self.drop_state = DropState(self)
-        self.move_state = MoveState(self, {})
-        self.stop_state = StopState(self, {})
+        self.move_state = MoveState(self, {}, [lMotorControl, rMotorControl])
+        self.stop_state = StopState(self, {}, [lMotorControl, rMotorControl])
         self.rotate_state = RotateState(self, {})
         self.slow_move_state = SlowMoveState(self, {})
         self.slow_rotate_state = SlowRotateState(self, {})
@@ -41,4 +43,3 @@ class RobotFSM:
 # Example usage
 if __name__ == "__main__":
     fsm = RobotFSM()
-    fsm.on_event("targets_detected")

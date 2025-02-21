@@ -1,7 +1,6 @@
 from gpiozero import Motor
 
 
-
 class BigMotorControl:
     def __init__(self, forward, backward):
         self.motor = Motor(forward, backward)
@@ -16,6 +15,7 @@ class BigMotorControl:
         self.motor.backward(self.speed)
     
     def stop(self):
+        pass
         self.motor.stop()
 
     

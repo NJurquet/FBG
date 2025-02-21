@@ -1,12 +1,21 @@
+from time import sleep
 from .fsm.FSM import RobotFSM
+from .bigMotorControl import BigMotorControl
 
 
 def main():
-    robot: RobotFSM = RobotFSM()
+    LMotorFpin = 18
+    LMotorBpin = 19
+    RMotorFpin = 20
+    RMotorBpin = 21
+    lMotorControl: BigMotorControl = BigMotorControl(LMotorFpin, LMotorBpin)
+    rMotorControl: BigMotorControl = BigMotorControl(RMotorFpin, RMotorBpin)
+
+    
+    robot: RobotFSM = RobotFSM(lMotorControl, rMotorControl)
 
     while True:
         robot.update()
-        # robot.on_event("targets_detected")
 
 
 if __name__ == "__main__":

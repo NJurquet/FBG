@@ -3,37 +3,51 @@ from .detectionStates import DetectTargetsState, CheckObstaclesState
 
 
 class MoveState(State):
-    def __init__(self, fsm, command):
+    
+    def __init__(self, fsm, command, components):
         super().__init__(fsm, command)
-        # super().__init__("Move", command)
+        self.command = command
+        self.components = components
+        self.lMotorControl = self.components[0]
+        self.rMotorControl = self.components[1]
 
     def on_event(self, event):
         if event == 'stop':
-            return
+            return StopState(self.fsm, {})
         elif event == 'obstacle_detected':
             return
         return self
 
     def enter(self):
-        distance = self.command.get("distance")
-        if distance is not None and distance > 0:
-            self.forward(distance)
-        if distance == 0:
-            print("Not moving")
-        if distance is not None and distance < 0:
-            self.backward(distance)
-
-    def execute(self):
         pass
 
+    def execute(self):
+        forward_speed = self.command.get("forward_speed")
+        backward_speed = self.command.get("backward_speed")
+        if forward_speed is not None and forward_speed > 0:
+            self.forward(forward_speed)
+            print("Moving forward")
+            self.fsm.set_state(DetectTargetsState(self.fsm, self.command, self.components))
+        if backward_speed is not None and backward_speed > 0:
+            self.backward(backward_speed)
+            print("Moving backward")
+            self.fsm.set_state(DetectTargetsState(self.fsm, self.command, self.components))
+        else:
+            print("Not moving")
+            self.fsm.set_state(DetectTargetsState(self.fsm, self.command, self.components))
+
     def exit(self):
-        return DetectTargetsState(self.fsm)
+        pass
 
-    def forward(self, distance):
-        print(f"Moving forward: distance {distance}")
+    def forward(self, speed):
+        self.lMotorControl.forward(speed)
+        self.rMotorControl.forward(speed)
+        print(f"Moving forward: at speed {speed}")
 
-    def backward(self, distance):
-        print(f"Moving backward: distance {distance}")
+    def backward(self, speed):
+        self.lMotorControl.backward(speed)
+        self.rMotorControl.backward(speed)
+        print(f"Moving backward: at speed {speed}")
 
 
 class RotateState(State):
@@ -88,9 +102,12 @@ class AvoidObstacleState(State):
 
 
 class StopState(State):
-    def __init__(self, fsm, command):
+    def __init__(self, fsm, command, components):
         super().__init__(fsm, command)
-        # super().__init__("Stop", command)
+        self.command = command
+        self.components = components
+        self.lMotorControl = self.components[0]
+        self.rMotorControl = self.components[1]
 
     def on_event(self, event):
         if event == 'start_moving':
@@ -101,10 +118,12 @@ class StopState(State):
         pass
 
     def execute(self):
-        pass
+        self.motor.stop()
+        print("Stopped Motors")
 
     def exit(self):
-        return DetectTargetsState(self.fsm)
+        pass
+        #return DetectTargetsState(self.fsm)
 
     def stop(self):
         print("Stopping")
