@@ -1,7 +1,29 @@
-from .State import State
+from ..constants import StateEnum
 from .detectionStates import DetectTargetsState, CheckObstaclesState
+from .State import State, register_state
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .FSM import RobotFSM
 
 
+@register_state(StateEnum.IDLE)
+class IdleState(State):
+    def __init__(self, fsm: 'RobotFSM', command):
+        super().__init__(fsm, command)
+        # super().__init__("Idle", command)
+
+    def enter(self):
+        pass
+
+    def execute(self):
+        self.fsm.set_state(StateEnum.MOVE)
+
+    def exit(self):
+        print("Exiting Idle State - Match Started")
+
+
+@register_state(StateEnum.MOVE)
 class MoveState(State):
     def __init__(self, fsm, command):
         super().__init__(fsm, command)
@@ -15,25 +37,26 @@ class MoveState(State):
         return self
 
     def enter(self):
-        distance = self.command.get("distance")
-        if distance is not None and distance > 0:
-            self.forward(distance)
-        if distance == 0:
-            print("Not moving")
-        if distance is not None and distance < 0:
-            self.backward(distance)
-
-    def execute(self):
+        # distance = self.command.get("distance")
+        # if distance is not None and distance > 0:
+        #     self.forward(distance)
+        # if distance == 0:
+        #     print("Not moving")
+        # if distance is not None and distance < 0:
+        #     self.backward(distance)
         pass
 
+    def execute(self):
+        self.fsm.robot.motor.forward(50)
+
     def exit(self):
-        return DetectTargetsState(self.fsm)
+        pass
 
-    def forward(self, distance):
-        print(f"Moving forward: distance {distance}")
+    # def forward(self, distance):
+    #     print(f"Moving forward: distance {distance}")
 
-    def backward(self, distance):
-        print(f"Moving backward: distance {distance}")
+    # def backward(self, distance):
+    #     print(f"Moving backward: distance {distance}")
 
 
 class RotateState(State):
@@ -87,6 +110,7 @@ class AvoidObstacleState(State):
         print("Avoiding obstacle")
 
 
+@register_state(StateEnum.STOP)
 class StopState(State):
     def __init__(self, fsm, command):
         super().__init__(fsm, command)
@@ -101,13 +125,10 @@ class StopState(State):
         pass
 
     def execute(self):
-        pass
+        self.fsm.robot.motor.stop()
 
     def exit(self):
-        return DetectTargetsState(self.fsm)
-
-    def stop(self):
-        print("Stopping")
+        pass
 
 
 class SlowMoveState(State):
