@@ -1,24 +1,26 @@
 from .State import State
-from .detectionStates import DetectTargetsState
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .FSM import RobotFSM
 
 
 class CollectState(State):
-    def __init__(self, fsm):
+    def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
         # super().__init__("Collect", None)
 
-    def on_event(self, event):
+    def on_event(self, event) -> None:
         if event == 'collected':
-            return DetectTargetsState(self.fsm)
-        return self
+            pass
 
-    def enter(self):
+    def enter(self) -> None:
         pass
 
-    def execute(self):
+    def execute(self) -> None:
         pass
 
-    def exit(self):
+    def exit(self) -> None:
         pass
 
     def collect(self):
@@ -26,20 +28,19 @@ class CollectState(State):
 
 
 class MoveToCollectState(State):
-    def __init__(self, fsm):
+    def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
         # super().__init__("Move to Collect", None)
 
-    def on_event(self, event):
+    def on_event(self, event) -> None:
         if event == 'on_position':
-            return CollectState(self.fsm)
-        return self
+            pass
 
-    def enter(self):
+    def enter(self) -> None:
         pass
 
-    def execute(self):
+    def execute(self) -> None:
         pass
 
-    def exit(self):
+    def exit(self) -> None:
         pass
