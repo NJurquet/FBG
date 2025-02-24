@@ -1,10 +1,8 @@
 from gpiozero import Motor
 
-
-
-class BigMotorControl:
-    def __init__(self, forward, backward):
-        self.motor = Motor(forward, backward)
+class BigMotor:
+    def __init__(self, forwardPin, backwardPin):
+        self.motor = Motor(forwardPin, backwardPin)
         self.speed = 0
 
     def forward(self, speed):
