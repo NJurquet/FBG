@@ -1,7 +1,3 @@
-# from .detectionStates import DetectTargetsState, CheckObstaclesState
-# from .collectStates import CollectState, MoveToCollectState
-# from .dropStates import MoveToDrop, DropState
-# from .movementStates import MoveState, StopState, RotateState, SlowMoveState, SlowRotateState, AvoidObstacleState, DetectTargetsState, CheckObstaclesState
 from .state_factory import StateFactory
 from ..constants import StateEnum, MAX_TIME
 import time
@@ -17,20 +13,6 @@ class RobotFSM:
     def __init__(self, robot: 'Robot'):
         self.robot = robot
         self.state_factory = StateFactory(self)
-
-        # Save all states as attributes of the FSM
-        # self.detect_targets_state = DetectTargetsState(self)
-        # self.check_obstacles_state = CheckObstaclesState(self)
-        # self.collect_state = CollectState(self)
-        # self.move_to_collect_state = MoveToCollectState(self)
-        # self.move_to_drop_state = MoveToDrop(self)
-        # self.drop_state = DropState(self)
-        # self.move_state = MoveState(self, {})
-        # self.stop_state = StopState(self, {})
-        # self.rotate_state = RotateState(self, {})
-        # self.slow_move_state = SlowMoveState(self, {})
-        # self.slow_rotate_state = SlowRotateState(self, {})
-        # self.avoid_obstacle_state = AvoidObstacleState(self, {})
 
         self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
         self.current_state.enter()
