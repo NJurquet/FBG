@@ -1,7 +1,8 @@
-from bigMotor import BigMotor
+from BIG_BOT.src.hardware.bigMotor import BigMotor
+
 
 class MotorsControl:
-    def __init__(self, forwardLeftPin, backwardLeftPin, forwardRightPin, backwardRightPin):
+    def __init__(self, forwardLeftPin: int, backwardLeftPin: int, forwardRightPin: int, backwardRightPin: int):
         self.leftMotor = BigMotor(forwardLeftPin, backwardLeftPin)
         self.rightMotor = BigMotor(forwardRightPin, backwardRightPin)
         self.speed = 0
