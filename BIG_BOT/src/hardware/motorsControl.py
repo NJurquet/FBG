@@ -1,4 +1,4 @@
-from BIG_BOT.src.hardware.bigMotor import BigMotor
+from .bigMotor import BigMotor
 
 
 class MotorsControl:
