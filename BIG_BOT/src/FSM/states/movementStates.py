@@ -1,16 +1,17 @@
-from ..constants import StateEnum
+from ...constants import StateEnum
 from .detectionStates import DetectTargetsState, CheckObstaclesState
-from .State import State, register_state
+from .State import State
+from ..registry import Registry
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .FSM import RobotFSM
+    from ..FSM import RobotFSM
 
 
-@register_state(StateEnum.IDLE)
+@Registry.register_state(StateEnum.IDLE)
 class IdleState(State):
-    def __init__(self, fsm: 'RobotFSM', command):
-        super().__init__(fsm, command)
+    def __init__(self, fsm: 'RobotFSM'):
+        super().__init__(fsm)
         # super().__init__("Idle", command)
 
     def enter(self):
@@ -23,10 +24,10 @@ class IdleState(State):
         print("Exiting Idle State - Match Started")
 
 
-@register_state(StateEnum.MOVE)
+@Registry.register_state(StateEnum.MOVE)
 class MoveState(State):
-    def __init__(self, fsm, command):
-        super().__init__(fsm, command)
+    def __init__(self, fsm):
+        super().__init__(fsm)
         # super().__init__("Move", command)
 
     def on_event(self, event):
@@ -60,8 +61,8 @@ class MoveState(State):
 
 
 class RotateState(State):
-    def __init__(self, fsm, command):
-        super().__init__(fsm, command)
+    def __init__(self, fsm):
+        super().__init__(fsm)
         # super().__init__("Rotate", command)
 
     def on_event(self, event):
@@ -88,8 +89,8 @@ class RotateState(State):
 
 
 class AvoidObstacleState(State):
-    def __init__(self, fsm, command):
-        super().__init__(fsm, command)
+    def __init__(self, fsm):
+        super().__init__(fsm)
         # super().__init__("Avoid Obstacle", command)
 
     def on_event(self, event):
@@ -110,10 +111,10 @@ class AvoidObstacleState(State):
         print("Avoiding obstacle")
 
 
-@register_state(StateEnum.STOP)
+@Registry.register_state(StateEnum.STOP)
 class StopState(State):
-    def __init__(self, fsm, command):
-        super().__init__(fsm, command)
+    def __init__(self, fsm):
+        super().__init__(fsm)
         # super().__init__("Stop", command)
 
     def on_event(self, event):
@@ -132,8 +133,8 @@ class StopState(State):
 
 
 class SlowMoveState(State):
-    def __init__(self, fsm, command):
-        super().__init__(fsm, command)
+    def __init__(self, fsm):
+        super().__init__(fsm)
         # super().__init__("Slow Move", command)
 
     def on_event(self, event):
@@ -160,8 +161,8 @@ class SlowMoveState(State):
 
 
 class SlowRotateState(State):
-    def __init__(self, fsm, command):
-        super().__init__(fsm, command)
+    def __init__(self, fsm):
+        super().__init__(fsm)
         # super().__init__("Slow Rotate", command)
 
     def on_event(self, event):

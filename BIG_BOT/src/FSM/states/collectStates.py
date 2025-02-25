@@ -2,7 +2,7 @@ from .State import State
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .FSM import RobotFSM
+    from ..FSM import RobotFSM
 
 
 class CollectState(State):

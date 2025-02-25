@@ -1,18 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 if TYPE_CHECKING:
-    from .FSM import RobotFSM
-    from ..constants import StateEnum
+    from ..FSM import RobotFSM
+    from ...constants import StateEnum
 
 
 class State(ABC):
-    def __init__(self, fsm: 'RobotFSM', command: dict[str, int] = {}):
+    def __init__(self, fsm: 'RobotFSM'):
         self.fsm = fsm
         # self.name = name
-        self.command = command
 
-    @abstractmethod
     def on_event(self, event) -> None:
         pass
 
@@ -33,10 +31,10 @@ STATE_REGISTRY: dict['StateEnum', type[State]] = {}
 """Registry of all allowed states. Maps the StateEnum to the class of the state."""
 
 
-def register_state(state_enum: 'StateEnum'):
+def register_state(state_enum: 'StateEnum') -> Callable:
     """Decorator to register a state using the Enum."""
-    def decorator(cls):
-        if issubclass(cls, State):
+    def decorator(cls: type[State]) -> Callable:
+        if issubclass(type[cls], State):
             STATE_REGISTRY[state_enum] = cls
         else:
             raise TypeError("Registered class must be a subclass of State")

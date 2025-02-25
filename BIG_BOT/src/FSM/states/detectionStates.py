@@ -10,7 +10,7 @@ class DetectTargetsState(State):    # Detection & Mapping of the environment
         if event == 'targets_detected':
             from .movementStates import MoveState
             command = {"distance": 50}
-            return MoveState(self.fsm, command)
+            return MoveState(self.fsm)
         return self
 
     def enter(self):
@@ -32,8 +32,8 @@ class CheckObstaclesState(State):
 
     def on_event(self, event):
         if event == 'obstacle_detected':
-            from movementStates import MoveState
-            return MoveState(self.fsm, {})
+            from BIG_BOT.src.fsm.states.movementStates import MoveState
+            return MoveState(self.fsm)
         return self
 
     def enter(self):
