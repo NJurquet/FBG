@@ -1,11 +1,12 @@
+from .config import LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN
 from .fsm.FSM import RobotFSM
-from .bigMotorControl import BigMotorControl as Motors
+from .hardware.motorsControl import MotorsControl as Motors
 
 
 class Robot:
     def __init__(self):
         self.fsm = RobotFSM(self)
-        self.motor = Motors()
+        self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN)
         # self.camera = None
 
         self.__position: tuple[int, int] = (0, 0)
