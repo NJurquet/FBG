@@ -13,5 +13,7 @@ Change these config constants to customize the behavior of the robot.
 # Motor Pins
 LEFT_MOTOR_FORWARD_PIN = 17
 LEFT_MOTOR_BACKWARD_PIN = 27
+LEFT_MOTOR_EN_PIN = None
 RIGHT_MOTOR_FORWARD_PIN = 13
 RIGHT_MOTOR_BACKWARD_PIN = 19
+RIGHT_MOTOR_EN_PIN = None
