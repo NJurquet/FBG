@@ -8,6 +8,7 @@ FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR,
 {
     currentState = INIT;
     previousState = INIT;
+    motorControl.setSpeed(110);
     servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
 }

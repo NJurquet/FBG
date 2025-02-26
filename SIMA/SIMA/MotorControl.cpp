@@ -59,6 +59,11 @@ int MotorControl::getSpeed()
     return motorSpeed;
 }
 
+void MotorControl::setSpeed(int speed)
+{
+    motorSpeed = speed;
+}
+
 void MotorControl::setRotationSpeed(double speedRatio)
 {
     motorRotationSpeed = motorSpeed * speedRatio;

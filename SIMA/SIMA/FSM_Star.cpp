@@ -9,9 +9,10 @@ FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, Motor
 {
     currentState = INIT;
     previousState = INIT;
+    motorControl.setSpeed(85);
+    motorControl.setRotationSpeed(rotationSpeedRatio);
     servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
-    motorControl.setRotationSpeed(rotationSpeedRatio);
 }
 
 void FSM_star::update()
