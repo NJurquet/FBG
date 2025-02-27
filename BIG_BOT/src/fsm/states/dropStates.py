@@ -1,5 +1,9 @@
 from .State import State
 from .detectionStates import DetectTargetsState
+from typing import TYPE_CHECKING, override
+
+if TYPE_CHECKING:
+    from ..FSM import RobotFSM
 
 
 class DropState(State):
@@ -12,7 +16,7 @@ class DropState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm):
+    def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
 
     def on_event(self, event):
@@ -20,12 +24,15 @@ class DropState(State):
             return DetectTargetsState(self.fsm)
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         pass
 
@@ -43,7 +50,7 @@ class MoveToDrop(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm):
+    def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
 
     def on_event(self, event):
@@ -51,11 +58,14 @@ class MoveToDrop(State):
             return DropState(self.fsm)
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         pass

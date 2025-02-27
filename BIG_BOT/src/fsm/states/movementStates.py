@@ -2,7 +2,7 @@ from ...constants import StateEnum
 from .detectionStates import DetectTargetsState
 from .State import State
 from ..registry import Registry
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
@@ -22,12 +22,15 @@ class IdleState(State):
     def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         self.fsm.set_state(StateEnum.MOVE)
 
+    @override
     def exit(self):
         print("Exiting Idle State - Match Started")
 
@@ -53,12 +56,15 @@ class MoveState(State):
             return
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         self.fsm.robot.motor.forward(0.2)
 
+    @override
     def exit(self):
         pass
 
@@ -84,12 +90,15 @@ class RotateState(State):
             return
         return self
 
+    @override
     def enter(self):
         self.fsm.robot.motor.rotateRight(0.2)
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         return DetectTargetsState(self.fsm)
 
@@ -112,12 +121,15 @@ class AvoidObstacleState(State):
             return
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         return DetectTargetsState(self.fsm)
 
@@ -144,12 +156,15 @@ class StopState(State):
             return
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         self.fsm.robot.motor.stop()
 
+    @override
     def exit(self):
         pass
 
@@ -174,12 +189,15 @@ class SlowMoveState(State):
             return
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         return DetectTargetsState(self.fsm)
 
@@ -210,12 +228,15 @@ class SlowRotateState(State):
             return
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         return DetectTargetsState(self.fsm)
 

@@ -1,5 +1,5 @@
 from .State import State
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
@@ -22,12 +22,15 @@ class CollectState(State):
         if event == 'collected':
             pass
 
+    @override
     def enter(self) -> None:
         pass
 
+    @override
     def execute(self) -> None:
         pass
 
+    @override
     def exit(self) -> None:
         pass
 
@@ -52,11 +55,14 @@ class MoveToCollectState(State):
         if event == 'on_position':
             pass
 
+    @override
     def enter(self) -> None:
         pass
 
+    @override
     def execute(self) -> None:
         pass
 
+    @override
     def exit(self) -> None:
         pass
