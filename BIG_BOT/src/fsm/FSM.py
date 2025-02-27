@@ -27,6 +27,15 @@ class RobotFSM:
 
     def update(self) -> None:
         """Call this periodically to update the FSM"""
+        if self.start_match and (time.time() - self.start_time >= 5.0):
+            self.set_state(StateEnum.STOP)
+
+        if self.start_match and (time.time() - self.start_time >= 6.0):
+            self.set_state(StateEnum.ROTATE)
+
+        if self.start_match and (time.time() - self.start_time >= 15.0):
+            self.set_state(StateEnum.MOVE)
+
         if self.start_match and (time.time() - self.start_time >= MAX_TIME):
             self.set_state(StateEnum.STOP)
 

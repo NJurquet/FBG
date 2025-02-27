@@ -28,7 +28,6 @@ class IdleState(State):
 class MoveState(State):
     def __init__(self, fsm):
         super().__init__(fsm)
-        # super().__init__("Move", command)
 
     def on_event(self, event):
         if event == 'stop':
@@ -38,32 +37,18 @@ class MoveState(State):
         return self
 
     def enter(self):
-        # distance = self.command.get("distance")
-        # if distance is not None and distance > 0:
-        #     self.forward(distance)
-        # if distance == 0:
-        #     print("Not moving")
-        # if distance is not None and distance < 0:
-        #     self.backward(distance)
         pass
 
     def execute(self):
-        self.fsm.robot.motor.forward(50)
+        self.fsm.robot.motor.forward(0.2)
 
     def exit(self):
         pass
 
-    # def forward(self, distance):
-    #     print(f"Moving forward: distance {distance}")
-
-    # def backward(self, distance):
-    #     print(f"Moving backward: distance {distance}")
-
-
+@Registry.register_state(StateEnum.ROTATE)
 class RotateState(State):
     def __init__(self, fsm):
         super().__init__(fsm)
-        # super().__init__("Rotate", command)
 
     def on_event(self, event):
         if event == 'stop':
@@ -73,20 +58,13 @@ class RotateState(State):
         return self
 
     def enter(self):
-        pass
+        self.fsm.robot.motor.rotateRight(0.2)
 
     def execute(self):
         pass
 
     def exit(self):
         return DetectTargetsState(self.fsm)
-
-    def rotate_left(self):
-        print("Rotating left")
-
-    def rotate_right(self):
-        print("Rotating right")
-
 
 class AvoidObstacleState(State):
     def __init__(self, fsm):
