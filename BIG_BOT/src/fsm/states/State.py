@@ -42,18 +42,3 @@ class State(ABC):
         Method called by the FSM when exiting the state.
         """
         pass
-
-
-STATE_REGISTRY: dict['StateEnum', type[State]] = {}
-"""Registry of all allowed states. Maps the StateEnum to the class of the state."""
-
-
-def register_state(state_enum: 'StateEnum') -> Callable:
-    """Decorator to register a state using the Enum."""
-    def decorator(cls: type[State]) -> Callable:
-        if issubclass(type[cls], State):
-            STATE_REGISTRY[state_enum] = cls
-        else:
-            raise TypeError("Registered class must be a subclass of State")
-        return cls
-    return decorator
