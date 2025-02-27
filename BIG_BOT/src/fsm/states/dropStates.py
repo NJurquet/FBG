@@ -3,9 +3,17 @@ from .detectionStates import DetectTargetsState
 
 
 class DropState(State):
+    """
+    State in which the robot opens his grippers to drop the cans.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
     def __init__(self, fsm):
         super().__init__(fsm)
-        # super().__init__("Drop", None)
 
     def on_event(self, event):
         if event == 'targets_detected':
@@ -26,9 +34,17 @@ class DropState(State):
 
 
 class MoveToDrop(State):
+    """
+    State in which the robot moves to a targeted construction zone to drop the cans.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
     def __init__(self, fsm):
         super().__init__(fsm)
-        # super().__init__("Move to Drop", None)
 
     def on_event(self, event):
         if event == 'drop':

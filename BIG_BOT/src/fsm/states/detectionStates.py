@@ -1,10 +1,18 @@
 from .State import State
 
 
-class DetectTargetsState(State):    # Detection & Mapping of the environment
+class DetectTargetsState(State):
+    """
+    State in which the robot maps the environment and detects the tribunes positions.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
     def __init__(self, fsm):
         super().__init__(fsm)
-        # super().__init__("Detection", None)
 
     def on_event(self, event):
         if event == 'targets_detected':
@@ -22,13 +30,19 @@ class DetectTargetsState(State):    # Detection & Mapping of the environment
     def exit(self):
         pass
 
-# DetectingObstacleState will be an observer
-
 
 class CheckObstaclesState(State):
+    """
+    State in which the robot checks for obstacles with the ultrasonic sensor.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
     def __init__(self, fsm):
         super().__init__(fsm)
-        # super().__init__("Checking Obstacles", None)
 
     def on_event(self, event):
         if event == 'obstacle_detected':
