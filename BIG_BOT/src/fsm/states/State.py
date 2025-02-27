@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
-    from ...constants import StateEnum
 
 
 class State(ABC):
@@ -27,18 +26,18 @@ class State(ABC):
         """
         Method called by the FSM when entering the state.
         """
-        pass
+        raise NotImplementedError("The 'enter' method must be overridden in subclasses of State.")
 
     @abstractmethod
     def execute(self) -> None:
         """
         Method called continuously by the FSM executing the main logic of the state.
         """
-        pass
+        raise NotImplementedError("The 'execute' method must be overridden in subclasses of State.")
 
     @abstractmethod
     def exit(self) -> None:
         """
         Method called by the FSM when exiting the state.
         """
-        pass
+        raise NotImplementedError("The 'exit' method must be overridden in subclasses of State.")
