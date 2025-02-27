@@ -17,12 +17,12 @@ class MotorsControl:
         self.leftMotor.backward(self.speed)
         self.rightMotor.backward(self.speed)
 
-    def turnLeft(self, speed):
+    def rotateLeft(self, speed):
         self.speed = speed
         self.leftMotor.backward(self.speed)
         self.rightMotor.forward(self.speed)
 
-    def turnRight(self, speed):
+    def rotateRight(self, speed):
         self.speed = speed
         self.leftMotor.forward(self.speed)
         self.rightMotor.backward(self.speed)

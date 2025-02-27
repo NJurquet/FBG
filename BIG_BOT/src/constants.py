@@ -15,7 +15,8 @@ class StateEnum(Enum):
     """
     IDLE = 0
     MOVE = 1
-    STOP = 2
+    ROTATE = 2
+    STOP = 3
 
 
 MAX_TIME: float = 100.0
