@@ -48,7 +48,7 @@ class MoveState(State):
         pass
 
     def execute(self):
-        self.fsm.robot.motor.forward(0.5)
+        self.fsm.robot.motor.forward(0.2)
 
     def exit(self):
         pass
