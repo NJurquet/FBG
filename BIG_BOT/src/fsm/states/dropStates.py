@@ -1,23 +1,38 @@
 from .State import State
 from .detectionStates import DetectTargetsState
+from typing import TYPE_CHECKING, override
+
+if TYPE_CHECKING:
+    from ..FSM import RobotFSM
 
 
 class DropState(State):
-    def __init__(self, fsm):
+    """
+    State in which the robot opens his grippers to drop the cans.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
+    def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
-        # super().__init__("Drop", None)
 
     def on_event(self, event):
         if event == 'targets_detected':
             return DetectTargetsState(self.fsm)
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         pass
 
@@ -26,20 +41,31 @@ class DropState(State):
 
 
 class MoveToDrop(State):
-    def __init__(self, fsm):
+    """
+    State in which the robot moves to a targeted construction zone to drop the cans.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
+    def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
-        # super().__init__("Move to Drop", None)
 
     def on_event(self, event):
         if event == 'drop':
             return DropState(self.fsm)
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         pass

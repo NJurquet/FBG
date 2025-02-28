@@ -1,4 +1,3 @@
-# from .State import STATE_REGISTRY
 from .registry import Registry
 from typing import TYPE_CHECKING
 
@@ -9,13 +8,39 @@ if TYPE_CHECKING:
 
 
 class StateFactory:
+    """
+    Factory class to create and cache State instances.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that uses the factory.
+    """
+
     def __init__(self, fsm: 'RobotFSM'):
         self.fsm = fsm
         self._state_cache: dict['StateEnum', 'State'] = {}
         Registry.auto_register_states()
 
     def get_state(self, state_enum: 'StateEnum') -> 'State':
-        """Retrieve a state instance from the cache or create it if not present."""
+        """
+        Retrieve a state instance from the cache or create it if not present.
+
+        Parameters
+        ----------
+        `state_enum` : StateEnum
+            The State enumeration value corresponding to the state to retrieve.
+
+        Returns
+        -------
+        State
+            The state instance corresponding to the StateEnum enumeration value.
+
+        Raises
+        ------
+        ValueError
+            If the state is not found in the registry, meaning the enumeration value is not associated with a state class.
+        """
         # If the state is not yet in cache, create it and add it to the cache
         if state_enum not in self._state_cache:
             # If the state is not part of the allowed states (does not have been decorated), raise an error

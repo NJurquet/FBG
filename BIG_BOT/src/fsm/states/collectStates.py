@@ -1,25 +1,36 @@
 from .State import State
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
 
 class CollectState(State):
+    """
+    State in which the robot closes his grippers to collect the cans.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
     def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
-        # super().__init__("Collect", None)
 
     def on_event(self, event) -> None:
         if event == 'collected':
             pass
 
+    @override
     def enter(self) -> None:
         pass
 
+    @override
     def execute(self) -> None:
         pass
 
+    @override
     def exit(self) -> None:
         pass
 
@@ -28,19 +39,30 @@ class CollectState(State):
 
 
 class MoveToCollectState(State):
+    """
+    State in which the robot moves to the position of available cans.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
     def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
-        # super().__init__("Move to Collect", None)
 
     def on_event(self, event) -> None:
         if event == 'on_position':
             pass
 
+    @override
     def enter(self) -> None:
         pass
 
+    @override
     def execute(self) -> None:
         pass
 
+    @override
     def exit(self) -> None:
         pass

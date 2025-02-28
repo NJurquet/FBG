@@ -10,6 +10,15 @@ if TYPE_CHECKING:
 
 
 class RobotFSM:
+    """
+    Finite State Machine (FSM) of the robot.
+
+    Parameters
+    ----------
+    `robot` : Robot
+        The robot instance that uses the FSM.
+    """
+
     def __init__(self, robot: 'Robot'):
         self.robot = robot
         self.state_factory = StateFactory(self)
@@ -17,16 +26,26 @@ class RobotFSM:
         self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
         self.current_state.enter()
 
-        self.start_match: bool = False
-        self.start_time: float = 0.0
+        self.start_match: bool = True  # TODO: Set to False
+        self.start_time: float = time.time()  # TODO: Change to 0.0
 
     def set_state(self, new_state: StateEnum) -> None:
+        """
+        Set the current state of the FSM to the new specified state.
+
+        Parameters
+        ----------
+        new_state : StateEnum
+            The new state to switch to.
+        """
         self.current_state.exit()
         self.current_state = self.state_factory.get_state(new_state)
         self.current_state.enter()
 
     def update(self) -> None:
-        """Call this periodically to update the FSM"""
+        """
+        Execute the current state of the FSM.
+        """
         if self.start_match and (time.time() - self.start_time >= 5.0):
             self.set_state(StateEnum.STOP)
 

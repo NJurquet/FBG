@@ -1,10 +1,22 @@
 from .State import State
+from typing import TYPE_CHECKING, override
+
+if TYPE_CHECKING:
+    from ..FSM import RobotFSM
 
 
-class DetectTargetsState(State):    # Detection & Mapping of the environment
-    def __init__(self, fsm):
+class DetectTargetsState(State):
+    """
+    State in which the robot maps the environment and detects the tribunes positions.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
+    def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
-        # super().__init__("Detection", None)
 
     def on_event(self, event):
         if event == 'targets_detected':
@@ -13,22 +25,31 @@ class DetectTargetsState(State):    # Detection & Mapping of the environment
             return MoveState(self.fsm)
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         pass
 
-# DetectingObstacleState will be an observer
-
 
 class CheckObstaclesState(State):
-    def __init__(self, fsm):
+    """
+    State in which the robot checks for obstacles with the ultrasonic sensor.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
+    def __init__(self, fsm: 'RobotFSM'):
         super().__init__(fsm)
-        # super().__init__("Checking Obstacles", None)
 
     def on_event(self, event):
         if event == 'obstacle_detected':
@@ -36,11 +57,14 @@ class CheckObstaclesState(State):
             return MoveState(self.fsm)
         return self
 
+    @override
     def enter(self):
         pass
 
+    @override
     def execute(self):
         pass
 
+    @override
     def exit(self):
         pass
