@@ -26,8 +26,8 @@ class RobotFSM:
         self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
         self.current_state.enter()
 
-        self.start_match: bool = False
-        self.start_time: float = 0.0
+        self.start_match: bool = True  # TODO: Set to False
+        self.start_time: float = time.time()  # TODO: Change to 0.0
 
     def set_state(self, new_state: StateEnum) -> None:
         """
