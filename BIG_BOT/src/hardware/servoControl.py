@@ -1,4 +1,4 @@
-from servoMotor import ServoMotor
+from .servoMotor import ServoMotor
 
 class ServoControl:
     """
