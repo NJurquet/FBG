@@ -19,5 +19,15 @@ class StateEnum(Enum):
     STOP = 3
 
 
+class USPosition(Enum):
+    """
+    Enumeration of all possible positions of the ultrasonic sensors.
+    """
+    FRONT_RIGHT = 0
+    FRONT_LEFT = 1
+    BACK_RIGHT = 2
+    BACK_LEFT = 3
+
+
 MAX_TIME: float = 100.0
 """Maximum time for the match in seconds."""
