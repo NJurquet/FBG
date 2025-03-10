@@ -1,4 +1,6 @@
 from gpiozero import DistanceSensor
+from ..constants import USPosition
+
 
 class UltrasonicSensor:
     """
@@ -12,11 +14,12 @@ class UltrasonicSensor:
         Methods:
             getDistance(): Returns a float of the distance in meters.
     """
-    def __init__(self, name: str, echoPin: int, trigPin: int):
+
+    def __init__(self, name: USPosition, echoPin: int, trigPin: int):
         self.name = name
         self.sensor = DistanceSensor(echo=echoPin, trigger=trigPin)
 
-    def getDistance(self): 
+    def getDistance(self) -> float:
         """
         Returns the distance in meters.
 
@@ -24,4 +27,3 @@ class UltrasonicSensor:
             float: The distance in meters.
         """
         return self.sensor.distance
-    

@@ -1,4 +1,6 @@
-from ultrasonicSensor import UltrasonicSensor
+from .ultrasonicSensor import UltrasonicSensor
+from ..constants import USPosition
+
 
 class UltrasonicController:
     """
@@ -13,12 +15,12 @@ class UltrasonicController:
         getDistances(): Returns a list of distance measurements from all sensors.
     """
 
-    def __init__(self, names, echoPins, trigPins):
-        self.sensors = []
+    def __init__(self, names: list[USPosition], echoPins: list[int], trigPins: list[int]):
+        self.sensors: list[UltrasonicSensor] = []
         for i in range(len(names)):
             self.sensors.append(UltrasonicSensor(names[i], echoPins[i], trigPins[i]))
-    
-    def getDistances(self):
+
+    def getDistances(self) -> list[float]:
         """
         Returns a list of distance measurements from all sensors.
 
@@ -29,8 +31,8 @@ class UltrasonicController:
         for sensor in self.sensors:
             distances.append(sensor.getDistance())
         return distances
-    
-    def getDistance(self, name):
+
+    def getDistance(self, name: USPosition) -> float:
         """
         Returns the distance from a specific sensor.
 
@@ -43,4 +45,4 @@ class UltrasonicController:
         for sensor in self.sensors:
             if sensor.name == name:
                 return sensor.getDistance()
-        return None
+        raise ValueError(f"Sensor with name {name} not found.")
