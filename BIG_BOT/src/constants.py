@@ -16,7 +16,9 @@ class StateEnum(Enum):
     IDLE = 0
     MOVE = 1
     ROTATE = 2
-    STOP = 3
+    OPEN_CLAW = 3
+    CLOSE_CLAW = 4
+    STOP = 5
 
 
 MAX_TIME: float = 100.0

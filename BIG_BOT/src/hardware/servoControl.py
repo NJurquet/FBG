@@ -39,15 +39,16 @@ class ServoControl:
             if servo.name == name:
                 servo.stop()
 
-    def setAngle(self, name):
+    def setAngle(self, name, angle):
         """
         Sets the goal angle of a specific servo motor.
 
         Parameters:
             name (str): The name of the servo motor.
+            angle (float): The goal angle in degrees.
         """
         for servo in self.servos:
-            if servo.name == name:
-                servo.setAngle()
+            if isinstance(servo, ServoMotor) and servo.name == name:
+                servo.setAngle(angle)
         
     

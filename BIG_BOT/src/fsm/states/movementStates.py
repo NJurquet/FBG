@@ -62,7 +62,7 @@ class MoveState(State):
 
     @override
     def execute(self):
-        self.fsm.robot.motor.forward(0.2)
+        self.fsm.robot.motor.forward(0.3)
 
     @override
     def exit(self):
@@ -92,7 +92,7 @@ class RotateState(State):
 
     @override
     def enter(self):
-        self.fsm.robot.motor.rotateRight(0.2)
+        self.fsm.robot.motor.rotateRight(0.5)
 
     @override
     def execute(self):
