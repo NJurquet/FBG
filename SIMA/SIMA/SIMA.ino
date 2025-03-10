@@ -53,7 +53,7 @@ const int zoneNumber = topStartLine ? 1 : 2;
 //////////////////////////////////////////////////
 
 FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, magneticStart, zoneNumber, leftStart, topStartLine);
-FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
+FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, magneticStart, celebrationLed, celebretionServo);
 
 void debug()
 {

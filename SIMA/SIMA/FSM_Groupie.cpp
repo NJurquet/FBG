@@ -17,7 +17,7 @@ ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl
 
 void FSM_groupie::update()
 {
-    currentTime = millis();
+    currentTime = (magneticStartTime > 0) ? (millis() - magneticStartTime) : millis();
 
     if (currentTime >= stopTime && currentState != CELEBRATE)
     {
@@ -27,25 +27,17 @@ void FSM_groupie::update()
     switch (currentState)
     {
     case INIT:
-        if (magneticStart.read()==LOW)
+        while (!magneticStartDetected)
         {
-            Serial.print("Magnetic Start Detected");
-            previousState = currentState;
-            currentState = INIT;
-            
+            magneticStartDetected = magneticStart.read();
         }
-        else
-        {
-            Serial.print("Waiting for Magnetic Start");
-            previousState = currentState;
-            currentState = INIT;
-        }
+        magneticStartTime = millis(); //Time when the rope is pulled
         currentState = WAIT;
         break;
 
     case WAIT:
         if ((topStartLine && currentTime >= startDelayTop) || (!topStartLine && currentTime >= startDelayBottom))
-        { // Make sure to repect starting delay for each groupie
+        {
             previousState = currentState;
             currentState = CHECK_OBSTACLE;
         }
@@ -181,7 +173,7 @@ void FSM_groupie::enterZone()
     }
     else
     {
-        if (currentTime - enterZoneTime - totalObstacleTime <= secondZoneTurnTime)
+        if (currentTime - enterZoneTime - totalObstacleTime  <= secondZoneTurnTime)
         { // Turn to the zone for a set of time (removing the time spent avoiding obstacles)
             motorControl.setRotationSpeed(bottomRotationSpeedRatio);
             leftStart ? motorControl.rotateLeft() : motorControl.rotateRight();

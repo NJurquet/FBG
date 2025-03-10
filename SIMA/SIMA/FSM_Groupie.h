@@ -67,6 +67,8 @@ private:
     unsigned long obstacleStartTime = 0;         // Time when a new obstacle is detected in milliseconds
     unsigned long totalObstacleTime = 0;         // Total time spent avoiding obstacles in milliseconds
     const int obstacleDistance = 10;             // Distance in cm from which it will be detected as an obstacle
+    bool magneticStartDetected = false;          // Flag to know if the magnetic start was detected
+    long magneticStartTime = 0;                     // Time when the magnetic start was detected in milliseconds
 
     const int turnZoneDelay = 4000;               // Time after start at which it can start detecting a zone turn in milliseconds
     const int firstZoneTurnTime = 1000;           // Time needed to turn to the first zone in milliseconds

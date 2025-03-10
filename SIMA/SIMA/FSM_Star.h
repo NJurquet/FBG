@@ -25,7 +25,7 @@ public:
     /**
      * @brief Constructor for the FSM_star class.
      */
-    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc);
+    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, MagneticStart ms, Led lc, ServoMotor sc);
 
     /**
      * @brief Updates the state of the FSM_star and the robot's actions.
@@ -39,6 +39,7 @@ private:
     MotorControl motorControl;
     Led ledCelebretion;
     ServoMotor servoCelebretion;
+    MagneticStart magneticStart;
 
     enum State
     {
@@ -59,6 +60,8 @@ private:
     unsigned long totalObstacleTime = 0;     // Total time spent avoiding obstacles in milliseconds
     const int obstacleDistance = 10;         // Distance in cm from which it will be detected as an obstacle
     const double rotationSpeedRatio = 0.5;   // Ratio of the main speed to apply for rotation
+    bool magneticStartDetected = false;      // Flag to know if the magnetic start was detected
+    long magneticStartTime = 0;              // Time when the magnetic start was detected in milliseconds
 
     const int celebrationDelay = 1000;     // 1 seconds
     unsigned long lastCelebrationTime = 0; // Time when the last celebration happened in milliseconds

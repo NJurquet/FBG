@@ -4,8 +4,9 @@
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
+#include "MagneticStart.h"
 
-FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc) : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc)
+FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, MagneticStart ms,  Led lc, ServoMotor sc) : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), magneticStart(ms), ledCelebretion(lc), servoCelebretion(sc)
 {
     currentState = INIT;
     previousState = INIT;
@@ -17,7 +18,7 @@ FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, Motor
 
 void FSM_star::update()
 {
-    currentTime = millis();
+    currentTime = (magneticStartTime > 0) ? (millis() - magneticStartTime) : millis();
 
     if (currentTime >= stopTime && currentState != CELEBRATE)
     {
@@ -27,6 +28,11 @@ void FSM_star::update()
     switch (currentState)
     {
     case INIT:
+        while (!magneticStartDetected)
+        {
+            magneticStartDetected = magneticStart.read();
+        }
+        magneticStartTime = millis(); //Time when the rope is pulled
         currentState = WAIT;
         break;
 
