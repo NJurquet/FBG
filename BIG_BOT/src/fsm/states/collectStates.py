@@ -1,4 +1,7 @@
 from .State import State
+from ...constants import StateEnum
+from ...config import CENTER_RIGHT_CLAW_NAME
+from ..registry import Registry
 from typing import TYPE_CHECKING, override
 
 if TYPE_CHECKING:
@@ -29,6 +32,74 @@ class CollectState(State):
     @override
     def execute(self) -> None:
         pass
+
+    @override
+    def exit(self) -> None:
+        pass
+
+    def collect(self):
+        print("Collecting")
+
+
+@Registry.register_state(StateEnum.OPEN_CLAW)
+class OpenClawState(State):
+    """
+    State in which the robot closes his grippers to collect the cans.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
+    def __init__(self, fsm: 'RobotFSM'):
+        super().__init__(fsm)
+
+    def on_event(self, event) -> None:
+        if event == 'collected':
+            pass
+
+    @override
+    def enter(self) -> None:
+        pass
+
+    @override
+    def execute(self) -> None:
+        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, -0.4)  # Goal angle => 40° ~= -0.4
+
+    @override
+    def exit(self) -> None:
+        pass
+
+    def collect(self):
+        print("Collecting")
+
+
+@Registry.register_state(StateEnum.CLOSE_CLAW)
+class CloseClawState(State):
+    """
+    State in which the robot closes his grippers to collect the cans.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
+    def __init__(self, fsm: 'RobotFSM'):
+        super().__init__(fsm)
+
+    def on_event(self, event) -> None:
+        if event == 'collected':
+            pass
+
+    @override
+    def enter(self) -> None:
+        pass
+
+    @override
+    def execute(self) -> None:
+        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, -0.2)  # Goal angle => 20° ~= -0.2
 
     @override
     def exit(self) -> None:

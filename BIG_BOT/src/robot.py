@@ -1,7 +1,9 @@
 from .config import LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN
+from .config import CENTER_RIGHT_CLAW_NAME
+from .config import CENTER_RIGHT_CLAW_PIN
 from .fsm.FSM import RobotFSM
 from .hardware.motorsControl import MotorsControl as Motors
-
+from .hardware.servoControl import ServoControl
 
 class Robot:
     """
@@ -11,6 +13,7 @@ class Robot:
     def __init__(self):
         self.fsm = RobotFSM(self)
         self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN)
+        self.servoControl = ServoControl([CENTER_RIGHT_CLAW_NAME], [CENTER_RIGHT_CLAW_PIN])
         self.camera = None
 
         self.__position: tuple[int, int] = (0, 0)

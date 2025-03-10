@@ -14,13 +14,9 @@ void setup() {
   // delay(1000);
 
   myServo.attach(9);
-  myServo.write(0);
+  myServo.write(50);
   delay(1000);
-  myServo.write(90);
-  delay(1000);
-  myServo.write(180);
-  delay(1000);
-  myServo.write(90);
+  myServo.write(15);
   delay(1000);
 }
 

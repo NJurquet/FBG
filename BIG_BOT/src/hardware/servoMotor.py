@@ -22,7 +22,7 @@ class ServoMotor:
         Sets the goal angle of the servo motor.
 
         Parameters:
-            angle (int): The goal angle in degrees.
+            angle (float): The goal angle (between -1 and 1).
         """
         self.angle = angle
         self.servo.value = self.angle
