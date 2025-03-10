@@ -3,7 +3,6 @@ from ...constants import StateEnum
 from typing import TYPE_CHECKING, override
 from ...config import CENTER_RIGHT_CLAW_NAME
 from ..registry import Registry
-from typing import TYPE_CHECKING, override
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
