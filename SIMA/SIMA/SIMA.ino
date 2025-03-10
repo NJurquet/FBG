@@ -9,6 +9,7 @@
 #include "Led.h"
 #include "ServoMotor.h"
 #include "Debug.h"
+#include "MagneticStart.h"
 
 // IR sensor pins
 const int leftIRPin = A0;
@@ -25,11 +26,15 @@ const int celebrationServoPin = 6;
 // Hall sensor pin
 const int HallSensorPin = 2;
 
+// Magnetic start pin
+const int magneticStartPin = 5;
+
 // RX/TX pins of Bluetooth module
 const int TX_Debug = 9;
 const int RX_Debug = 10;
 SoftwareSerial mySerial(TX_Debug, RX_Debug);
 Debugger debugger(TX_Debug, RX_Debug);
+
 
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
@@ -38,15 +43,16 @@ IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
 Led celebrationLed(celebrationLedPin);
 ServoMotor celebretionServo(celebrationServoPin);
+MagneticStart magneticStart(magneticStartPin);
 
 // CONFIGURATION CONSTANTS ///////////////////////
-const bool groupie = false;
+const bool groupie = true;
 const bool leftStart = false;
 const bool topStartLine = true;
 const int zoneNumber = topStartLine ? 1 : 2;
 //////////////////////////////////////////////////
 
-FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, zoneNumber, leftStart, topStartLine);
+FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, magneticStart, zoneNumber, leftStart, topStartLine);
 FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo);
 
 void debug()
@@ -92,6 +98,7 @@ void setup()
   hallSensor.init();
   celebrationLed.init();
   celebretionServo.init();
+  magneticStart.init();
 }
 
 void loop()

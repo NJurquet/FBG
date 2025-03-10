@@ -6,6 +6,7 @@
 #include "MotorControl.h"
 #include "Led.h"
 #include "ServoMotor.h"
+#include "MagneticStart.h"
 
 /**
  * @brief State Machine (FSM_groupie) for controlling the Groupies robot's behavior based on sensor inputs.
@@ -28,7 +29,7 @@ public:
     /**
      * @brief Constructor for the FSM_groupie class.
      */
-    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS, bool tSL);
+    FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, MagneticStart ms, int zN, bool lS, bool tSL);
 
     /**
      * @brief Updates the state of the FSM_groupie.
@@ -42,6 +43,7 @@ private:
     MotorControl motorControl;
     Led ledCelebretion;
     ServoMotor servoCelebretion;
+    MagneticStart magneticStart;
     const int zoneNumber;
     const bool leftStart;
     const bool topStartLine;

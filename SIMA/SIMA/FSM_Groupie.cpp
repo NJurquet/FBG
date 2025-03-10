@@ -3,8 +3,10 @@
 #include "MotorControl.h"
 #include "UltrasonicSensor.h"
 #include "IRSensor.h"
+#include "MagneticStart.h"
 
-FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, int zN, bool lS, bool tSL) : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc), zoneNumber(zN), leftStart(lS), topStartLine(tSL)
+FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, MagneticStart ms, int zN, bool lS, bool tSL) : 
+ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc), magneticStart(ms), zoneNumber(zN), leftStart(lS), topStartLine(tSL)
 {
     currentState = INIT;
     previousState = INIT;
@@ -25,6 +27,19 @@ void FSM_groupie::update()
     switch (currentState)
     {
     case INIT:
+        if (magneticStart.read()==LOW)
+        {
+            Serial.print("Magnetic Start Detected");
+            previousState = currentState;
+            currentState = INIT;
+            
+        }
+        else
+        {
+            Serial.print("Waiting for Magnetic Start");
+            previousState = currentState;
+            currentState = INIT;
+        }
         currentState = WAIT;
         break;
 
