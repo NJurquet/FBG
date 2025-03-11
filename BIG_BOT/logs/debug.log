@@ -1,0 +1,8 @@
+11 Mar 2025 15:31:15 - BIG_BOT.src.logger - INFO - StateFactory initialized
+11 Mar 2025 15:31:15 - BIG_BOT.src.logger - INFO - Init State : IDLE
+11 Mar 2025 15:31:15 - BIG_BOT.src.logger - ERROR - Error while initializing the robot: Unable to load any default pin factory!
+11 Mar 2025 15:31:15 - BIG_BOT.src.logger - INFO - Robot initialized
+11 Mar 2025 15:35:12 - BIG_BOT.src.logger - INFO - StateFactory initialized
+11 Mar 2025 15:35:12 - BIG_BOT.src.logger - INFO - Init State : IDLE
+11 Mar 2025 15:35:12 - BIG_BOT.src.logger - ERROR - Error while initializing the robot: Unable to load any default pin factory!
+11 Mar 2025 15:35:12 - BIG_BOT.src.logger - ERROR - Error in main loop: 'Robot' object has no attribute 'motor'
