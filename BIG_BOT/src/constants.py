@@ -18,7 +18,8 @@ class StateEnum(Enum):
     ROTATE = 2
     OPEN_CLAW = 3
     CLOSE_CLAW = 4
-    STOP = 5
+    AVOID_OBSTACLE = 5
+    STOP = 6
 
 
 class USPosition(Enum):

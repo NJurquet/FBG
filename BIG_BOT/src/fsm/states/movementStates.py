@@ -103,6 +103,7 @@ class RotateState(State):
         return DetectTargetsState(self.fsm)
 
 
+@Registry.register_state(StateEnum.AVOID_OBSTACLE)
 class AvoidObstacleState(State):
     """
     State in which the robot uses an obstacle avoidance algorithm to avoid obstacles.
