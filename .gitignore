@@ -50,4 +50,4 @@ env.bak/
 venv.bak/
 
 # Logging
-/logs/debug.log
+logs/debug.log
