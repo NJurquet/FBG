@@ -4,45 +4,38 @@ from ..constants import USPosition
 
 class UltrasonicController:
     """
-    Manages multiple ultrasonic sensors.
+    Class managing multiple ultrasonic sensors.
 
     Parameters:
-        names (list): A list of names for the sensors.
-        echoPins (list): A list of echo pins for the sensors.
-        trigPins (list): A list of trigger pins for the sensors.
-
-    Methods:
-        getDistances(): Returns a list of distance measurements from all sensors.
+        `sensorsDict` (dict[USPosition, tuple[int, int]]): A dictionary where each key is the position of a sensor and the value is a tuple with the echo and trigger pins.
     """
 
-    def __init__(self, names: list[USPosition], echoPins: list[int], trigPins: list[int]):
-        self.sensors: list[UltrasonicSensor] = []
-        for i in range(len(names)):
-            self.sensors.append(UltrasonicSensor(names[i], echoPins[i], trigPins[i]))
+    def __init__(self, sensorsDict: dict[USPosition, tuple[int, int]]):
+        self._sensors: list[UltrasonicSensor] = [UltrasonicSensor(pos, echoPin, trigPin) for pos, (echoPin, trigPin) in sensorsDict.items()]
 
-    def getDistances(self) -> list[float]:
+    def getDistances(self) -> dict[USPosition, float]:
         """
-        Returns a list of distance measurements from all sensors.
+        Get measured distances from all ultrasonic sensors.
 
         Returns:
-            list: A list of floats representing the distances in meters.
+            dict: A dictionary with the sensor positions as keys and the distances as values.
         """
-        distances = []
-        for sensor in self.sensors:
-            distances.append(sensor.getDistance())
-        return distances
+        return {sensor.pos: sensor.getDistance() for sensor in self._sensors}
 
-    def getDistance(self, name: USPosition) -> float:
+    def getDistance(self, pos: USPosition) -> float:
         """
-        Returns the distance from a specific sensor.
+        Get the measured distance from the specified ultrasonic sensor.
 
         Parameters:
-            name (str): The name of the sensor.
+            `pos` (USPosition): The position of the sensor.
 
         Returns:
             float: The distance in meters.
+
+        Raises:
+            ValueError: If the specified position does not correspond to any sensor.
         """
-        for sensor in self.sensors:
-            if sensor.name == name:
+        for sensor in self._sensors:
+            if sensor.pos == pos:
                 return sensor.getDistance()
-        raise ValueError(f"Sensor with name {name} not found.")
+        raise ValueError(f"No sensor found with position {pos}.")
