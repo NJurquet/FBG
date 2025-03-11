@@ -8,4 +8,3 @@ class reedSwitch:
     
     def read(self):
         return self.reedSwitch.is_pressed
-    
