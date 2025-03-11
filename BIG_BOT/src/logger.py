@@ -1,7 +1,6 @@
 import logging
 import os
 
-# Create a logs directory if it doesn't exist
 log_directory = os.path.join(os.path.dirname(__file__), '..', 'logs')
 os.makedirs(log_directory, exist_ok=True)
 
@@ -27,6 +26,6 @@ logging.basicConfig(level=logging.INFO,
                         logging.FileHandler(os.path.join(log_directory, 'debug.log'))
                     ])
 
-
 # Use this logger across the project to log messages (with the same name as this module)
+
 logger = logging.getLogger(__name__)
