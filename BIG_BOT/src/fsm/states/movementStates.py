@@ -127,14 +127,11 @@ class AvoidObstacleState(State):
 
     @override
     def execute(self):
-        pass
+        self.fsm.robot.motor.stop()
 
     @override
     def exit(self):
-        return DetectTargetsState(self.fsm)
-
-    def avoid_obstacle(self):
-        print("Avoiding obstacle")
+        pass
 
 
 @Registry.register_state(StateEnum.STOP)
