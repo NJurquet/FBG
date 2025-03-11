@@ -1,3 +1,4 @@
+from ..logger import logger
 from .registry import Registry
 from typing import TYPE_CHECKING
 
@@ -21,6 +22,7 @@ class StateFactory:
         self.fsm = fsm
         self._state_cache: dict['StateEnum', 'State'] = {}
         Registry.auto_register_states()
+        logger.info("StateFactory initialized")
 
     def get_state(self, state_enum: 'StateEnum') -> 'State':
         """
@@ -42,10 +44,13 @@ class StateFactory:
             If the state is not found in the registry, meaning the enumeration value is not associated with a state class.
         """
         # If the state is not yet in cache, create it and add it to the cache
+        logger.debug(f"Retrieving state: {state_enum.name}")
         if state_enum not in self._state_cache:
             # If the state is not part of the allowed states (does not have been decorated), raise an error
             if state_enum not in Registry._registry:
+                logger.error(f"State '{state_enum.name}' not found in registry")
                 raise ValueError(f"State '{state_enum.name}' not found in registry.")
             state_class = Registry._registry[state_enum]
             self._state_cache[state_enum] = state_class(self.fsm)  # Create the state instance and add it to the cache
+            logger.debug(f"State '{state_enum.name}' created and added to cache")
         return self._state_cache[state_enum]
