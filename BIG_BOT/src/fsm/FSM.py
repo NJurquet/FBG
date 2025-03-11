@@ -50,28 +50,28 @@ class RobotFSM:
         Execute the current state of the FSM.
         """
         logger.debug("Updating FSM state")
-        # if self.start_match and (time.time() - self.start_time >= 5.0):
-        #     self.set_state(StateEnum.STOP)
+        if self.start_match and (time.time() - self.start_time >= 5.0):
+            self.set_state(StateEnum.STOP)
 
-        # if self.start_match and (time.time() - self.start_time >= 6.0):
-        #     self.set_state(StateEnum.ROTATE)
+        if self.start_match and (time.time() - self.start_time >= 6.0):
+            self.set_state(StateEnum.ROTATE)
 
-        # if self.start_match and (time.time() - self.start_time >= 10.0):
-        #     self.set_state(StateEnum.MOVE)
+        if self.start_match and (time.time() - self.start_time >= 10.0):
+            self.set_state(StateEnum.MOVE)
 
-        # if self.start_match and (time.time() - self.start_time >= 11.0):
-        #     self.set_state(StateEnum.STOP)
+        if self.start_match and (time.time() - self.start_time >= 11.0):
+            self.set_state(StateEnum.STOP)
 
-        # if self.start_match and (time.time() - self.start_time >= 12.0):
-        #     self.set_state(StateEnum.OPEN_CLAW)
+        if self.start_match and (time.time() - self.start_time >= 12.0):
+            self.set_state(StateEnum.OPEN_CLAW)
         
-        # if self.start_match and (time.time() - self.start_time >= 14.0):
-        #     self.set_state(StateEnum.CLOSE_CLAW)
+        if self.start_match and (time.time() - self.start_time >= 14.0):
+            self.set_state(StateEnum.CLOSE_CLAW)
 
-        # if self.start_match and (time.time() - self.start_time >= 18.0):
-        #     self.set_state(StateEnum.OPEN_CLAW)
+        if self.start_match and (time.time() - self.start_time >= 18.0):
+            self.set_state(StateEnum.OPEN_CLAW)
 
-        # if self.start_match and (time.time() - self.start_time >= MAX_TIME):
-        #     self.set_state(StateEnum.STOP)
+        if self.start_match and (time.time() - self.start_time >= MAX_TIME):
+            self.set_state(StateEnum.STOP)
 
         self.current_state.execute()
