@@ -32,5 +32,14 @@ class USPosition(Enum):
     BACK_LEFT = 3
 
 
+class USEvent(Enum):
+    """
+    Enumeration of all possible events that can occur with the ultrasonic sensors.
+    """
+    OBSTACLE_DETECTED = 1
+    OBSTACLE_CLEARED = 2
+    NO_EVENT = 3
+
+
 MAX_TIME: float = 100.0
 """Maximum time for the match in seconds."""
