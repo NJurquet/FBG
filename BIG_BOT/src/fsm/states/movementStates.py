@@ -19,8 +19,8 @@ class IdleState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm: 'RobotFSM'):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     @override
     def enter(self):
@@ -46,8 +46,8 @@ class MoveState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event):
         if event == 'stop':
@@ -80,8 +80,8 @@ class RotateState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event):
         if event == 'stop':
@@ -114,8 +114,8 @@ class AvoidObstacleState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event):
         if event == 'obstacle_cleared':
@@ -146,8 +146,8 @@ class StopState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event):
         if event == 'start_moving':
