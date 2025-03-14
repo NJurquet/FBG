@@ -18,7 +18,8 @@ class StateEnum(Enum):
     ROTATE = 2
     OPEN_CLAW = 3
     CLOSE_CLAW = 4
-    STOP = 5
+    AVOID_OBSTACLE = 5
+    STOP = 6
 
 
 class USPosition(Enum):
@@ -29,6 +30,15 @@ class USPosition(Enum):
     FRONT_LEFT = 1
     BACK_RIGHT = 2
     BACK_LEFT = 3
+
+
+class USEvent(Enum):
+    """
+    Enumeration of all possible events that can occur with the ultrasonic sensors.
+    """
+    OBSTACLE_DETECTED = 1
+    OBSTACLE_CLEARED = 2
+    NO_EVENT = 3
 
 
 MAX_TIME: float = 100.0

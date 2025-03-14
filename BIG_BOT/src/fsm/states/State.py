@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from ...constants import StateEnum
     from ..FSM import RobotFSM
 
 
@@ -13,10 +14,13 @@ class State(ABC):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+    `enum` : StateEnum, optional
+        The enumeration value corresponding to the state. Default is `None`.
     """
 
-    def __init__(self, fsm: 'RobotFSM'):
+    def __init__(self, fsm: 'RobotFSM', enum: 'StateEnum | None' = None):
         self.fsm = fsm
+        self.enum = enum
 
     def on_event(self, event) -> None:
         pass
