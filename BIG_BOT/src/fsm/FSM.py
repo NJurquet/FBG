@@ -26,8 +26,8 @@ class RobotFSM:
         self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
         self.current_state.enter()
 
-        self.start_match: bool = True  # TODO: Set to False
-        self.start_time: float = time.time()  # TODO: Change to 0.0
+        self.start_match: bool = False
+        self.start_time: float = 0.0
 
     def set_state(self, new_state: StateEnum) -> None:
         """
@@ -42,10 +42,14 @@ class RobotFSM:
         self.current_state = self.state_factory.get_state(new_state)
         self.current_state.enter()
 
+
     def update(self) -> None:
         """
         Execute the current state of the FSM.
         """
+        if not self.start_match and self.robot.reedSwitch.read():
+            self.start_time = time.time()
+            self.start_match = True
         if self.start_match and (time.time() - self.start_time >= 5.0):
             self.set_state(StateEnum.STOP)
 
