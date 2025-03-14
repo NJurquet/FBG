@@ -13,8 +13,12 @@ class ServoMotor:
             stop(): Stops the servo motor.
     """
     def __init__(self, name: str, pin: int):
+        pwmCorrection = 0.45
+        maxPWM = (2.0+pwmCorrection)/1000
+        minPWM = (1.0-pwmCorrection)/1000
+
         self.name = name
-        self.servo = Servo(pin)
+        self.servo = Servo(pin, min_pulse_width=minPWM, max_pulse_width=maxPWM)
         self.angle = 0
 
     def setAngle(self, angle: int):
