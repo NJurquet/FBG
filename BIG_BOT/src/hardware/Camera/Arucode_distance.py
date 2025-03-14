@@ -3,7 +3,9 @@ import numpy as np
 import glob
 
 
+
 class ArucoDetector:
+    """ Class for detecting Aruco markers in a video stream and calculating the distance to them. """
     def __init__(self):
         self.marker_size = 6.7 # Change the marker size according to the arucode size!!!!!!
         self.dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_ARUCO_ORIGINAL) #Change to Dict.4x4_50 for real arucodes
@@ -15,6 +17,7 @@ class ArucoDetector:
 
     
     def calibrate_cam(self, chessboard_imgpath, chessboard_size):
+        """ Calibrate the camera using chessboard images """
         criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
         objp = np.zeros((chessboard_size[0] * chessboard_size[1], 3), np.float32)
         objp[:, :2] = np.mgrid[0:chessboard_size[0], 0:chessboard_size[1]].T.reshape(-1, 2)
@@ -49,6 +52,7 @@ class ArucoDetector:
 
 
     def detect_markers(self, frame):
+        """ Detect Aruco markers in the frame and return their IDs, centroids, and corner coordinates """
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         if self.camera_matrix is not None and self.dist_coeffs is not None:
             gray = cv2.undistort(gray, self.camera_matrix, self.dist_coeffs)
