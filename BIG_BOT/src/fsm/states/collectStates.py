@@ -65,7 +65,7 @@ class OpenClawState(State):
 
     @override
     def execute(self) -> None:
-        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, -0.4)  # Goal angle => 40° ~= -0.4
+        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 0)  # Goal angle => 40° ~= -0.4
 
     @override
     def exit(self) -> None:
