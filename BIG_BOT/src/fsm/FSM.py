@@ -48,16 +48,6 @@ class RobotFSM:
         """
         Execute the current state of the FSM.
         """
-# In IdleState class
-class IdleState(State):
-    @override
-    def execute(self):
-        if not self.robot.reedSwitch.read(): #The reedSwitch is a button so it's 0 when not pressed and 1 when pressed
-            self.start_time = time.time()
-            self.start_match = True
-            self.fsm.set_state(StateEnum.MOVE)
-            
-
         us_event = self.robot.ultrasonicController.checkObstacle()
         if us_event == USEvent.OBSTACLE_DETECTED:
             self.paused_state = self.current_state.enum
