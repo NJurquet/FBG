@@ -50,10 +50,10 @@ class RobotFSM:
         if self.start_match and (time.time() - self.start_time >= 1.0):
             self.set_state(StateEnum.OPEN_CLAW)
         
-        if self.start_match and (time.time() - self.start_time >= 4.0):
+        if self.start_match and (time.time() - self.start_time >= 8.0):
             self.set_state(StateEnum.CLOSE_CLAW)
 
-        if self.start_match and (time.time() - self.start_time >= 7.0):
+        if self.start_match and (time.time() - self.start_time >= 17.0):
             self.set_state(StateEnum.OPEN_CLAW)
 
         if self.start_match and (time.time() - self.start_time >= MAX_TIME):
