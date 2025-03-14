@@ -48,31 +48,10 @@ class RobotFSM:
         """
         Execute the current state of the FSM.
         """
-<<<<<<< HEAD
         if not self.start_match and not self.robot.reedSwitch.read(): #The reedSwitch is a button so it's 0 when not pressed and 1 when pressed
             self.start_time = time.time()
             self.start_match = True
-        if self.start_match and (time.time() - self.start_time >= 5.0):
-            self.set_state(StateEnum.STOP)
 
-        if self.start_match and (time.time() - self.start_time >= 6.0):
-            self.set_state(StateEnum.ROTATE)
-
-        if self.start_match and (time.time() - self.start_time >= 10.0):
-            self.set_state(StateEnum.MOVE)
-
-        if self.start_match and (time.time() - self.start_time >= 11.0):
-            self.set_state(StateEnum.STOP)
-
-        if self.start_match and (time.time() - self.start_time >= 12.0):
-            self.set_state(StateEnum.OPEN_CLAW)
-        
-        if self.start_match and (time.time() - self.start_time >= 14.0):
-            self.set_state(StateEnum.CLOSE_CLAW)
-
-        if self.start_match and (time.time() - self.start_time >= 18.0):
-            self.set_state(StateEnum.OPEN_CLAW)
-=======
         us_event = self.robot.ultrasonicController.checkObstacle()
         if us_event == USEvent.OBSTACLE_DETECTED:
             self.paused_state = self.current_state.enum
@@ -81,7 +60,6 @@ class RobotFSM:
             if self.paused_state is not None:
                 self.set_state(self.paused_state)  # Return to pre-obstacle state
                 self.paused_state = None
->>>>>>> origin/main
 
         if self.start_match and (time.time() - self.start_time >= MAX_TIME):
             self.set_state(StateEnum.STOP)
