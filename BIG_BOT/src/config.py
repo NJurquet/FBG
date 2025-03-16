@@ -23,8 +23,13 @@ RIGHT_MOTOR_EN_PIN = 6
 CENTER_RIGHT_CLAW_NAME = "centerRightClaw"
 
 # Servo Claws Pins
-CENTER_RIGHT_CLAW_PIN = 12
+#CENTER_RIGHT_CLAW_PIN = 12
 
+# Adafruit Servo Controller Channels
+SERVO_CHANNELS = 16
+
+# Servo Claws Adafruit Pins
+CENTER_RIGHT_CLAW_ADAFRUIT_PIN = 0
 
 # Ultrasonic Sensors Pins
 US_FRONT_RIGHT_TRIG_PIN = 0

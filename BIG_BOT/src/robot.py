@@ -1,10 +1,12 @@
 from .config import LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN, US_FRONT_RIGHT_TRIG_PIN, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN, US_FRONT_LEFT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN, US_BACK_RIGHT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN, US_BACK_LEFT_ECHO_PIN
+from .config import SERVO_CHANNELS
 from .config import CENTER_RIGHT_CLAW_NAME
-from .config import CENTER_RIGHT_CLAW_PIN
+from .config import CENTER_RIGHT_CLAW_ADAFRUIT_PIN
 from .constants import USPosition
 from .fsm.FSM import RobotFSM
 from .hardware.motorsControl import MotorsControl as Motors
 from .hardware.servoControl import ServoControl
+from .hardware.adafruitServoController import AdafruitServoControl
 from .hardware.ultrasonicController import UltrasonicController
 
 
@@ -16,13 +18,16 @@ class Robot:
     def __init__(self):
         self.fsm = RobotFSM(self)
         self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN)
-        self.servoControl = ServoControl([CENTER_RIGHT_CLAW_NAME], [CENTER_RIGHT_CLAW_PIN])
+        #self.servoControl = ServoControl([CENTER_RIGHT_CLAW_NAME], [CENTER_RIGHT_CLAW_PIN])
+        self.servoControl = AdafruitServoControl(channels=SERVO_CHANNELS,
+                                                 names=[CENTER_RIGHT_CLAW_NAME],
+                                                 pins=[CENTER_RIGHT_CLAW_ADAFRUIT_PIN])
         self.camera = None
         self.ultrasonicController = UltrasonicController({
-            USPosition.FRONT_RIGHT: (US_FRONT_RIGHT_ECHO_PIN, US_FRONT_RIGHT_TRIG_PIN),
-            USPosition.FRONT_LEFT: (US_FRONT_LEFT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN),
-            USPosition.BACK_RIGHT: (US_BACK_RIGHT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN),
-            USPosition.BACK_LEFT: (US_BACK_LEFT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN)
+            # USPosition.FRONT_RIGHT: (US_FRONT_RIGHT_ECHO_PIN, US_FRONT_RIGHT_TRIG_PIN),
+            # USPosition.FRONT_LEFT: (US_FRONT_LEFT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN),
+            # USPosition.BACK_RIGHT: (US_BACK_RIGHT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN),
+            # USPosition.BACK_LEFT: (US_BACK_LEFT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN)
         })
 
         self.__position: tuple[int, int] = (0, 0)
