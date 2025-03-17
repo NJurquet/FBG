@@ -3,7 +3,8 @@ from adafruit_servokit import ServoKit
 class AdafruitServoControl:
     """
         Class to control multiple servo motors using PCA9685
-        
+        The I2C connection is automatically initialized by the Adafruit ServoKit library.
+
         Parameters:
             channels (int): Number of channels on the PCA9685 board.
             names (list): A list of names for the servo motors.
