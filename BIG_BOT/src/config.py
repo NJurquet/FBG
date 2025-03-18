@@ -10,6 +10,10 @@ Change these config constants to customize the behavior of the robot.
 # Hardware Pins Configuration
 # =============================================================================
 
+# I2C Bus Pins
+I2C_DATA_PIN = 2
+I2C_CLOCK_PIN = 3
+
 # Motor Pins
 LEFT_MOTOR_FORWARD_PIN = 17
 LEFT_MOTOR_BACKWARD_PIN = 27
