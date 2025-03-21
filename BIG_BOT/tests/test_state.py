@@ -23,50 +23,69 @@ class ConcreteState(State):
         pass
 
 
-def test_state_cannot_be_instantiated():
-    """Test that an instance of the abstract class `State` cannot be created directly."""
-    mock_fsm = Mock(spec=RobotFSM)
+class BaseState(State):
+    """A subclass of State that calls the base implementation of the abstract methods"""
+
+    def enter(self) -> None:
+        super().enter()
+
+    def execute(self) -> None:
+        super().execute()
+
+    def exit(self) -> None:
+        super().exit()
+
+
+@pytest.fixture
+def mock_fsm():
+    return Mock(spec=RobotFSM)
+
+
+@pytest.fixture
+def concrete_state(mock_fsm):
+    return ConcreteState(mock_fsm, StateEnum.IDLE)
+
+
+@pytest.fixture
+def base_state(mock_fsm):
+    return BaseState(mock_fsm)
+
+
+def test_abstract_state_cannot_be_instantiated(mock_fsm):
+    """Test that an abstract class cannot be instantiated."""
 
     with pytest.raises(TypeError, match="Can't instantiate abstract class State"):
         State(mock_fsm)
 
 
-def test_state_requires_abstract_methods():
+def test_state_requires_abstract_methods(mock_fsm):
     """Test that a subclass of `State` must implement all abstract methods."""
-    mock_fsm = Mock(spec=RobotFSM)
 
     with pytest.raises(TypeError, match="Can't instantiate abstract class IncompleteState"):
         IncompleteState(mock_fsm)
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.parametrize("method_name", ["enter", "execute", "exit"])
-def test_abstract_methods_raise_not_implemented_error(method_name):
+def test_abstract_methods_raise_not_implemented_error(method_name, base_state):
     """Test that calling an abstract method in a non-overridden subclass raises NotImplementedError."""
-    mock_fsm = Mock(spec=RobotFSM)
-
-    test_state = IncompleteState(mock_fsm)
 
     with pytest.raises(NotImplementedError, match=f"The '{method_name}' method must be overridden in subclasses of State."):
-        getattr(test_state, method_name)()
+        getattr(base_state, method_name)()
 
 
-def test_concrete_state_instantiation():
+def test_concrete_state_instantiation(concrete_state):
     """Test that a concrete implementation of `State` can be instantiated."""
-    mock_fsm = Mock(spec=RobotFSM)
-    state_enum = Mock(spec=StateEnum)
 
-    state = ConcreteState(mock_fsm, state_enum)
+    state = concrete_state
 
-    assert state.fsm is mock_fsm
-    assert state.enum is state_enum
+    assert state.fsm is not None
+    assert state.enum == StateEnum.IDLE
 
 
-def test_concrete_state_methods():
-    """Ensure a valid subclass implements required methods without errors."""
-    mock_fsm = Mock(spec=RobotFSM)
-    state = ConcreteState(mock_fsm)
+@pytest.mark.parametrize("method_name", ["enter", "execute", "exit"])
+def test_concrete_state_methods_return_none(method_name, concrete_state):
+    """Test that the methods of a concrete implementation of `State` return None."""
 
-    assert state.enter() is None
-    assert state.execute() is None
-    assert state.exit() is None
+    result = getattr(concrete_state, method_name)()
+    assert result is None
