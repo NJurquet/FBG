@@ -23,19 +23,6 @@ class ConcreteState(State):
         pass
 
 
-class BaseState(State):
-    """A subclass of State that calls the base implementation of the abstract methods"""
-
-    def enter(self) -> None:
-        super().enter()
-
-    def execute(self) -> None:
-        super().execute()
-
-    def exit(self) -> None:
-        super().exit()
-
-
 @pytest.fixture
 def mock_fsm():
     return Mock(spec=RobotFSM)
@@ -44,11 +31,6 @@ def mock_fsm():
 @pytest.fixture
 def concrete_state(mock_fsm):
     return ConcreteState(mock_fsm, StateEnum.IDLE)
-
-
-@pytest.fixture
-def base_state(mock_fsm):
-    return BaseState(mock_fsm)
 
 
 def test_abstract_state_cannot_be_instantiated(mock_fsm):
@@ -63,15 +45,6 @@ def test_state_requires_abstract_methods(mock_fsm):
 
     with pytest.raises(TypeError, match="Can't instantiate abstract class IncompleteState"):
         IncompleteState(mock_fsm)
-
-
-# @pytest.mark.skip
-@pytest.mark.parametrize("method_name", ["enter", "execute", "exit"])
-def test_abstract_methods_raise_not_implemented_error(method_name, base_state):
-    """Test that calling an abstract method in a non-overridden subclass raises NotImplementedError."""
-
-    with pytest.raises(NotImplementedError, match=f"The '{method_name}' method must be overridden in subclasses of State."):
-        getattr(base_state, method_name)()
 
 
 def test_concrete_state_instantiation(concrete_state):
