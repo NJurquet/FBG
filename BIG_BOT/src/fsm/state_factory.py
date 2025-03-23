@@ -47,5 +47,5 @@ class StateFactory:
             if state_enum not in Registry._registry:
                 raise ValueError(f"State '{state_enum.name}' not found in registry.")
             state_class = Registry._registry[state_enum]
-            self._state_cache[state_enum] = state_class(self.fsm)  # Create the state instance and add it to the cache
+            self._state_cache[state_enum] = state_class(self.fsm, state_enum)  # Create the state instance and add it to the cache
         return self._state_cache[state_enum]
