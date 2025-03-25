@@ -14,33 +14,60 @@ class UltrasonicSensor:
 
     def __init__(self, pos: USPosition, echoPin: int, trigPin: int):
         self._pos = pos
-        self._sensor = DistanceSensor(echo=echoPin, trigger=trigPin)
-
-    @property
-    def pos(self) -> USPosition:
-        """
-        Returns the position of the sensor.
-
-        Returns:
-            USPosition: The position of the sensor.
-        """
-        return self._pos
+        self._sensor = DistanceSensor(echo=echoPin, trigger=trigPin, max_distance=1)
 
     @property
     def sensor(self) -> DistanceSensor:
         """
-        Returns the DistanceSensor object.
-
-        Returns:
-            DistanceSensor: The DistanceSensor object.
+        The `DistanceSensor` instance of the ultrasonic sensor.
         """
         return self._sensor
 
+    @property
+    def pos(self) -> USPosition:
+        """
+        The `USPosition` position of the sensor.
+        """
+        return self._pos
+
+    @property
+    def echoPin(self) -> int:
+        """
+        The GPIO pin (int) connected to the sensor's echo pin.
+        """
+        if self._sensor.echo is None:
+            raise ValueError(f"Echo pin is not set for sensor at position {self._pos}")
+        return self._sensor.echo
+
+    @property
+    def trigPin(self) -> int:
+        """
+        The GPIO pin (int) connected to the sensor's trigger pin.
+        """
+        if self._sensor.trigger is None:
+            raise ValueError(f"Trigger pin is not set for sensor at position {self._pos}")
+        return self._sensor.trigger
+
+    @property
+    def max_distance(self) -> int:
+        """
+        The maximum distance in meters that the sensor can measure.
+        """
+        return self._sensor.max_distance
+
+    @max_distance.setter
+    def max_distance(self, distance: int):
+        if not isinstance(distance, int):
+            raise TypeError("Distance must be integer.")
+        if distance <= 0:
+            raise ValueError("Distance must be positive.")
+        self._sensor.max_distance = distance
+
     def getDistance(self) -> float:
         """
-        Returns the distance in meters.
+        Returns the distance measured in centimeters.
 
         Returns:
-            float: The distance in meters.
+            float: The distance in centimeters.
         """
-        return self._sensor.distance
+        return self._sensor.distance * 100
