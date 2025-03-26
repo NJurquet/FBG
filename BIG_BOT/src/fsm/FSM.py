@@ -43,19 +43,19 @@ class RobotFSM:
         self.current_state = self.state_factory.get_state(new_state)
         self.current_state.enter()
 
-
     def update(self) -> None:
         """
         Execute the current state of the FSM.
         """
-        # us_event = self.robot.ultrasonicController.checkObstacle()
-        # if us_event == USEvent.OBSTACLE_DETECTED:
-        #     self.paused_state = self.current_state.enum
-        #     self.set_state(StateEnum.AVOID_OBSTACLE)
-        # elif us_event == USEvent.OBSTACLE_CLEARED:
-        #     if self.paused_state is not None:
-        #         self.set_state(self.paused_state)  # Return to pre-obstacle state
-        #         self.paused_state = None
+        self.robot.ultrasonicController.measure_distances()
+        us_event = self.robot.ultrasonicController.check_obstacles()
+        if us_event == USEvent.OBSTACLE_DETECTED:
+            self.paused_state = self.current_state.enum
+            self.set_state(StateEnum.AVOID_OBSTACLE)
+        elif us_event == USEvent.OBSTACLE_CLEARED:
+            if self.paused_state is not None:
+                self.set_state(self.paused_state)  # Return to pre-obstacle state
+                self.paused_state = None
 
         if self.start_match and (time.time() - self.start_time >= MAX_TIME):
             self.set_state(StateEnum.STOP)
