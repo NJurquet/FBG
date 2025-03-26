@@ -11,6 +11,7 @@ from .hardware.ultrasonicController import UltrasonicController
 class Robot:
     """
     Class representing the robot, including its Finite State Machine (FSM), hardware components and characteristics.
+
     """
 
     def __init__(self):

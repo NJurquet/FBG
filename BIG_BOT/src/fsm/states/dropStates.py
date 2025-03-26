@@ -14,6 +14,9 @@ class DropState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+    
+    **Methods**:
+        drop(): Opens the grippers to drop the cans.
     """
 
     def __init__(self, fsm: 'RobotFSM'):
@@ -48,6 +51,9 @@ class MoveToDrop(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+    
     """
 
     def __init__(self, fsm: 'RobotFSM'):
