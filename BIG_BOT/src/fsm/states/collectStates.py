@@ -52,7 +52,7 @@ class OpenClawState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm: 'RobotFSM'):
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm)
 
     def on_event(self, event) -> None:
@@ -65,7 +65,7 @@ class OpenClawState(State):
 
     @override
     def execute(self) -> None:
-        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, -0.4)  # Goal angle => 40° ~= -0.4
+        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 120)
 
     @override
     def exit(self) -> None:
@@ -78,7 +78,7 @@ class OpenClawState(State):
 @Registry.register_state(StateEnum.CLOSE_CLAW)
 class CloseClawState(State):
     """
-    State in which the robot closes his grippers to collect the cans.
+    State in which the robot closes his grippers to collect the cans.# Goal angle => 20° ~= -0.2
 
     Parameters
     ----------
@@ -86,7 +86,7 @@ class CloseClawState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm: 'RobotFSM'):
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm)
 
     def on_event(self, event) -> None:
@@ -99,7 +99,7 @@ class CloseClawState(State):
 
     @override
     def execute(self) -> None:
-        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, -0.2)  # Goal angle => 20° ~= -0.2
+        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 75)
 
     @override
     def exit(self) -> None:
