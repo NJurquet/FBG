@@ -3,6 +3,7 @@ from .detectionStates import DetectTargetsState
 from .State import State
 from ..registry import Registry
 from typing import TYPE_CHECKING, override
+import time
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
@@ -19,8 +20,8 @@ class IdleState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm: 'RobotFSM'):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     @override
     def enter(self):
@@ -28,11 +29,16 @@ class IdleState(State):
 
     @override
     def execute(self):
-        self.fsm.set_state(StateEnum.MOVE)
+        if not self.fsm.robot.reedSwitch.read(): #The reedSwitch is a button so it's 0 when not pressed and 1 when pressed
+            self.fsm.start_time = time.time()
+            self.fsm.start_match = True
+            self.fsm.set_state(StateEnum.MOVE)
 
     @override
     def exit(self):
         print("Exiting Idle State - Match Started")
+
+
 
 
 @Registry.register_state(StateEnum.MOVE)
@@ -50,8 +56,8 @@ class MoveState(State):
         on_event(event): stops the robot if an obstacle is detected
     """
 
-    def __init__(self, fsm):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event):
         if event == 'stop':
@@ -87,8 +93,8 @@ class RotateState(State):
         enter(): Rotates the robot right
     """
 
-    def __init__(self, fsm):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event):
         if event == 'stop':
@@ -110,6 +116,7 @@ class RotateState(State):
         return DetectTargetsState(self.fsm)
 
 
+@Registry.register_state(StateEnum.AVOID_OBSTACLE)
 class AvoidObstacleState(State):
     """
     State in which the robot uses an obstacle avoidance algorithm to avoid obstacles.
@@ -120,8 +127,8 @@ class AvoidObstacleState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event):
         if event == 'obstacle_cleared':
@@ -134,14 +141,11 @@ class AvoidObstacleState(State):
 
     @override
     def execute(self):
-        pass
+        self.fsm.robot.motor.stop()
 
     @override
     def exit(self):
-        return DetectTargetsState(self.fsm)
-
-    def avoid_obstacle(self):
-        print("Avoiding obstacle")
+        pass
 
 
 @Registry.register_state(StateEnum.STOP)
@@ -155,8 +159,8 @@ class StopState(State):
         The Finite State Machine (FSM) instance that the state belongs to.
     """
 
-    def __init__(self, fsm):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event):
         if event == 'start_moving':
