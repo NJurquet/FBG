@@ -41,3 +41,8 @@ US_BACK_LEFT_ECHO_PIN = 0
 
 # Reed Switch Pin
 REED_SWITCH_PIN = 0
+
+# Grid Size
+GRID_WIDTH = 500
+GRID_HEIGHT = 1000
+
