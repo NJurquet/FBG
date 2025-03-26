@@ -22,9 +22,6 @@ class State(ABC):
         self.fsm = fsm
         self.enum = enum
 
-    def on_event(self, event) -> None:
-        pass
-
     @abstractmethod
     def enter(self) -> None:
         """
