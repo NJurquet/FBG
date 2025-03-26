@@ -5,9 +5,28 @@ import glob
 
 
 class ArucoDetector:
-    """ Class for detecting Aruco markers in a video stream and calculating the distance to them. """
-    def __init__(self):
-        self.marker_size = 6.7 # Change the marker size according to the arucode size!!!!!!
+    """ Class for detecting Aruco markers in a video stream and calculating the distance to them. 
+    
+    Parameters:
+    -------------
+    marker_size_cm : float
+        The size of the Aruco marker in centimeters.
+    
+    Methods:
+    -------------
+    calibrate_cam(chessboard_imgpath, chessboard_size)
+        Calibrate the camera using chessboard images.
+    detect_markers(frame)
+        Detect Aruco markers in the frame and return their IDs, centroids, and corner coordinates.
+    calculate_distance(marker_size_pixels, cap_width)
+        Calculate the distance from the camera to the marker in centimeters.
+    draw_markers(frame)
+        Draw the detected markers on the frame.
+    
+        
+    """
+    def __init__(self, marker_size):
+        self.marker_size = marker_size #Size of the marker in cm
         self.dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_ARUCO_ORIGINAL) #Change to Dict.4x4_50 for real arucodes
         self.detector = cv2.aruco.ArucoDetector(self.dictionary, cv2.aruco.DetectorParameters())
         self.detected_markers = {}
