@@ -10,14 +10,23 @@ class UltrasonicController:
         `sensorsDict` (dict[USPosition, tuple[int, int]]): A dictionary where each key is the position of a sensor and the value is a tuple with the echo and trigger pins.
     """
 
-    def __init__(self, sensorsDict: dict[USPosition, tuple[int, int]]):
-        duplicates = [pos for pos in sensorsDict.keys() if list(sensorsDict.keys()).count(pos) > 1]
-        if duplicates:
-            raise ValueError(f"Duplicate USPosition keys found in sensorsDict: {duplicates}")
-
-        self._sensors: list[UltrasonicSensor] = [UltrasonicSensor(pos, echoPin, trigPin) for pos, (echoPin, trigPin) in sensorsDict.items()]
+    def __init__(self):
+        self._sensors: list[UltrasonicSensor] = []
         self._last_obstacle: bool = False
         self._distances: dict[USPosition, float] = {}
+
+    def add_sensor(self, pos: USPosition, echoPin: int, trigPin: int) -> None:
+        """
+        Add a new ultrasonic sensor to the controller.
+
+        Parameters:
+            `pos` (USPosition): The position of the sensor.
+            `echoPin` (int): The GPIO pin connected to the sensor's echo pin.
+            `trigPin` (int): The GPIO pin connected to the sensor's trigger pin.
+        """
+        if any(sensor.pos == pos for sensor in self._sensors):
+            raise ValueError(f"Sensor with position {pos} already exists in the controller.")
+        self._sensors.append(UltrasonicSensor(pos, echoPin, trigPin))
 
     def check_obstacles(self) -> USEvent:
         """
@@ -104,13 +113,12 @@ if __name__ == "__main__":
     trigPin2 = Device.pin_factory.pin(20, pin_class=PreciseMockTriggerPin, echo_pin=echoPin2, echo_time=0.005)
     trigPin3 = Device.pin_factory.pin(16, pin_class=PreciseMockTriggerPin, echo_pin=echoPin3, echo_time=0.02)
     trigPin4 = Device.pin_factory.pin(23, pin_class=PreciseMockTriggerPin, echo_pin=echoPin4, echo_time=0.03)
-    sensors = {
-        USPosition.FRONT_RIGHT: (8, 7),
-        USPosition.FRONT_LEFT: (21, 20),
-        USPosition.BACK_RIGHT: (25, 16),
-        USPosition.BACK_LEFT: (24, 23)
-    }
-    usController = UltrasonicController(sensors)
+
+    usController = UltrasonicController()
+    usController.add_sensor(USPosition.FRONT_RIGHT, 8, 7)
+    usController.add_sensor(USPosition.FRONT_LEFT, 21, 20)
+    usController.add_sensor(USPosition.BACK_RIGHT, 25, 16)
+    usController.add_sensor(USPosition.BACK_LEFT, 24, 23)
 
     usController.measure_distances()
     print(f"Sensors: {usController._distances}")
