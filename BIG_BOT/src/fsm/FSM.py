@@ -39,9 +39,10 @@ class RobotFSM:
         new_state : StateEnum
             The new state to switch to.
         """
-        self.current_state.exit()
-        self.current_state = self.state_factory.get_state(new_state)
-        self.current_state.enter()
+        if self.current_state.enum != new_state:
+            self.current_state.exit()
+            self.current_state = self.state_factory.get_state(new_state)
+            self.current_state.enter()
 
     def update(self) -> None:
         """
