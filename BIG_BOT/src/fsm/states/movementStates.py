@@ -1,4 +1,5 @@
 from ...constants import StateEnum
+from ...config import MAX_OBSTACLE_DURATION
 from .detectionStates import DetectTargetsState
 from .State import State
 from ..registry import Registry
@@ -29,7 +30,7 @@ class IdleState(State):
 
     @override
     def execute(self):
-        if not self.fsm.robot.reedSwitch.read(): #The reedSwitch is a button so it's 0 when not pressed and 1 when pressed
+        if not self.fsm.robot.reedSwitch.read():  # The reedSwitch is a button so it's 0 when not pressed and 1 when pressed
             self.fsm.start_time = time.time()
             self.fsm.start_match = True
             self.fsm.set_state(StateEnum.MOVE)
@@ -37,8 +38,6 @@ class IdleState(State):
     @override
     def exit(self):
         print("Exiting Idle State - Match Started")
-
-
 
 
 @Registry.register_state(StateEnum.MOVE)
@@ -122,19 +121,22 @@ class AvoidObstacleState(State):
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
-
-    def on_event(self, event):
-        if event == 'obstacle_cleared':
-            return
-        return self
+        self._obstacle_start_time: float = 0.0
 
     @override
     def enter(self):
-        pass
+        print("Entering Avoid Obstacle State")
+        self._obstacle_start_time = time.time()
+        self.fsm.robot.motor.stop()
 
     @override
     def execute(self):
-        self.fsm.robot.motor.stop()
+        obstacle_duration: float = time.time() - self._obstacle_start_time
+        if obstacle_duration >= MAX_OBSTACLE_DURATION and obstacle_duration < MAX_OBSTACLE_DURATION + 2.0:
+            self.fsm.robot.motor.backward(0.5)
+        elif obstacle_duration >= MAX_OBSTACLE_DURATION + 2.0:
+            self.fsm.robot.motor.stop()
+            self._obstacle_start_time = time.time()
 
     @override
     def exit(self):
