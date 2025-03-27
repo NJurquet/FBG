@@ -53,7 +53,7 @@ class OpenClawState(State):
     """
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
-        super().__init__(fsm)
+        super().__init__(fsm, enum)
 
     def on_event(self, event) -> None:
         if event == 'collected':
@@ -87,7 +87,7 @@ class CloseClawState(State):
     """
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
-        super().__init__(fsm)
+        super().__init__(fsm, enum)
 
     def on_event(self, event) -> None:
         if event == 'collected':
