@@ -31,13 +31,14 @@ class UltrasonicController:
     def check_obstacles(self) -> USEvent:
         """
         Check if any of the ultrasonic sensors detects an obstacle.
-        Make sure to call `update_distances()` before calling this method.
+        Make sure to call `measure_distances()` before calling this method.
 
         Returns:
             `USEvent`: The event that occurred.
             - `OBSTACLE_DETECTED`: If a new obstacle is detected.
+            - `OBSTACLE_PRESENT`: If the same obstacle is still detected.
             - `OBSTACLE_CLEARED`: If the previously detected obstacle is no longer detected.
-            - `NO_EVENT`: If no obstacle is detected or the same obstacle is still detected.
+            - `NO_EVENT`: If no obstacle is detected.
         """
         # If no sensors provided or no distances measured
         if len(self._sensors) == 0 or len(self._distances) == 0:
@@ -49,13 +50,14 @@ class UltrasonicController:
             if not self._last_obstacle:
                 self._last_obstacle = True
                 return USEvent.OBSTACLE_DETECTED
+            return USEvent.OBSTACLE_PRESENT  # Still detecting the same obstacle
         else:
             # If the previously detected obstacle is no longer in range
             if self._last_obstacle:
                 self._last_obstacle = False
                 return USEvent.OBSTACLE_CLEARED
 
-        # If no obstacle detected or still detecting the same obstacle
+        # If no obstacle detected
         return USEvent.NO_EVENT
 
     def measure_distances(self) -> None:

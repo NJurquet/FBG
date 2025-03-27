@@ -37,8 +37,9 @@ class USEvent(Enum):
     Enumeration of all possible events that can occur with the ultrasonic sensors.
     """
     OBSTACLE_DETECTED = 1
-    OBSTACLE_CLEARED = 2
-    NO_EVENT = 3
+    OBSTACLE_PRESENT = 2
+    OBSTACLE_CLEARED = 3
+    NO_EVENT = 4
 
 
 MAX_TIME: float = 100.0
