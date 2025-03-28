@@ -43,47 +43,104 @@ class TestUltrasonicController:
 
         controller.add_sensor(USPosition.FRONT_RIGHT, 1, 2)
 
-        assert any(sensor.pos == USPosition.FRONT_RIGHT for sensor in controller._sensors)
         assert len(controller._sensors) == 1
+        assert controller._sensors[0].pos == USPosition.FRONT_RIGHT
+        assert controller._sensors[0].echoPin == 1
+        assert controller._sensors[0].trigPin == 2
 
         with pytest.raises(ValueError):
             controller.add_sensor(USPosition.FRONT_RIGHT, 3, 4)
+        with pytest.raises(TypeError):
+            controller.add_sensor("invalid position type", 1, 2)  # type: ignore
+        with pytest.raises(TypeError):
+            controller.add_sensor(USPosition.FRONT_RIGHT, "1", "2")  # type: ignore
+        with pytest.raises(ValueError):
+            controller.add_sensor(USPosition.FRONT_RIGHT, -1, -2)
+        with pytest.raises(ValueError):
+            controller.add_sensor(USPosition.FRONT_RIGHT, 3, 3)
 
     def test_check_obstacles_no_event(self, controller: UltrasonicController):
         sensor1 = Mock(spec=UltrasonicSensor)
-        sensor1.pos = USPosition.FRONT_RIGHT
-        sensor1.getDistance.return_value = 45.3
         sensor2 = Mock(spec=UltrasonicSensor)
-        sensor2.pos = USPosition.FRONT_LEFT
-        sensor2.getDistance.return_value = 80.0
 
-        controller._sensors = [sensor1, sensor2]
+        sensors: list[UltrasonicSensor] = [sensor1, sensor2]
+        distances: dict[USPosition, float] = {
+            USPosition.FRONT_RIGHT: 45.0,
+            USPosition.FRONT_LEFT: 80.0,
+        }
+        controller._sensors = sensors
+        controller._distances = distances
 
-        controller.measure_distances()
         assert controller.check_obstacles() == USEvent.NO_EVENT
         # Sensors present with no distances
         controller._distances = {}
         assert controller.check_obstacles() == USEvent.NO_EVENT
         # No sensors present with distances
         controller._sensors = []
-        controller.measure_distances()
+        controller._distances = distances
         assert controller.check_obstacles() == USEvent.NO_EVENT
         # No sensors present with no distances
         controller._distances = {}
         assert controller.check_obstacles() == USEvent.NO_EVENT
 
-    @pytest.mark.skip("Not implemented")
-    def test_check_obstacles_obstacle_detected(self):
-        pass
+    def test_check_obstacles_obstacle_detected_present(self, controller: UltrasonicController):
+        sensor1 = Mock(spec=UltrasonicSensor)
+        sensor2 = Mock(spec=UltrasonicSensor)
 
-    @pytest.mark.skip("Not implemented")
-    def test_check_obstacles_obstacle_cleared(self):
-        pass
+        sensors: list[UltrasonicSensor] = [sensor1, sensor2]
+        distances: dict[USPosition, float] = {
+            USPosition.FRONT_RIGHT: 5.0,
+            USPosition.FRONT_LEFT: 80.0,
+        }
+        controller._sensors = sensors
+        controller._distances = distances
 
-    @pytest.mark.skip("Not implemented")
-    def test_measure_distances(self):
-        pass
+        assert controller.check_obstacles() == USEvent.OBSTACLE_DETECTED
+        assert controller._last_obstacle is True
+        assert controller.check_obstacles() == USEvent.OBSTACLE_PRESENT
+        assert controller._last_obstacle is True
 
-    @pytest.mark.skip("Not implemented")
-    def test_get_distance(self):
-        pass
+    def test_check_obstacles_obstacle_cleared(self, controller: UltrasonicController):
+        sensor1 = Mock(spec=UltrasonicSensor)
+        sensor2 = Mock(spec=UltrasonicSensor)
+
+        sensors: list[UltrasonicSensor] = [sensor1, sensor2]
+        distances: dict[USPosition, float] = {
+            USPosition.FRONT_RIGHT: 45.0,
+            USPosition.FRONT_LEFT: 80.0,
+        }
+        controller._sensors = sensors
+        controller._distances = distances
+        controller._last_obstacle = True
+
+        assert controller.check_obstacles() == USEvent.OBSTACLE_CLEARED
+        assert controller._last_obstacle is False
+
+    def test_measure_distances(self, controller: UltrasonicController):
+        sensor1 = Mock(spec=UltrasonicSensor)
+        sensor1.pos = USPosition.FRONT_RIGHT
+        sensor1.getDistance.return_value = 45.3
+        sensor2 = Mock(spec=UltrasonicSensor)
+        sensor2.pos = USPosition.FRONT_LEFT
+        sensor2.getDistance.return_value = 80.0
+        controller._sensors = [sensor1, sensor2]
+
+        controller.measure_distances()
+        assert len(controller._distances) == 2
+        assert controller._distances[sensor1.pos] == 45.3
+        assert controller._distances[sensor2.pos] == 80.0
+
+    def test_get_distance_valid_position(self, controller: UltrasonicController):
+        sensor1 = Mock(spec=UltrasonicSensor)
+        sensor1.pos = USPosition.FRONT_RIGHT
+        sensor1.getDistance.return_value = 45.0
+        controller._sensors = [sensor1]
+
+        distance = controller.get_distance(USPosition.FRONT_RIGHT)
+        assert distance == 45.0
+
+    def test_get_distance_invalid_position(self, controller: UltrasonicController):
+        with pytest.raises(TypeError):
+            controller.get_distance("invalid position type")  # type: ignore
+        with pytest.raises(ValueError):
+            controller.get_distance(USPosition.FRONT_RIGHT)

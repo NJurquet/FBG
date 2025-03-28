@@ -24,6 +24,13 @@ class UltrasonicController:
             `echoPin` (int): The GPIO pin connected to the sensor's echo pin.
             `trigPin` (int): The GPIO pin connected to the sensor's trigger pin.
         """
+        if not isinstance(pos, USPosition):
+            raise TypeError(f"Expected pos to be of type USPosition, got {type(pos).__name__}.")
+        if not isinstance(echoPin, int) or not isinstance(trigPin, int):
+            raise TypeError("echoPin and trigPin must be integers.")
+        if echoPin < 0 or trigPin < 0 or echoPin == trigPin:
+            raise ValueError("echoPin and trigPin must be positive integers and not equal.")
+
         if any(sensor.pos == pos for sensor in self._sensors):
             raise ValueError(f"Sensor with position {pos} already exists in the controller.")
         self._sensors.append(UltrasonicSensor(pos, echoPin, trigPin))
@@ -79,6 +86,8 @@ class UltrasonicController:
         Raises:
             ValueError: If the specified position does not correspond to any sensor.
         """
+        if not isinstance(pos, USPosition):
+            raise TypeError(f"Expected pos to be of type USPosition, got {type(pos).__name__}.")
         for sensor in self._sensors:
             if sensor.pos == pos:
                 return sensor.getDistance()
