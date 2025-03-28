@@ -48,14 +48,14 @@ class RobotFSM:
         """
         Execute the current state of the FSM.
         """
-        us_event = self.robot.ultrasonicController.checkObstacle()
-        if us_event == USEvent.OBSTACLE_DETECTED:
-            self.paused_state = self.current_state.enum
-            self.set_state(StateEnum.AVOID_OBSTACLE)
-        elif us_event == USEvent.OBSTACLE_CLEARED:
-            if self.paused_state is not None:
-                self.set_state(self.paused_state)  # Return to pre-obstacle state
-                self.paused_state = None
+        # us_event = self.robot.ultrasonicController.checkObstacle()
+        # if us_event == USEvent.OBSTACLE_DETECTED:
+        #     self.paused_state = self.current_state.enum
+        #     self.set_state(StateEnum.AVOID_OBSTACLE)
+        # elif us_event == USEvent.OBSTACLE_CLEARED:
+        #     if self.paused_state is not None:
+        #         self.set_state(self.paused_state)  # Return to pre-obstacle state
+        #         self.paused_state = None
 
         if self.start_match and (time.time() - self.start_time >= MAX_TIME):
             self.set_state(StateEnum.STOP)
@@ -63,22 +63,10 @@ class RobotFSM:
         elif self.start_match and (time.time() - self.start_time >= 22.0):
             self.set_state(StateEnum.OPEN_CLAW)
 
-        elif self.start_match and (time.time() - self.start_time >= 14.0):
+        elif self.start_match and (time.time() - self.start_time >= 4.0):
             self.set_state(StateEnum.CLOSE_CLAW)
 
-        elif self.start_match and (time.time() - self.start_time >= 12.0):
+        elif self.start_match and (time.time() - self.start_time >= 2.0):
             self.set_state(StateEnum.OPEN_CLAW)
-
-        elif self.start_match and (time.time() - self.start_time >= 11.0):
-            self.set_state(StateEnum.STOP)
-
-        elif self.start_match and (time.time() - self.start_time >= 10.0):
-            self.set_state(StateEnum.MOVE)
-
-        elif self.start_match and (time.time() - self.start_time >= 6.0):
-            self.set_state(StateEnum.ROTATE)
-
-        elif self.start_match and (time.time() - self.start_time >= 5.0):
-            self.set_state(StateEnum.STOP)
 
         self.current_state.execute()
