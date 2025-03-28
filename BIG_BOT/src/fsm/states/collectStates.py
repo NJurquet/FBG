@@ -78,7 +78,7 @@ class OpenClawState(State):
 @Registry.register_state(StateEnum.CLOSE_CLAW)
 class CloseClawState(State):
     """
-    State in which the robot closes his grippers to collect the cans.# Goal angle => 20° ~= -0.2
+    State in which the robot closes his grippers to collect the cans.
 
     Parameters
     ----------

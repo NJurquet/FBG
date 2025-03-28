@@ -3,6 +3,7 @@ from .detectionStates import DetectTargetsState
 from .State import State
 from ..registry import Registry
 from typing import TYPE_CHECKING, override
+import time
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
@@ -28,11 +29,16 @@ class IdleState(State):
 
     @override
     def execute(self):
-        self.fsm.set_state(StateEnum.MOVE)
+        if not self.fsm.robot.reedSwitch.read(): #The reedSwitch is a button so it's 0 when not pressed and 1 when pressed
+            self.fsm.start_time = time.time()
+            self.fsm.start_match = True
+            self.fsm.set_state(StateEnum.MOVE)
 
     @override
     def exit(self):
         print("Exiting Idle State - Match Started")
+
+
 
 
 @Registry.register_state(StateEnum.MOVE)

@@ -1,4 +1,4 @@
-from .config import LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN, US_FRONT_RIGHT_TRIG_PIN, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN, US_FRONT_LEFT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN, US_BACK_RIGHT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN, US_BACK_LEFT_ECHO_PIN
+from .config import LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN, US_FRONT_RIGHT_TRIG_PIN, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN, US_FRONT_LEFT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN, US_BACK_RIGHT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN, US_BACK_LEFT_ECHO_PIN, REED_SWITCH_PIN
 from .config import SERVO_CHANNELS
 from .config import CENTER_RIGHT_CLAW_NAME
 from .config import CENTER_RIGHT_CLAW_ADAFRUIT_PIN
@@ -8,6 +8,7 @@ from .hardware.motorsControl import MotorsControl as Motors
 from .hardware.servoControl import ServoControl
 from .hardware.adafruitServoController import AdafruitServoControl
 from .hardware.ultrasonicController import UltrasonicController
+from .hardware.reedSwitch import reedSwitch
 
 
 class Robot:
@@ -31,6 +32,7 @@ class Robot:
         })
 
         self.__position: tuple[int, int] = (0, 0)
+        self.reedSwitch = reedSwitch(REED_SWITCH_PIN)
 
     @property
     def position(self):
