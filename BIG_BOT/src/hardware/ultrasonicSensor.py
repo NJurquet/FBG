@@ -1,4 +1,4 @@
-from gpiozero import DistanceSensor
+from gpiozero import DistanceSensor, Pin
 from ..constants import USPosition
 
 
@@ -14,6 +14,8 @@ class UltrasonicSensor:
 
     def __init__(self, pos: USPosition, echoPin: int, trigPin: int):
         self._pos = pos
+        self._echoPin = echoPin
+        self._trigPin = trigPin
         self._sensor = DistanceSensor(echo=echoPin, trigger=trigPin, max_distance=1)
 
     @property
@@ -31,22 +33,36 @@ class UltrasonicSensor:
         return self._pos
 
     @property
-    def echoPin(self) -> int:
+    def echoGPIO(self) -> Pin:
         """
-        The GPIO pin (int) connected to the sensor's echo pin.
+        The GPIO Pin object connected to the sensor's echo pin.
         """
         if self._sensor.echo is None:
             raise ValueError(f"Echo pin is not set for sensor at position {self._pos}")
         return self._sensor.echo
 
     @property
-    def trigPin(self) -> int:
+    def echoPin(self) -> int:
         """
-        The GPIO pin (int) connected to the sensor's trigger pin.
+        The GPIO pin number (int) connected to the sensor's echo pin.
+        """
+        return self._echoPin
+
+    @property
+    def trigGPIO(self) -> Pin:
+        """
+        The GPIO Pin object connected to the sensor's trigger pin.
         """
         if self._sensor.trigger is None:
             raise ValueError(f"Trigger pin is not set for sensor at position {self._pos}")
         return self._sensor.trigger
+
+    @property
+    def trigPin(self) -> int:
+        """
+        The GPIO pin number (int) connected to the sensor's trigger pin.
+        """
+        return self._trigPin
 
     @property
     def max_distance(self) -> int:
