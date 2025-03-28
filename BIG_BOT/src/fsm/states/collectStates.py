@@ -16,6 +16,9 @@ class CollectState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+
     """
 
     def __init__(self, fsm: 'RobotFSM'):
@@ -50,6 +53,10 @@ class OpenClawState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+        execute(): Opens the claw
+        
     """
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
@@ -84,6 +91,9 @@ class CloseClawState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+        execute(): Closes the claw
     """
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):

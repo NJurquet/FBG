@@ -13,6 +13,9 @@ class DetectTargetsState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+        on_event(event): Handles the event received by the FSM.
     """
 
     def __init__(self, fsm: 'RobotFSM'):
@@ -46,6 +49,9 @@ class CheckObstaclesState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+        on_event(event): Handles the event received by the FSM.
     """
 
     def __init__(self, fsm: 'RobotFSM'):
