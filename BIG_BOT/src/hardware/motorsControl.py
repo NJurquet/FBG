@@ -2,9 +2,9 @@ from .bigMotor import BigMotor
 
 
 class MotorsControl:
-    def __init__(self, forwardLeftPin: int, backwardLeftPin: int, forwardRightPin: int, backwardRightPin: int):
-        self.leftMotor = BigMotor(forwardLeftPin, backwardLeftPin)
-        self.rightMotor = BigMotor(forwardRightPin, backwardRightPin)
+    def __init__(self, forwardLeftPin: int, backwardLeftPin: int, enableLeftPin: int, forwardRightPin: int, backwardRightPin: int, enableRightPin: int):
+        self.leftMotor = BigMotor(forwardLeftPin, backwardLeftPin, enableLeftPin)
+        self.rightMotor = BigMotor(forwardRightPin, backwardRightPin, enableRightPin)
         self.speed = 0
 
     def forward(self, speed):
