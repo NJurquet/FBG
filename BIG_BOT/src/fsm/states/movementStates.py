@@ -67,7 +67,7 @@ class MoveState(State):
 
     @override
     def execute(self):
-        self.fsm.robot.motor.forward(0.3)
+        self.fsm.robot.motor.forward(0.5)
 
     @override
     def exit(self):
