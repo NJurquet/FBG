@@ -10,7 +10,7 @@ FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, Motor
 {
     currentState = INIT;
     previousState = INIT;
-    motorControl.setSpeed(85);
+    motorControl.setSpeed(80);
     motorControl.setRotationSpeed(rotationSpeedRatio);
     servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
@@ -105,6 +105,10 @@ void FSM_star::followLine()
         previousState = currentState;
         currentState = STOP;
         return;
+    }
+    else if (currentTime - startDelay - totalObstacleTime >= 0.7*edgeStopTime)
+    {
+      motorControl.setRotationSpeed(0.55*rotationSpeedRatio);
     }
 
     bool leftIR = leftIRSensor.read();   // Is 1 if it detects black

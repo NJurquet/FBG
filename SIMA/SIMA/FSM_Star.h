@@ -6,6 +6,7 @@
 #include "MotorControl.h"
 #include "Led.h"
 #include "ServoMotor.h"
+#include "MagneticStart.h"
 
 /**
  * @brief Finite State Machine (FSM) for controlling the Superstar robot's behavior based on sensor inputs.
@@ -54,12 +55,12 @@ private:
     State previousState;
     const unsigned long startDelay = 5000;   // 85 seconds in milliseconds / 5 seconds for testing
     const unsigned long stopTime = 15000;    // 100 seconds in milliseconds / 15 seconds for testing
-    const unsigned long edgeStopTime = 7800; // 7s35ms seconds in milliseconds
+    const unsigned long edgeStopTime = 6950; // 7s35ms seconds in milliseconds
     unsigned long currentTime;               // Time from the start of the program in milliseconds
     unsigned long obstacleStartTime = 0;     // Time when a new obstacle is detected in milliseconds
     unsigned long totalObstacleTime = 0;     // Total time spent avoiding obstacles in milliseconds
     const int obstacleDistance = 10;         // Distance in cm from which it will be detected as an obstacle
-    const double rotationSpeedRatio = 0.5;   // Ratio of the main speed to apply for rotation
+    const double rotationSpeedRatio = 0.8;   // Ratio of the main speed to apply for rotation
     bool magneticStartDetected = false;      // Flag to know if the magnetic start was detected
     long magneticStartTime = 0;              // Time when the magnetic start was detected in milliseconds
 
