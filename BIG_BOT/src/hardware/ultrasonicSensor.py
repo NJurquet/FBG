@@ -1,5 +1,14 @@
+import os
+import platform
 from gpiozero import DistanceSensor, Pin
-from gpiozero.pins.pigpio import PiGPIOFactory
+if os.getenv("GITHUB_ACTIONS") == "true" or platform.system() == "Windows":
+    factory = None
+else:
+    try:
+        from gpiozero.pins.pigpio import PiGPIOFactory
+        factory = PiGPIOFactory()
+    except OSError:
+        factory = None
 from ..constants import USPosition
 
 
@@ -17,7 +26,7 @@ class UltrasonicSensor:
         self._pos = pos
         self._echoPin = echoPin
         self._trigPin = trigPin
-        self._sensor = DistanceSensor(echo=echoPin, trigger=trigPin, max_distance=1, pin_factory=PiGPIOFactory())
+        self._sensor = DistanceSensor(echo=echoPin, trigger=trigPin, max_distance=1, pin_factory=factory)
 
     @property
     def sensor(self) -> DistanceSensor:
