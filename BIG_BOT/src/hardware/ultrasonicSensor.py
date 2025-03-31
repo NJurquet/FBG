@@ -1,4 +1,5 @@
 from gpiozero import DistanceSensor, Pin
+from gpiozero.pins.pigpio import PiGPIOFactory
 from ..constants import USPosition
 
 
@@ -16,7 +17,7 @@ class UltrasonicSensor:
         self._pos = pos
         self._echoPin = echoPin
         self._trigPin = trigPin
-        self._sensor = DistanceSensor(echo=echoPin, trigger=trigPin, max_distance=1)
+        self._sensor = DistanceSensor(echo=echoPin, trigger=trigPin, max_distance=1, pin_factory=PiGPIOFactory())
 
     @property
     def sensor(self) -> DistanceSensor:
@@ -87,3 +88,14 @@ class UltrasonicSensor:
             float: The distance in centimeters.
         """
         return self._sensor.distance * 100
+
+
+if __name__ == "__main__":
+    import time
+
+    # Example usage
+    us_sensor = UltrasonicSensor(USPosition.FRONT_RIGHT, 7, 8)
+    # print(f"Sensor Position: {us_sensor.pos}")
+    while True:
+        print(f"Distance: {us_sensor.getDistance():.2f} cm")
+        time.sleep(1)

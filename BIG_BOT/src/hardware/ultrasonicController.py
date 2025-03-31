@@ -99,38 +99,47 @@ if __name__ == "__main__":
     from gpiozero.pins.mock import MockFactory, MockTriggerPin
     from time import sleep, perf_counter
 
-    class PreciseMockTriggerPin(MockTriggerPin):
-        def _echo(self):
-            if self.echo_pin is None:
-                raise ValueError("echo_pin is not initialized")
+    # class PreciseMockTriggerPin(MockTriggerPin):
+    #     def _echo(self):
+    #         if self.echo_pin is None:
+    #             raise ValueError("echo_pin is not initialized")
 
-            sleep(0.001)
-            self.echo_pin.drive_high()
+    #         sleep(0.001)
+    #         self.echo_pin.drive_high()
 
-            # sleep(), time() and monotonic() dont have enough precision!
-            init_time = perf_counter()
-            while True:
-                if perf_counter() - init_time >= self.echo_time:
-                    break
+    #         # sleep(), time() and monotonic() dont have enough precision!
+    #         init_time = perf_counter()
+    #         while True:
+    #             if perf_counter() - init_time >= self.echo_time:
+    #                 break
 
-            self.echo_pin.drive_low()
+    #         self.echo_pin.drive_low()
 
-    Device.pin_factory = MockFactory()
-    echoPin1 = Device.pin_factory.pin(8)
-    echoPin2 = Device.pin_factory.pin(21)
-    echoPin3 = Device.pin_factory.pin(25)
-    echoPin4 = Device.pin_factory.pin(24)
-    trigPin1 = Device.pin_factory.pin(7, pin_class=PreciseMockTriggerPin, echo_pin=echoPin1, echo_time=0.0)
-    trigPin2 = Device.pin_factory.pin(20, pin_class=PreciseMockTriggerPin, echo_pin=echoPin2, echo_time=0.005)
-    trigPin3 = Device.pin_factory.pin(16, pin_class=PreciseMockTriggerPin, echo_pin=echoPin3, echo_time=0.02)
-    trigPin4 = Device.pin_factory.pin(23, pin_class=PreciseMockTriggerPin, echo_pin=echoPin4, echo_time=0.03)
+    # Device.pin_factory = MockFactory()
+    # echoPin1 = Device.pin_factory.pin(8)
+    # echoPin2 = Device.pin_factory.pin(21)
+    # echoPin3 = Device.pin_factory.pin(25)
+    # echoPin4 = Device.pin_factory.pin(24)
+    # trigPin1 = Device.pin_factory.pin(7, pin_class=PreciseMockTriggerPin, echo_pin=echoPin1, echo_time=0.0)
+    # trigPin2 = Device.pin_factory.pin(20, pin_class=PreciseMockTriggerPin, echo_pin=echoPin2, echo_time=0.005)
+    # trigPin3 = Device.pin_factory.pin(16, pin_class=PreciseMockTriggerPin, echo_pin=echoPin3, echo_time=0.02)
+    # trigPin4 = Device.pin_factory.pin(23, pin_class=PreciseMockTriggerPin, echo_pin=echoPin4, echo_time=0.03)
 
+    # usController = UltrasonicController()
+    # usController.add_sensor(USPosition.FRONT_RIGHT, 8, 7)
+    # usController.add_sensor(USPosition.FRONT_LEFT, 21, 20)
+    # usController.add_sensor(USPosition.BACK_RIGHT, 25, 16)
+    # usController.add_sensor(USPosition.BACK_LEFT, 24, 23)
+
+    # usController.measure_distances()
+    # print(f"Sensors: {usController._distances}")
+    # print(f"Obstacle Event: {usController.check_obstacles()}")
+
+    # Debug
     usController = UltrasonicController()
-    usController.add_sensor(USPosition.FRONT_RIGHT, 8, 7)
-    usController.add_sensor(USPosition.FRONT_LEFT, 21, 20)
-    usController.add_sensor(USPosition.BACK_RIGHT, 25, 16)
-    usController.add_sensor(USPosition.BACK_LEFT, 24, 23)
-
-    usController.measure_distances()
-    print(f"Sensors: {usController._distances}")
-    print(f"Obstacle Event: {usController.check_obstacles()}")
+    usController.add_sensor(USPosition.FRONT_RIGHT, 7, 8)
+    while True:
+        usController.measure_distances()
+        print(f"Sensors: {usController._distances}")
+        print(f"Obstacle Event: {usController.check_obstacles()}")
+        sleep(1)

@@ -61,11 +61,17 @@ class OpenClawState(State):
 
     @override
     def enter(self) -> None:
-        pass
+        print("Entering Close Claw State")
+        try:
+            self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 150)
+        except OSError as e:
+            print(f"I2C communication error: {e}")
+            self.fsm.set_state(StateEnum.STOP)
+
 
     @override
     def execute(self) -> None:
-        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 120)
+        pass
 
     @override
     def exit(self) -> None:
@@ -95,11 +101,16 @@ class CloseClawState(State):
 
     @override
     def enter(self) -> None:
-        pass
+        print("Entering Close Claw State")
+        try:
+            self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 100)
+        except OSError as e:
+            print(f"I2C communication error: {e}")
+            self.fsm.set_state(StateEnum.STOP)
 
     @override
     def execute(self) -> None:
-        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 75)
+        pass
 
     @override
     def exit(self) -> None:

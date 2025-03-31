@@ -33,7 +33,7 @@ class IdleState(State):
         if not self.fsm.robot.reedSwitch.read():  # The reedSwitch is a button so it's 0 when not pressed and 1 when pressed
             self.fsm.start_time = time.time()
             self.fsm.start_match = True
-            self.fsm.set_state(StateEnum.MOVE)
+            self.fsm.set_state(StateEnum.STOP)
 
     @override
     def exit(self):
@@ -63,7 +63,7 @@ class MoveState(State):
 
     @override
     def enter(self):
-        pass
+        print("Entering Move State")
 
     @override
     def execute(self):
@@ -97,15 +97,15 @@ class RotateState(State):
 
     @override
     def enter(self):
-        self.fsm.robot.motor.rotateRight(0.5)
+        print("Entering rotate state")
 
     @override
     def execute(self):
-        pass
+        self.fsm.robot.motor.rotateRight(0.5)
 
     @override
     def exit(self):
-        return DetectTargetsState(self.fsm)
+        pass
 
 
 @Registry.register_state(StateEnum.AVOID_OBSTACLE)
