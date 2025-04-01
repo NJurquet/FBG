@@ -68,13 +68,19 @@ class RobotFSM:
                     self.set_state(self.paused_state)  # Return to pre-obstacle state
                     self.paused_state = None
 
-            if self.start_match and (time.time() - self.start_time >= 22.0):
-                self.set_state(StateEnum.OPEN_CLAW)
+            # if self.start_match and (time.time() - self.start_time >= 22.0):
+            #     self.set_state(StateEnum.OPEN_CLAW)
 
-            elif self.start_match and (time.time() - self.start_time >= 4.0):
-                self.set_state(StateEnum.CLOSE_CLAW)
+            # elif self.start_match and (time.time() - self.start_time >= 4.0):
+            #     self.set_state(StateEnum.CLOSE_CLAW)
 
-            elif self.start_match and (time.time() - self.start_time >= 2.0):
-                self.set_state(StateEnum.OPEN_CLAW)
+            # elif self.start_match and (time.time() - self.start_time >= 2.0):
+            #     self.set_state(StateEnum.OPEN_CLAW)
+
+            if self.start_match and (time.time() - self.start_time >= 1.0):
+                self.set_state(StateEnum.MOVE_FORWARD)
+
+            if self.start_match and (time.time() - self.start_time >= 2.0):
+                self.set_state(StateEnum.STOP)       
 
         self.current_state.execute()

@@ -14,12 +14,16 @@ class StateEnum(Enum):
     Enumeration of all possible states of the robot.
     """
     IDLE = 0
-    MOVE = 1
-    ROTATE = 2
-    OPEN_CLAW = 3
-    CLOSE_CLAW = 4
-    AVOID_OBSTACLE = 5
-    STOP = 6
+    MOVE_FORWARD = 1
+    MOVE_BACKWARD = 2
+    ROTATE_LEFT = 3
+    ROTATE_RIGHT = 4
+    OPEN_CLAW = 5
+    CLOSE_CLAW = 6
+    AVOID_OBSTACLE = 7
+    STOP = 8
+    SLOW_MOVE = 9
+    FAST_MOVE = 10
 
 
 class USPosition(Enum):

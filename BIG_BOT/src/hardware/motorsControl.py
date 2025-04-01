@@ -30,3 +30,20 @@ class MotorsControl:
     def stop(self):
         self.leftMotor.stop()
         self.rightMotor.stop()
+
+    # Additional methods for control in distance and not speed
+
+    def moveForward(self, distance):
+        self.speed = 0.5
+        timeLeft = distance / self.speed
+
+    def moveBackward(self, distance):
+        pass
+
+    # Additional methods for control in degrees and not speed
+
+    def rotateLeftDegrees(self, degrees):
+        pass
+
+    def rotateRightDegrees(self, degrees):
+        pass
