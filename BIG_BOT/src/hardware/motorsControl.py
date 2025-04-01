@@ -1,5 +1,6 @@
 from .bigMotor import BigMotor
-
+from threading import Thread
+from time import time
 
 class MotorsControl:
     def __init__(self, forwardLeftPin: int, backwardLeftPin: int, enableLeftPin: int, forwardRightPin: int, backwardRightPin: int, enableRightPin: int):
@@ -9,7 +10,7 @@ class MotorsControl:
 
     def forward(self, speed):
         self.speed = speed
-        self.leftMotor.forward(self.speed)
+        self.leftMotor.forward(self.speed - 0.025)
         self.rightMotor.forward(self.speed)
 
     def backward(self, speed):
@@ -35,7 +36,10 @@ class MotorsControl:
 
     def moveForward(self, distance):
         self.speed = 0.5
-        timeLeft = distance / self.speed
+        real_speed = 12.08 # cm/s
+        coeff = self.speed / real_speed
+        timeLeft = distance / (self.speed * coeff)
+
 
     def moveBackward(self, distance):
         pass

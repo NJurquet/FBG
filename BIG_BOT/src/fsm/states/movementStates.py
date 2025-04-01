@@ -100,7 +100,7 @@ class MoveBackwardState(State):
 
     @override
     def enter(self):
-        self.fsm.robot.motor.backward(0.3)
+        self.fsm.robot.motor.backward(0.5)
 
     @override
     def execute(self):
@@ -332,7 +332,7 @@ class FastMoveState(State):
 
     @override
     def enter(self):
-        self.fsm.robot.motor.moveForward(0.7)
+        self.fsm.robot.motor.forward(1.0)
 
     @override
     def execute(self):
