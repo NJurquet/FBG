@@ -23,6 +23,12 @@ RIGHT_MOTOR_FORWARD_PIN = 5
 RIGHT_MOTOR_BACKWARD_PIN = 6
 RIGHT_MOTOR_EN_PIN = 19  # PWM
 
+# Motor driver to motor connection :
+#   - OUT 1 -> Left motor red pin
+#   - OUT 2 -> Left motor black pin
+#   - OUT 3 -> Right motor red pin
+#   - OUT 4 -> Right motor black pin
+
 ## Servo Claws Pins ##
 # CENTER_RIGHT_CLAW_PIN = 12
 CENTER_RIGHT_CLAW_NAME = "centerRightClaw"

@@ -54,27 +54,46 @@ class RobotFSM:
             self.end_of_match = True
 
         if not self.end_of_match:
-            self.robot.ultrasonicController.measure_distances()
-            us_event = self.robot.ultrasonicController.check_obstacles()
-            if us_event == USEvent.OBSTACLE_DETECTED:
-                self.paused_state = self.current_state.enum
-                self.set_state(StateEnum.AVOID_OBSTACLE)
-                return
-            elif us_event == USEvent.OBSTACLE_PRESENT:
-                self.current_state.execute()
-                return
-            elif us_event == USEvent.OBSTACLE_CLEARED:
-                if self.paused_state is not None:
-                    self.set_state(self.paused_state)  # Return to pre-obstacle state
-                    self.paused_state = None
+            # self.robot.ultrasonicController.measure_distances()
+            # us_event = self.robot.ultrasonicController.check_obstacles()
+            # if us_event == USEvent.OBSTACLE_DETECTED:
+            #     self.paused_state = self.current_state.enum
+            #     self.set_state(StateEnum.AVOID_OBSTACLE)
+            #     return
+            # elif us_event == USEvent.OBSTACLE_PRESENT:
+            #     self.current_state.execute()
+            #     return
+            # elif us_event == USEvent.OBSTACLE_CLEARED:
+            #     if self.paused_state is not None:
+            #         self.set_state(self.paused_state)  # Return to pre-obstacle state
+            #         self.paused_state = None
 
-            if self.start_match and (time.time() - self.start_time >= 22.0):
-                self.set_state(StateEnum.OPEN_CLAW)
+            # if self.start_match and (time.time() - self.start_time >= 22.0):
+            #     self.set_state(StateEnum.OPEN_CLAW)
 
-            elif self.start_match and (time.time() - self.start_time >= 4.0):
-                self.set_state(StateEnum.CLOSE_CLAW)
+            # elif self.start_match and (time.time() - self.start_time >= 4.0):
+            #     self.set_state(StateEnum.CLOSE_CLAW)
 
-            elif self.start_match and (time.time() - self.start_time >= 2.0):
-                self.set_state(StateEnum.OPEN_CLAW)
+            # elif self.start_match and (time.time() - self.start_time >= 2.0):
+            #     self.set_state(StateEnum.OPEN_CLAW)
+
+            # if self.start_match and (time.time() - self.start_time >= 6.0):
+            #     self.set_state(StateEnum.STOP)    
+
+            # elif self.start_match and (time.time() - self.start_time >= 5.0):
+            #     self.set_state(StateEnum.MOVE_FORWARD)
+            
+            # elif self.start_match and (time.time() - self.start_time >= 4.0):
+            #     self.set_state(StateEnum.STOP)    
+
+            # elif self.start_match and (time.time() - self.start_time >= 3.0):
+            #     self.set_state(StateEnum.MOVE_FORWARD)
+
+            if self.start_match and (time.time() - self.start_time >= 20.0):
+                self.set_state(StateEnum.STOP)    
+
+            # elif self.start_match and (time.time() - self.start_time >= 0.0):
+            #     self.set_state(StateEnum.MOVE_FORWARD)
+   
 
         self.current_state.execute()
