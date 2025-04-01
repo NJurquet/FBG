@@ -65,7 +65,7 @@ class MoveForwardState(State):
 
     @override
     def enter(self):
-        self.fsm.robot.motor.forward(0.5)
+        self.fsm.robot.motor.moveForward(50)
 
     @override
     def execute(self):
@@ -100,7 +100,7 @@ class MoveBackwardState(State):
 
     @override
     def enter(self):
-        self.fsm.robot.motor.backward(0.5)
+        self.fsm.robot.motor.moveBackward(50)
 
     @override
     def execute(self):

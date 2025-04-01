@@ -89,11 +89,11 @@ class RobotFSM:
             # elif self.start_match and (time.time() - self.start_time >= 3.0):
             #     self.set_state(StateEnum.MOVE_FORWARD)
 
-            if self.start_match and (time.time() - self.start_time >= 1.0):
+            if self.start_match and (time.time() - self.start_time >= 20.0):
                 self.set_state(StateEnum.STOP)    
 
-            elif self.start_match and (time.time() - self.start_time >= 0.0):
-                self.set_state(StateEnum.MOVE_BACKWARD)
+            # elif self.start_match and (time.time() - self.start_time >= 0.0):
+            #     self.set_state(StateEnum.MOVE_FORWARD)
    
 
         self.current_state.execute()

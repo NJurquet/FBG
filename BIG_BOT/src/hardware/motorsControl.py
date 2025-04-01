@@ -10,7 +10,7 @@ class MotorsControl:
         self.leftOffset = - 0.025
         self.rightOffset = 0
         self.movement_timer = None
-        self.distance_per_second = 12.08 # cm/s
+        self.distance_per_second = 11.8 # cm/s
         self.degrees_per_second = None # degrees/s
         self._is_moving = False
 
@@ -45,10 +45,14 @@ class MotorsControl:
             return 0
     
         self.speed = speed
-        coeff = self.speed / self.distance_per_second
+        coeff = self.distance_per_second/self.speed 
 
         # Calculate the time needed to cover the distance in cm
         time_needed = distance_cm / (self.speed * coeff)
+
+        print(time_needed)
+        print(distance_cm)
+        print(coeff)
 
         self.leftMotor.forward(self.speed + self.leftOffset)
         self.rightMotor.forward(self.speed + self.rightOffset)
@@ -56,7 +60,7 @@ class MotorsControl:
         if self.movement_timer:
             self.movement_timer.cancel()
 
-        self.movement_timer = Timer(time_needed, self.stop())
+        self.movement_timer = Timer(time_needed, lambda : self.stop())
         self.movement_timer.start()
 
         return time_needed
@@ -77,7 +81,7 @@ class MotorsControl:
         if self.movement_timer:
             self.movement_timer.cancel()
 
-        self.movement_timer = Timer(time_needed, self.stop())
+        self.movement_timer = Timer(time_needed, lambda : self.stop())
         self.movement_timer.start()
 
         return time_needed
