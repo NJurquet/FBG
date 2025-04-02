@@ -20,3 +20,4 @@ class MyTimer:
 
     def cancel(self):
         self.timer.cancel()
+        self.timer = None

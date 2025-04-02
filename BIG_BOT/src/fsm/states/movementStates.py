@@ -56,15 +56,18 @@ class MoveForwardState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
+        self.distance = 0.0
+        self.speed = 0.5
+
     def increment_step(self):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
     @override
     def enter(self, **args):
-        distance = args.get('distance', 0.0)
-        speed = args.get('speed', 0.5)
-        time_needed = self.fsm.robot.motor.moveForward(distance_cm=distance, speed=speed)
+        self.distance = args.get('distance', self.distance)
+        self.speed = args.get('speed', self.speed)
+        time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
 
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -82,8 +85,6 @@ class MoveForwardState(State):
             self.fsm.timer.cancel()
             self.fsm.timer = None
 
-        print("Exiting Move Forward State")
-        print(self.fsm.step)
 
 @Registry.register_state(StateEnum.MOVE_BACKWARD)
 class MoveBackwardState(State):
