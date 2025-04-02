@@ -25,7 +25,7 @@ class IdleState(State):
         super().__init__(fsm, enum)
 
     @override
-    def enter(self):
+    def enter(self, **args):
         pass
 
     @override
@@ -33,7 +33,6 @@ class IdleState(State):
         # if not self.fsm.robot.reedSwitch.read():  # The reedSwitch is a button so it's 0 when not pressed and 1 when pressed
             self.fsm.start_time = time.time()
             self.fsm.start_match = True
-            self.fsm.set_state(StateEnum.MOVE_FORWARD)
 
     @override
     def exit(self):
@@ -56,16 +55,11 @@ class MoveForwardState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
-    def on_event(self, event):
-        if event == 'stop':
-            return
-        elif event == 'obstacle_detected':
-            return
-        return self
-
     @override
-    def enter(self):
-        self.fsm.robot.motor.moveForward(50)
+    def enter(self, **args):
+        distance = args.get('distance', 0.0)
+        speed = args.get('speed', 0.5)
+        self.fsm.robot.motor.moveForward(distance_cm=distance, speed=speed)
 
     @override
     def execute(self):
@@ -91,15 +85,8 @@ class MoveBackwardState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
-    def on_event(self, event):
-        if event == 'stop':
-            return
-        elif event == 'obstacle_detected':
-            return
-        return self
-
     @override
-    def enter(self):
+    def enter(self, **args):
         self.fsm.robot.motor.moveBackward(50)
 
     @override
@@ -124,15 +111,8 @@ class RotateLeftState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
-    def on_event(self, event):
-        if event == 'stop':
-            return
-        elif event == 'obstacle_detected':
-            return
-        return self
-
     @override
-    def enter(self):
+    def enter(self, **args):
         self.fsm.robot.motor.rotateLeft(0.5)
 
     @override
@@ -157,15 +137,8 @@ class RotateRightState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
-    def on_event(self, event):
-        if event == 'stop':
-            return
-        elif event == 'obstacle_detected':
-            return
-        return self
-
     @override
-    def enter(self):
+    def enter(self, **args):
         self.fsm.robot.motor.rotateRight(0.5)
 
     @override
@@ -192,7 +165,7 @@ class AvoidObstacleState(State):
         self._obstacle_start_time: float = 0.0
 
     @override
-    def enter(self):
+    def enter(self, **args):
         print("Entering Avoid Obstacle State")
         self._obstacle_start_time = time.time()
         self.fsm.robot.motor.stop()
@@ -225,13 +198,8 @@ class StopState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
-    def on_event(self, event):
-        if event == 'start_moving':
-            return
-        return self
-
     @override
-    def enter(self):
+    def enter(self, **args):
         self.fsm.robot.motor.stop()
 
     @override
@@ -257,16 +225,9 @@ class SlowMoveState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
-    def on_event(self, event):
-        if event == 'stop':
-            return
-        elif event == 'obstacle_detected':
-            return
-        return self
-
     @override
-    def enter(self):
-        pass
+    def enter(self, **args):
+        self.fsm.robot.motor.forward(0.3)
 
     @override
     def execute(self):
@@ -275,12 +236,6 @@ class SlowMoveState(State):
     @override
     def exit(self):
         pass
-
-    def slow_forward(self):
-        self.fsm.robot.motor.forward(0.3)
-
-    def slow_backward(self):
-        print("Slowly moving backward")
 
 
 class SlowRotateState(State):
@@ -296,15 +251,8 @@ class SlowRotateState(State):
     def __init__(self, fsm):
         super().__init__(fsm)
 
-    def on_event(self, event):
-        if event == 'stop':
-            return
-        elif event == 'obstacle_detected':
-            return
-        return self
-
     @override
-    def enter(self):
+    def enter(self, **args):
         pass
 
     @override
@@ -313,13 +261,7 @@ class SlowRotateState(State):
 
     @override
     def exit(self):
-        return DetectTargetsState(self.fsm)
-
-    def slow_rotate_left(self):
-        print("Slowly rotating left")
-
-    def slow_rotate_right(self):
-        print("Slowly rotating right")
+        pass
 
 
 @Registry.register_state(StateEnum.FAST_MOVE)
@@ -327,12 +269,11 @@ class FastMoveState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
-    def on_event(self, event):
-        return self
-
     @override
-    def enter(self):
-        self.fsm.robot.motor.forward(1.0)
+    def enter(self, **args):
+        distance = args.get('distance', 0.0)
+        speed = args.get('speed', 1.0)
+        self.fsm.robot.motor.moveForward(distance_cm=distance, speed=speed)
 
     @override
     def execute(self):

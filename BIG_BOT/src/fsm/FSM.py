@@ -31,7 +31,7 @@ class RobotFSM:
         self.start_time: float = 0.0
         self.end_of_match: bool = False
 
-    def set_state(self, new_state: StateEnum) -> None:
+    def set_state(self, new_state: StateEnum, **args: dict) -> None:
         """
         Set the current state of the FSM to the new specified state.
 
@@ -43,7 +43,7 @@ class RobotFSM:
         if self.current_state.enum != new_state:
             self.current_state.exit()
             self.current_state = self.state_factory.get_state(new_state)
-            self.current_state.enter()
+            self.current_state.enter(**args)
 
     def update(self) -> None:
         """
@@ -90,10 +90,15 @@ class RobotFSM:
             #     self.set_state(StateEnum.MOVE_FORWARD)
 
             if self.start_match and (time.time() - self.start_time >= 20.0):
-                self.set_state(StateEnum.STOP)    
+                self.set_state(StateEnum.STOP, None)
 
-            # elif self.start_match and (time.time() - self.start_time >= 0.0):
-            #     self.set_state(StateEnum.MOVE_FORWARD)
+            if self.start_match and (time.time() - self.start_time >= 5.0):
+                self.set_state(StateEnum.MOVE_FORWARD, 
+                               {"distance": 100.0, "speed": 1.0})     
+
+            elif self.start_match and (time.time() - self.start_time >= 0.0):
+                self.set_state(StateEnum.MOVE_FORWARD,
+                               {"distance": 20.0, "speed": 0.5})
    
 
         self.current_state.execute()

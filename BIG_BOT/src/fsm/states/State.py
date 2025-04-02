@@ -23,7 +23,7 @@ class State(ABC):
         self.enum = enum
 
     @abstractmethod
-    def enter(self) -> None:
+    def enter(self, **args) -> None:
         """
         Method called by the FSM when entering the state.
         """
@@ -42,3 +42,4 @@ class State(ABC):
         Method called by the FSM when exiting the state.
         """
         raise NotImplementedError("The 'exit' method must be overridden in subclasses of State.")
+    
