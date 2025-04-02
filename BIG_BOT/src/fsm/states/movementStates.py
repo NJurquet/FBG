@@ -128,9 +128,25 @@ class RotateLeftState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
+        self.degrees = 0.0
+        self.speed = 0.5
+
+    def increment_step(self):
+        if self.fsm.step < self.fsm.maxStep:
+            self.fsm.step += 1
+
     @override
     def enter(self, **args):
-        self.fsm.robot.motor.rotateLeft(0.5)
+        self.degrees = args.get('degrees', self.degrees)
+        self.speed = args.get('speed', self.speed)
+        
+        time_needed = self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
+
+        if self.fsm.timer:
+            self.fsm.timer.cancel()
+            self.fsm.timer = None
+
+        self.fsm.timer = MyTimer(time_needed, self.increment_step)
 
     @override
     def execute(self):
@@ -138,7 +154,9 @@ class RotateLeftState(State):
 
     @override
     def exit(self):
-        return DetectTargetsState(self.fsm)
+        if self.fsm.timer:
+            self.fsm.timer.cancel()
+            self.fsm.timer = None
     
 @Registry.register_state(StateEnum.ROTATE_RIGHT)
 class RotateRightState(State):
@@ -156,7 +174,7 @@ class RotateRightState(State):
 
     @override
     def enter(self, **args):
-        self.fsm.robot.motor.rotateRight(0.5)
+        self.fsm.robot.motor.rotateLeftDegrees(90)
 
     @override
     def execute(self):
@@ -164,7 +182,7 @@ class RotateRightState(State):
 
     @override
     def exit(self):
-        return DetectTargetsState(self.fsm)
+        pass
 
 @Registry.register_state(StateEnum.AVOID_OBSTACLE)
 class AvoidObstacleState(State):
