@@ -50,10 +50,6 @@ class MotorsControl:
         # Calculate the time needed to cover the distance in cm
         time_needed = distance_cm / (self.speed * coeff)
 
-        print(time_needed)
-        print(distance_cm)
-        print(coeff)
-
         self.leftMotor.forward(self.speed + self.leftOffset)
         self.rightMotor.forward(self.speed + self.rightOffset)
 

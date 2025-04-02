@@ -1,4 +1,5 @@
 from .state_factory import StateFactory
+from .myTimer import MyTimer
 from ..constants import StateEnum, USEvent, MAX_TIME
 import time
 
@@ -31,7 +32,11 @@ class RobotFSM:
         self.start_time: float = 0.0
         self.end_of_match: bool = False
 
-    def set_state(self, new_state: StateEnum, **args: dict) -> None:
+        self.timer: MyTimer | None = None
+        self.step = 0
+        self.maxStep = 15
+
+    def set_state(self, new_state: StateEnum, **args) -> None:
         """
         Set the current state of the FSM to the new specified state.
 
@@ -89,16 +94,19 @@ class RobotFSM:
             # elif self.start_match and (time.time() - self.start_time >= 3.0):
             #     self.set_state(StateEnum.MOVE_FORWARD)
 
-            if self.start_match and (time.time() - self.start_time >= 20.0):
-                self.set_state(StateEnum.STOP, None)
+            if self.start_match and self.step == 3:
+                self.set_state(StateEnum.STOP)
 
-            if self.start_match and (time.time() - self.start_time >= 5.0):
+            if self.start_match and self.step == 2:
                 self.set_state(StateEnum.MOVE_FORWARD, 
-                               {"distance": 100.0, "speed": 1.0})     
+                               distance = 50.0, speed = 1.0)   
 
-            elif self.start_match and (time.time() - self.start_time >= 0.0):
+            if self.start_match and self.step == 1:
+               self.set_state(StateEnum.STOP)
+
+            elif self.start_match and self.step == 0:
                 self.set_state(StateEnum.MOVE_FORWARD,
-                               {"distance": 20.0, "speed": 0.5})
+                               distance = 20.0, speed = 0.5)
    
 
         self.current_state.execute()
