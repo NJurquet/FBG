@@ -102,9 +102,24 @@ class MoveBackwardState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
+        self.distance = 0.0
+        self.speed = 0.5
+
+    def increment_step(self):
+        if self.fsm.step < self.fsm.maxStep:
+            self.fsm.step += 1
+
     @override
     def enter(self, **args):
-        self.fsm.robot.motor.moveBackward(50)
+        self.distance = args.get('distance', self.distance)
+        self.speed = args.get('speed', self.speed)
+        time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
+
+        if self.fsm.timer:
+            self.fsm.timer.cancel()
+            self.fsm.timer = None
+
+        self.fsm.timer = MyTimer(time_needed, self.increment_step)
 
     @override
     def execute(self):
@@ -112,7 +127,9 @@ class MoveBackwardState(State):
 
     @override
     def exit(self):
-        pass
+        if self.fsm.timer:
+            self.fsm.timer.cancel()
+            self.fsm.timer = None
 
 @Registry.register_state(StateEnum.ROTATE_LEFT)
 class RotateLeftState(State):
@@ -172,9 +189,25 @@ class RotateRightState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
+        self.degrees = 0.0
+        self.speed = 0.5
+
+    def increment_step(self):
+        if self.fsm.step < self.fsm.maxStep:
+            self.fsm.step += 1
+
     @override
     def enter(self, **args):
-        self.fsm.robot.motor.rotateLeftDegrees(90)
+        self.degrees = args.get('degrees', self.degrees)
+        self.speed = args.get('speed', self.speed)
+        
+        time_needed = self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
+
+        if self.fsm.timer:
+            self.fsm.timer.cancel()
+            self.fsm.timer = None
+
+        self.fsm.timer = MyTimer(time_needed, self.increment_step)
 
     @override
     def execute(self):
@@ -182,7 +215,9 @@ class RotateRightState(State):
 
     @override
     def exit(self):
-        pass
+        if self.fsm.timer:
+            self.fsm.timer.cancel()
+            self.fsm.timer = None
 
 @Registry.register_state(StateEnum.AVOID_OBSTACLE)
 class AvoidObstacleState(State):
