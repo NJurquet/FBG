@@ -1,3 +1,9 @@
+import os
+import platform
+if os.getenv("GITHUB_ACTIONS") == "true" or platform.system() == "Windows":
+    from unittest.mock import MagicMock
+    import sys
+    sys.modules["RPLCD.i2c"] = MagicMock()
 from RPLCD.i2c import CharLCD
 
 
