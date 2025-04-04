@@ -42,9 +42,9 @@ class Robot:
                                     top_limit_pin=STEPPER_TOP_LIMIT_PIN, bottom_limit_pin=STEPPER_BOTTOM_LIMIT_PIN)
         # self.lcd = LCD()
         self.camera = None
-        self.ultrasonicController = UltrasonicController()
-        self.ultrasonicController.add_sensor(USPosition.FRONT_RIGHT, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_RIGHT_TRIG_PIN)
-        self.ultrasonicController.add_sensor(USPosition.FRONT_LEFT, US_FRONT_LEFT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN)
+        # self.ultrasonicController = UltrasonicController()
+        # self.ultrasonicController.add_sensor(USPosition.FRONT_RIGHT, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_RIGHT_TRIG_PIN)
+        # self.ultrasonicController.add_sensor(USPosition.FRONT_LEFT, US_FRONT_LEFT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN)
         # self.ultrasonicController.add_sensor(USPosition.BACK_RIGHT, US_BACK_RIGHT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN)
         # self.ultrasonicController.add_sensor(USPosition.BACK_LEFT, US_BACK_LEFT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN)
         # self.reedSwitch = reedSwitch(REED_SWITCH_PIN)
