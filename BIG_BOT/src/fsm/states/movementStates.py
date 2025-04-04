@@ -396,6 +396,7 @@ class FirstCanMoveState(State):
             self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
             self.substep += 1
             print(self.substep)
+
         elif self.substep == 1:
             print("Substep 1: Rotating right")
             self.fsm.set_state(StateEnum.ROTATE_RIGHT, degrees=90, speed=0.5)
@@ -412,7 +413,6 @@ class FirstCanMoveState(State):
             print("FirstCanMoveState sequence complete")
             self.fsm.step += 1  # Increment the FSM step
             self.fsm.set_state(StateEnum.STOP)  # Transition to the STOP state
-        self.substep = 0
 
     def execute(self):
         pass
