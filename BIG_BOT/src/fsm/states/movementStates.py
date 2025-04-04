@@ -373,47 +373,44 @@ class FastMoveState(State):
 
 @Registry.register_state(StateEnum.FIRST_CAN_MOVE)
 class FirstCanMoveState(State):
-    """
-    State in which the robot moves to the first can.
-
-    Parameters
-    ----------
-    `fsm` : RobotFSM
-        The Finite State Machine (FSM) instance that the state belongs to.
-    """
-
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
-        self.substep = 0  # Track the progress of the sequence
+        self.substep = 0
+        self.transition_done = False
 
     def enter(self, **args):
         print("Entering FirstCanMoveState")
+        self.transition_done = False
+
+    def execute(self):
+        if self.transition_done:
+            return
+
         if self.substep == 0:
             print("Substep 0: Moving forward")
             self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
             self.substep += 1
-            print(self.substep)
-
+            self.transition_done = True
         elif self.substep == 1:
             print("Substep 1: Rotating right")
             self.fsm.set_state(StateEnum.ROTATE_RIGHT, degrees=90, speed=0.5)
             self.substep += 1
+            self.transition_done = True
         elif self.substep == 2:
             print("Substep 2: Moving forward")
             self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
             self.substep += 1
+            self.transition_done = True
         elif self.substep == 3:
             print("Substep 3: Rotating left")
             self.fsm.set_state(StateEnum.ROTATE_LEFT, degrees=90, speed=0.5)
             self.substep += 1
+            self.transition_done = True
         else:
             print("FirstCanMoveState sequence complete")
-            self.fsm.step += 1  # Increment the FSM step
-            self.fsm.set_state(StateEnum.STOP)  # Transition to the STOP state
-
-    def execute(self):
-        pass
-
+            self.fsm.step += 1
+            self.fsm.set_state(StateEnum.STOP)
+            self.transition_done = True
 
     def exit(self):
         print("Exiting FirstCanMove")
