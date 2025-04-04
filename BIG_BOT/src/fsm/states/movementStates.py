@@ -363,11 +363,20 @@ class FastMoveState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
+    def increment_step(self):
+        pass  # Don't increment FSM step here
+
     @override
     def enter(self, **args):
         distance = args.get('distance', 0.0)
         speed = args.get('speed', 1.0)
-        self.fsm.robot.motor.moveForward(distance_cm=distance, speed=speed)
+        time_needed = self.fsm.robot.motor.moveForward(distance_cm=distance, speed=speed)
+
+        if self.fsm.timer:
+            self.fsm.timer.cancel()
+            self.fsm.timer = None
+
+        self.fsm.timer = MyTimer(time_needed, self.increment_step)
 
     @override
     def execute(self):
@@ -375,7 +384,10 @@ class FastMoveState(State):
 
     @override
     def exit(self):
-        pass
+        if self.fsm.timer:
+            self.fsm.timer.cancel()
+            self.fsm.timer = None
+
 
 @Registry.register_state(StateEnum.FIRST_CAN_MOVE)
 class FirstCanMoveState(State):
@@ -420,4 +432,4 @@ class FirstCanMoveState(State):
             self.fsm.set_state(StateEnum.STOP)  # Transition to the STOP state
 
     def exit(self):
-        print("Exiting FirstCanMoveState")
+        print("Exiting FirstCanMove
