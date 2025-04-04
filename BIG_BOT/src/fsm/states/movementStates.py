@@ -376,3 +376,45 @@ class FastMoveState(State):
     @override
     def exit(self):
         return DetectTargetsState(self.fsm)
+
+@Registry.register_state(StateEnum.FIRST_CAN_MOVE)
+class FirstCanMoveState(State):
+    """
+    State in which the robot moves to the first can.
+
+    Parameters
+    ----------
+    `fsm` : RobotFSM
+        The Finite State Machine (FSM) instance that the state belongs to.
+    """
+
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
+        self.substep = 0 
+
+
+    def enter(self, **args):
+        print("Entering FirstCanMoveState")
+        self.substep = 0  # Reset the substep counter
+        self.stepinit = self.fsm.step  # Store the initial step value
+
+    def execute(self):
+        if self.substep == 0:
+            self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
+            self.substep += 1
+        elif self.substep == 1:
+            self.fsm.set_state(StateEnum.ROTATE_RIGHT, degrees=90, speed=0.5)
+            self.substep += 1
+        elif self.substep == 2:
+            self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
+            self.substep += 1
+        elif self.substep == 3:
+            self.fsm.set_state(StateEnum.ROTATE_LEFT, degrees=90, speed=0.5)
+            self.substep += 1
+        else:
+            print("FirstCanMoveState sequence complete")
+            self.fsm.step += self.stepinit +1 # Increment the FSM step
+            self.fsm.set_state(StateEnum.STOP)  # Transition to stop state state
+
+    def exit(self):
+        print("Exiting FirstCanMoveState")

@@ -100,30 +100,14 @@ class RobotFSM:
             # elif self.start_match and (time.time() - self.start_time >= 3.0):
             #     self.set_state(StateEnum.MOVE_FORWARD)
 
-            if self.start_match and self.step == 6:
-                self.set_state(StateEnum.ROTATE_LEFT, 
-                               degrees = 90.0, speed = 0.5)   
 
-            elif self.start_match and self.step == 5:
-                self.set_state(StateEnum.STOP)
 
-            elif self.start_match and self.step == 4:
-                self.set_state(StateEnum.MOVE_FORWARD, 
-                               distance = 10.0, speed = 0.5)  
-
-            elif self.start_match and self.step == 3:
-                self.set_state(StateEnum.STOP) 
-
-            elif self.start_match and self.step == 2:
-                self.set_state(StateEnum.ROTATE_LEFT, 
-                               degrees = 270.0, speed = 0.5)   
-
-            elif self.start_match and self.step == 1:
+            if self.start_match and self.step == 1:
                self.set_state(StateEnum.STOP)
 
             elif self.start_match and self.step == 0:
-                self.set_state(StateEnum.MOVE_FORWARD,
-                               distance = 60.0, speed = 0.5)
+                self.set_state(StateEnum.FIRST_CAN_MOVE)
+
 
             # if self.start_match and (time.time() - self.start_time >= 7.6):
             #     self.set_state(StateEnum.STOP)  
