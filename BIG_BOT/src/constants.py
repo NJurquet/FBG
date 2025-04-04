@@ -24,6 +24,7 @@ class StateEnum(Enum):
     STOP = 8
     SLOW_MOVE = 9
     FAST_MOVE = 10
+    FIRST_CAN_MOVE = 11
 
 
 class USPosition(Enum):
