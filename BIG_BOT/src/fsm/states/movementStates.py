@@ -401,6 +401,7 @@ class FirstCanMoveState(State):
             print("Substep 0: Moving forward")
             self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
             self.substep += 1
+            print(self.substep)
         elif self.substep == 1:
             print("Substep 1: Rotating right")
             self.fsm.set_state(StateEnum.ROTATE_RIGHT, degrees=90, speed=0.5)
