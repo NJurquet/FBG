@@ -388,7 +388,6 @@ class FirstCanMoveState(State):
 
     def enter(self, **args):
         print("Entering FirstCanMoveState")
-        self.substep = 0  # Reset the substep counter
         if self.substep == 0:
             print("Substep 0: Moving forward")
             self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
@@ -410,6 +409,7 @@ class FirstCanMoveState(State):
             print("FirstCanMoveState sequence complete")
             self.fsm.step += 1  # Increment the FSM step
             self.fsm.set_state(StateEnum.STOP)  # Transition to the STOP state
+        self.substep = 0
 
     def execute(self):
         pass
