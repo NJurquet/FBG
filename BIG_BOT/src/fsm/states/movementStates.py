@@ -432,4 +432,4 @@ class FirstCanMoveState(State):
             self.fsm.set_state(StateEnum.STOP)  # Transition to the STOP state
 
     def exit(self):
-        print("Exiting FirstCanMove
+        print("Exiting FirstCanMove")
