@@ -360,7 +360,7 @@ class FastMoveState(State):
 
     @override
     def exit(self):
-        return DetectTargetsState(self.fsm)
+        pass
 
 @Registry.register_state(StateEnum.FIRST_CAN_MOVE)
 class FirstCanMoveState(State):
