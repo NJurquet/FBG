@@ -390,31 +390,33 @@ class FirstCanMoveState(State):
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
-        self.substep = 0 
-
+        self.substep = 0  # Track the progress of the sequence
 
     def enter(self, **args):
         print("Entering FirstCanMoveState")
         self.substep = 0  # Reset the substep counter
-        self.stepinit = self.fsm.step  # Store the initial step value
 
     def execute(self):
         if self.substep == 0:
+            print("Substep 0: Moving forward")
             self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
             self.substep += 1
         elif self.substep == 1:
+            print("Substep 1: Rotating right")
             self.fsm.set_state(StateEnum.ROTATE_RIGHT, degrees=90, speed=0.5)
             self.substep += 1
         elif self.substep == 2:
+            print("Substep 2: Moving forward")
             self.fsm.set_state(StateEnum.FAST_MOVE, distance=20, speed=0.5)
             self.substep += 1
         elif self.substep == 3:
+            print("Substep 3: Rotating left")
             self.fsm.set_state(StateEnum.ROTATE_LEFT, degrees=90, speed=0.5)
             self.substep += 1
         else:
             print("FirstCanMoveState sequence complete")
-            self.fsm.step += self.stepinit +1 # Increment the FSM step
-            self.fsm.set_state(StateEnum.STOP)  # Transition to stop state state
+            self.fsm.step += 1  # Increment the FSM step
+            self.fsm.set_state(StateEnum.STOP)  # Transition to the STOP state
 
     def exit(self):
         print("Exiting FirstCanMoveState")
