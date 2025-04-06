@@ -9,7 +9,7 @@ from RPLCD.i2c import CharLCD
 
 class LCD:
     """
-    Class to control a LCD display using I2C.
+    Class to control a LCD 2004 (4 rows & 20 characters) display using I2C.
     """
 
     def __init__(self, address: int = 0x27):
@@ -62,8 +62,8 @@ class LCD:
         """
         if not isinstance(score, int):
             raise TypeError("LCD score must be an integer")
-        if score < 0:
-            raise ValueError("LCD score must be a non-negative integer")
+        if score < 0 or score > 120:
+            raise ValueError("LCD score must be between 0 and 120")
         self._lcd.write_string("FatBOTtommed Girls")
         self._lcd.lf()
         self._lcd.cursor_pos = (2, 0)
