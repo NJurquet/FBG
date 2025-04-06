@@ -1,4 +1,4 @@
-from ...constants import StateEnum
+from ...constants import StateEnum, USPosition
 from ...config import MAX_OBSTACLE_DURATION
 from .detectionStates import DetectTargetsState
 from .State import State
@@ -228,16 +228,26 @@ class AvoidObstacleState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
         self._obstacle_start_time: float = 0.0
+        self._detecting_sensors: list[USPosition] = []
 
     def enter(self, **args):
         print("Entering Avoid Obstacle State")
+        self._detecting_sensors = args.get('sensors', [])
         self._obstacle_start_time = time.time()
         self.fsm.robot.motor.stop()
 
     def execute(self):
         obstacle_duration: float = time.time() - self._obstacle_start_time
         if obstacle_duration >= MAX_OBSTACLE_DURATION and obstacle_duration < MAX_OBSTACLE_DURATION + 2.0:
-            self.fsm.robot.motor.backward(0.5)
+            if (USPosition.FRONT_RIGHT in self._detecting_sensors or USPosition.FRONT_LEFT in self._detecting_sensors) and (USPosition.BACK_RIGHT in self._detecting_sensors or USPosition.BACK_LEFT in self._detecting_sensors):
+                # When detecting in front and back, stop the robot
+                self.fsm.robot.motor.stop()
+            elif USPosition.FRONT_RIGHT in self._detecting_sensors or USPosition.FRONT_LEFT in self._detecting_sensors:
+                # When detecting in front, move backward
+                self.fsm.robot.motor.backward(0.5)
+            elif USPosition.BACK_RIGHT in self._detecting_sensors or USPosition.BACK_LEFT in self._detecting_sensors:
+                # When detecting in back, move forward
+                self.fsm.robot.motor.forward(0.5)
         elif obstacle_duration >= MAX_OBSTACLE_DURATION + 2.0:
             self.fsm.robot.motor.stop()
             self._obstacle_start_time = time.time()
