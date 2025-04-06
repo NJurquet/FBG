@@ -87,5 +87,8 @@ REED_SWITCH_PIN = 26
 DEFAULT_SCORE = 73
 """Default score for the robot if nothing is passed as command line argument."""
 
+OBSTACLE_DISTANCE = 20  # cm
+"""Distance in cm under which the robot considers there is an obstacle."""
+
 MAX_OBSTACLE_DURATION = 5.0  # seconds
 """Maximum duration (in seconds) of obstacle detection, after which the robot should take action."""
