@@ -34,6 +34,9 @@ class TestLCD:
         with pytest.raises(ValueError):
             lcd.write_score(-10)
 
+        with pytest.raises(ValueError):
+            lcd.write_score(150)
+
         assert lcd.write_score(100) is None
 
     def test_clear(self, lcd: LCD):
