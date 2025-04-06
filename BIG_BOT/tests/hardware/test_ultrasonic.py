@@ -66,22 +66,22 @@ class TestUltrasonicController:
         sensors: list[UltrasonicSensor] = [sensor1, sensor2]
         distances: dict[USPosition, float] = {
             USPosition.FRONT_RIGHT: 45.0,
-            USPosition.FRONT_LEFT: 80.0,
+            USPosition.BACK_LEFT: 80.0,
         }
         controller._sensors = sensors
         controller._distances = distances
 
-        assert controller.check_obstacles() == USEvent.NO_EVENT
+        assert controller.check_obstacles() == (USEvent.NO_EVENT, [])
         # Sensors present with no distances
         controller._distances = {}
-        assert controller.check_obstacles() == USEvent.NO_EVENT
+        assert controller.check_obstacles() == (USEvent.NO_EVENT, [])
         # No sensors present with distances
         controller._sensors = []
         controller._distances = distances
-        assert controller.check_obstacles() == USEvent.NO_EVENT
+        assert controller.check_obstacles() == (USEvent.NO_EVENT, [])
         # No sensors present with no distances
         controller._distances = {}
-        assert controller.check_obstacles() == USEvent.NO_EVENT
+        assert controller.check_obstacles() == (USEvent.NO_EVENT, [])
 
     def test_check_obstacles_obstacle_detected_present(self, controller: UltrasonicController):
         sensor1 = Mock(spec=UltrasonicSensor)
@@ -90,14 +90,14 @@ class TestUltrasonicController:
         sensors: list[UltrasonicSensor] = [sensor1, sensor2]
         distances: dict[USPosition, float] = {
             USPosition.FRONT_RIGHT: 5.0,
-            USPosition.FRONT_LEFT: 80.0,
+            USPosition.BACK_LEFT: 8.0,
         }
         controller._sensors = sensors
         controller._distances = distances
 
-        assert controller.check_obstacles() == USEvent.OBSTACLE_DETECTED
+        assert controller.check_obstacles() == (USEvent.OBSTACLE_DETECTED, [USPosition.FRONT_RIGHT, USPosition.BACK_LEFT])
         assert controller._last_obstacle is True
-        assert controller.check_obstacles() == USEvent.OBSTACLE_PRESENT
+        assert controller.check_obstacles() == (USEvent.OBSTACLE_PRESENT, [USPosition.FRONT_RIGHT, USPosition.BACK_LEFT])
         assert controller._last_obstacle is True
 
     def test_check_obstacles_obstacle_cleared(self, controller: UltrasonicController):
@@ -113,7 +113,7 @@ class TestUltrasonicController:
         controller._distances = distances
         controller._last_obstacle = True
 
-        assert controller.check_obstacles() == USEvent.OBSTACLE_CLEARED
+        assert controller.check_obstacles() == (USEvent.OBSTACLE_CLEARED, [])
         assert controller._last_obstacle is False
 
     def test_measure_distances(self, controller: UltrasonicController):

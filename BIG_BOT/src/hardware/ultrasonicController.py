@@ -1,5 +1,6 @@
 from .ultrasonicSensor import UltrasonicSensor
 from ..constants import USPosition, USEvent
+from ..config import OBSTACLE_DISTANCE
 
 
 class UltrasonicController:
@@ -35,37 +36,44 @@ class UltrasonicController:
             raise ValueError(f"Sensor with position {pos} already exists in the controller.")
         self._sensors.append(UltrasonicSensor(pos, echoPin, trigPin))
 
-    def check_obstacles(self) -> USEvent:
+    def check_obstacles(self) -> tuple[USEvent, list[USPosition]]:
         """
         Check if any of the ultrasonic sensors detects an obstacle.
         Make sure to call `measure_distances()` before calling this method.
 
         Returns:
+            tuple:
+
             `USEvent`: The event that occurred.
-            - `OBSTACLE_DETECTED`: If a new obstacle is detected.
-            - `OBSTACLE_PRESENT`: If the same obstacle is still detected.
-            - `OBSTACLE_CLEARED`: If the previously detected obstacle is no longer detected.
-            - `NO_EVENT`: If no obstacle is detected.
+
+                - `OBSTACLE_DETECTED`: If a new obstacle is detected.
+                - `OBSTACLE_PRESENT`: If the same obstacle is still detected.
+                - `OBSTACLE_CLEARED`: If the previously detected obstacle is no longer detected.
+                - `NO_EVENT`: If no obstacle is detected.
+
+            `list[USPosition]`: The USPositions of sensors that detected an obstacle.
         """
         # If no sensors provided or no distances measured
         if len(self._sensors) == 0 or len(self._distances) == 0:
-            return USEvent.NO_EVENT
+            return USEvent.NO_EVENT, []
+
+        detecting_sensors = [pos for pos, d in self._distances.items() if d < OBSTACLE_DISTANCE]
 
         # If any sensor detects an obstacle within range
-        if min(self._distances.values()) < 20:
+        if detecting_sensors:
             # If the obstacle was not detected before
             if not self._last_obstacle:
                 self._last_obstacle = True
-                return USEvent.OBSTACLE_DETECTED
-            return USEvent.OBSTACLE_PRESENT  # Still detecting the same obstacle
+                return USEvent.OBSTACLE_DETECTED, detecting_sensors
+            return USEvent.OBSTACLE_PRESENT, detecting_sensors  # Still detecting the same obstacle
         else:
             # If the previously detected obstacle is no longer in range
             if self._last_obstacle:
                 self._last_obstacle = False
-                return USEvent.OBSTACLE_CLEARED
+                return USEvent.OBSTACLE_CLEARED, []
 
         # If no obstacle detected
-        return USEvent.NO_EVENT
+        return USEvent.NO_EVENT, []
 
     def measure_distances(self) -> None:
         """

@@ -60,12 +60,12 @@ class RobotFSM:
 
         if not self.end_of_match:
             # self.robot.ultrasonicController.measure_distances()
-            # us_event = self.robot.ultrasonicController.check_obstacles()
+            # us_event, us_sensors = self.robot.ultrasonicController.check_obstacles()
             # if us_event == USEvent.OBSTACLE_DETECTED:
             #     self.paused_state = self.current_state.enum
             #     if self.timer:
             #         self.timer.pause()
-            #     self.set_state(StateEnum.AVOID_OBSTACLE)
+            #     self.set_state(StateEnum.AVOID_OBSTACLE, sensors=us_sensors)
             #     return
             # elif us_event == USEvent.OBSTACLE_PRESENT:
             #     self.current_state.execute()
@@ -89,47 +89,46 @@ class RobotFSM:
             #     self.set_state(StateEnum.OPEN_CLAW)
 
             # if self.start_match and (time.time() - self.start_time >= 6.0):
-            #     self.set_state(StateEnum.STOP)    
+            #     self.set_state(StateEnum.STOP)
 
             # elif self.start_match and (time.time() - self.start_time >= 5.0):
             #     self.set_state(StateEnum.MOVE_FORWARD)
-            
+
             # elif self.start_match and (time.time() - self.start_time >= 4.0):
-            #     self.set_state(StateEnum.STOP)    
+            #     self.set_state(StateEnum.STOP)
 
             # elif self.start_match and (time.time() - self.start_time >= 3.0):
             #     self.set_state(StateEnum.MOVE_FORWARD)
 
             if self.start_match and self.step == 6:
-                self.set_state(StateEnum.ROTATE_LEFT, 
-                               degrees = 90.0, speed = 0.5)   
+                self.set_state(StateEnum.ROTATE_LEFT,
+                               degrees=90.0, speed=0.5)
 
             elif self.start_match and self.step == 5:
                 self.set_state(StateEnum.STOP)
 
             elif self.start_match and self.step == 4:
-                self.set_state(StateEnum.MOVE_FORWARD, 
-                               distance = 10.0, speed = 0.5)  
+                self.set_state(StateEnum.MOVE_FORWARD,
+                               distance=10.0, speed=0.5)
 
             elif self.start_match and self.step == 3:
-                self.set_state(StateEnum.STOP) 
+                self.set_state(StateEnum.STOP)
 
             elif self.start_match and self.step == 2:
-                self.set_state(StateEnum.ROTATE_LEFT, 
-                               degrees = 270.0, speed = 0.5)   
+                self.set_state(StateEnum.ROTATE_LEFT,
+                               degrees=270.0, speed=0.5)
 
             elif self.start_match and self.step == 1:
-               self.set_state(StateEnum.STOP)
+                self.set_state(StateEnum.STOP)
 
             elif self.start_match and self.step == 0:
                 self.set_state(StateEnum.MOVE_FORWARD,
-                               distance = 60.0, speed = 0.5)
+                               distance=60.0, speed=0.5)
 
             # if self.start_match and (time.time() - self.start_time >= 7.6):
-            #     self.set_state(StateEnum.STOP)  
+            #     self.set_state(StateEnum.STOP)
 
             # elif self.start_match and (time.time() - self.start_time >= 0.0):
-            #     self.set_state(StateEnum.ROTATE_LEFT)   
-   
+            #     self.set_state(StateEnum.ROTATE_LEFT)
 
         self.current_state.execute()
