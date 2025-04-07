@@ -2,7 +2,7 @@ from .state_factory import StateFactory
 from .myTimer import MyTimer
 from ..constants import StateEnum, USEvent, MAX_TIME
 import time
-from firstcan import FirstCanMoveBuilder
+from .firstcan import FirstCanMoveBuilder
 
 from typing import TYPE_CHECKING
 
@@ -60,6 +60,7 @@ class RobotFSM:
             self.set_state(StateEnum.STOP)
             self.end_of_match = True
 
+
         if not self.end_of_match:
             if self.start_match and self.step == 1:
                 self.set_state(StateEnum.STOP)
@@ -67,6 +68,5 @@ class RobotFSM:
             elif self.start_match and self.step == 0:
                 self.first_can_builder.create_sequence()
                 self.first_can_builder.execute_step()
-                self.step += 1
 
         self.current_state.execute()
