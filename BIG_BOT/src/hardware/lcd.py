@@ -77,12 +77,3 @@ class LCD:
 
     def close(self) -> None:
         self._lcd.close()
-
-
-if __name__ == "__main__":
-    lcd = LCD()
-    lcd.write_line(0, "Hello, World!")
-    lcd.write_line(1, "This is a test.")
-    lcd.write_score(100)
-    lcd.clear()
-    lcd.close()
