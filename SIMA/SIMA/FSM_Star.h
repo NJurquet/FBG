@@ -55,7 +55,7 @@ private:
     State previousState;
     const unsigned long startDelay = 5000;   // 85 seconds in milliseconds / 5 seconds for testing
     const unsigned long stopTime = 15000;    // 100 seconds in milliseconds / 15 seconds for testing
-    const unsigned long edgeStopTime = 6950; // 7s35ms seconds in milliseconds
+    const unsigned long edgeStopTime = 6600; // 7s35ms seconds in milliseconds
     unsigned long currentTime;               // Time from the start of the program in milliseconds
     unsigned long obstacleStartTime = 0;     // Time when a new obstacle is detected in milliseconds
     unsigned long totalObstacleTime = 0;     // Total time spent avoiding obstacles in milliseconds

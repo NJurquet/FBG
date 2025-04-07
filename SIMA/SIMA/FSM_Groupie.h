@@ -70,13 +70,13 @@ private:
     bool magneticStartDetected = false;          // Flag to know if the magnetic start was detected
     long magneticStartTime = 0;                     // Time when the magnetic start was detected in milliseconds
 
-    const int turnZoneDelay = 4000;               // Time after start at which it can start detecting a zone turn in milliseconds
-    const int firstZoneTurnTime = 1000;           // Time needed to turn to the first zone in milliseconds
-    const int secondZoneTurnTime = 2000;          // Time needed to turn to the second zone in milliseconds
+    const int turnZoneDelay = 4500;               // Time after start at which it can start detecting a zone turn in milliseconds
+    const int firstZoneTurnTime = 500;            // Time needed to turn to the first zone in milliseconds
+    const int secondZoneTurnTime = 1800;          // Time needed to turn to the second zone in milliseconds
     unsigned long enterZoneTime;                  // Time when the robot starts turning to the zone in milliseconds
     bool enteringZone = false;                    // Flag to know if the robot is turning to the zone
     const double topRotationSpeedRatio = 0.6;     // Ratio of the main speed to apply when turning to the first zone
-    const double bottomRotationSpeedRatio = 0.85; // Ratio of the main speed to apply when turning to the second zone
+    const double bottomRotationSpeedRatio = 0.9; // Ratio of the main speed to apply when turning to the second zone
 
     const int celebrationDelay = 1000;     // 1 seconds
     unsigned long lastCelebrationTime = 0; // Time when the last celebration happened in milliseconds
