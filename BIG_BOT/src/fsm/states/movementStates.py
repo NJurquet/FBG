@@ -140,6 +140,10 @@ class RotateLeftState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+        execute(): Makes the robot move forward
+        on_event(event): stops the robot if an obstacle is detected
     """
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
@@ -184,6 +188,9 @@ class RotateRightState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+        enter(): Rotates the robot right
     """
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
@@ -299,6 +306,10 @@ class SlowMoveState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+        slow_forward(): Moves the robot forward slowly
+        slow_backward(): Moves the robot backward slowly
     """
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
@@ -325,6 +336,10 @@ class SlowRotateState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
+
+    **Methods**:
+        slow_rotate_left(): Rotates the robot left slowly
+        slow_rotate_right(): Rotates the robot right slowly
     """
 
     def __init__(self, fsm):
