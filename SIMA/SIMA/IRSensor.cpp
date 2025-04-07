@@ -12,3 +12,8 @@ bool IRSensor::read()
 {
     return digitalRead(pin);
 }
+
+bool IRSensor::readAccurate()
+{
+    return digitalRead(pin) || digitalRead(pin);
+}

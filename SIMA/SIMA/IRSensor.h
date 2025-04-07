@@ -30,6 +30,13 @@ public:
      */
     bool read();
 
+    /**
+     * @brief Reads the value from the infrared sensor based on 5 measures.
+     *
+     * @return `true` if the sensor detects a black line, `false` if it detect the while line.
+     */
+    bool readAccurate();
+
 private:
     int pin;
 };
