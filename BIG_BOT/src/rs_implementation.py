@@ -1,4 +1,4 @@
-from hardware import reedSwitch
+from .hardware.reedSwitch import reedSwitch
 
 rs = reedSwitch(26)
 

@@ -8,3 +8,13 @@ class reedSwitch:
     
     def read(self):
         return self.reedSwitch.is_pressed
+
+    def long_read(self):
+        counter = 0
+        while counter < 10:
+            if self.read() == 0:
+                counter += 1
+            else:
+                counter = 0
+        return 1 if counter == 10 else 0
+
