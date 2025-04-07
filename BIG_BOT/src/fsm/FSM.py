@@ -2,13 +2,13 @@ from .state_factory import StateFactory
 from .myTimer import MyTimer
 from ..constants import StateEnum, USEvent, MAX_TIME
 import time
+from firstcan import FirstCanMoveBuilder
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .states.State import State
     from ..robot import Robot
-
 
 class RobotFSM:
     """
@@ -36,6 +36,8 @@ class RobotFSM:
         self.step = 0
         self.maxStep = 15
 
+        self.first_can_builder = FirstCanMoveBuilder(self)
+
     def set_state(self, new_state: StateEnum, **args) -> None:
         """
         Set the current state of the FSM to the new specified state.
@@ -59,61 +61,12 @@ class RobotFSM:
             self.end_of_match = True
 
         if not self.end_of_match:
-            # self.robot.ultrasonicController.measure_distances()
-            # us_event = self.robot.ultrasonicController.check_obstacles()
-            # if us_event == USEvent.OBSTACLE_DETECTED:
-            #     self.paused_state = self.current_state.enum
-            #     if self.timer:
-            #         self.timer.pause()
-            #     self.set_state(StateEnum.AVOID_OBSTACLE)
-            #     return
-            # elif us_event == USEvent.OBSTACLE_PRESENT:
-            #     self.current_state.execute()
-            #     return
-            # elif us_event == USEvent.OBSTACLE_CLEARED:
-            #     if self.paused_state is not None:
-            #         if self.timer:
-            #             self.timer.resume()
-            #             self.step -= 1
-            #             print("newstep", self.step)
-            #         self.set_state(self.paused_state)  # Return to pre-obstacle state
-            #         self.paused_state = None
-
-            # if self.start_match and (time.time() - self.start_time >= 22.0):
-            #     self.set_state(StateEnum.OPEN_CLAW)
-
-            # elif self.start_match and (time.time() - self.start_time >= 4.0):
-            #     self.set_state(StateEnum.CLOSE_CLAW)
-
-            # elif self.start_match and (time.time() - self.start_time >= 2.0):
-            #     self.set_state(StateEnum.OPEN_CLAW)
-
-            # if self.start_match and (time.time() - self.start_time >= 6.0):
-            #     self.set_state(StateEnum.STOP)    
-
-            # elif self.start_match and (time.time() - self.start_time >= 5.0):
-            #     self.set_state(StateEnum.MOVE_FORWARD)
-            
-            # elif self.start_match and (time.time() - self.start_time >= 4.0):
-            #     self.set_state(StateEnum.STOP)    
-
-            # elif self.start_match and (time.time() - self.start_time >= 3.0):
-            #     self.set_state(StateEnum.MOVE_FORWARD)
-
-
-
             if self.start_match and self.step == 1:
-               self.set_state(StateEnum.STOP)
+                self.set_state(StateEnum.STOP)
 
             elif self.start_match and self.step == 0:
-                self.set_state(StateEnum.FIRST_CAN_MOVE)
-
-
-            # if self.start_match and (time.time() - self.start_time >= 7.6):
-            #     self.set_state(StateEnum.STOP)  
-
-            # elif self.start_match and (time.time() - self.start_time >= 0.0):
-            #     self.set_state(StateEnum.ROTATE_LEFT)   
-   
+                self.first_can_builder.create_sequence()
+                self.first_can_builder.execute_step()
+                self.step += 1
 
         self.current_state.execute()
