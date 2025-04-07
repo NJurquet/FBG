@@ -56,17 +56,33 @@ class RobotFSM:
         """
         Execute the current state of the FSM.
         """
+
+
+            #         elif self.start_match and self.step == 2:
+            #     self.set_state(StateEnum.ROTATE_LEFT, 
+            #                    degrees = 270.0, speed = 0.5)   
+
+            # elif self.start_match and self.step == 1:
+            #    self.set_state(StateEnum.STOP)
+
+            # elif self.start_match and self.step == 0:
+            #     self.set_state(StateEnum.MOVE_FORWARD,
+            #                    distance = 60.0, speed = 0.5)
         if self.start_match and (time.time() - self.start_time >= MAX_TIME):
             self.set_state(StateEnum.STOP)
             self.end_of_match = True
 
 
-        if not self.end_of_match:
-            if self.start_match and self.step == 1:
-                self.set_state(StateEnum.STOP)
 
-            elif self.start_match and self.step == 0:
+
+        if not self.end_of_match:
+            if self.start_match and self.step == 0:
+                # Only initialize the sequence once when step is 0
                 self.first_can_builder.create_sequence()
                 self.first_can_builder.execute_step()
+            elif self.start_match and not self.first_can_builder.is_finished:
+                # Continue executing sequence steps until finished
+                self.first_can_builder.execute_step()
 
-        self.current_state.execute()
+
+            self.current_state.execute()
