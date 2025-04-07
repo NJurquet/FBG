@@ -18,7 +18,6 @@ class reedSwitch:
 
     `long_read()` : int
         Waits for the reed switch to be pressed for a certain duration (10 checks) and returns 1 if pressed, 0 otherwise.
-
     """
 
     def __init__(self, pin: int):
@@ -26,6 +25,8 @@ class reedSwitch:
         self.reedSwitch: Button = Button(pin, pull_up=False)
 
     def read(self):
+        """Reads the state of the reed switch.
+            True if the reed switch is pressed, False otherwise."""
         return self.reedSwitch.is_pressed
 
     def long_read(self):
