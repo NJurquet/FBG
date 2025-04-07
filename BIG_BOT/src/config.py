@@ -6,38 +6,57 @@ It serves as a centralized location for managing settings and values that are us
 Change these config constants to customize the behavior of the robot.
 """
 
-# =============================================================================
+# ===================================================================
 # Hardware Pins Configuration
-# =============================================================================
+# ===================================================================
 
-# Motor Pins
+## I2C Bus Pins ##
+I2C_DATA_PIN = 2
+I2C_CLOCK_PIN = 3
+
+## Motor Pins ##
 LEFT_MOTOR_FORWARD_PIN = 17
 LEFT_MOTOR_BACKWARD_PIN = 27
-LEFT_MOTOR_EN_PIN = 2
+LEFT_MOTOR_EN_PIN = 18  # PWM
 
-RIGHT_MOTOR_FORWARD_PIN = 13
-RIGHT_MOTOR_BACKWARD_PIN = 19
-RIGHT_MOTOR_EN_PIN = 6
+RIGHT_MOTOR_FORWARD_PIN = 5
+RIGHT_MOTOR_BACKWARD_PIN = 6
+RIGHT_MOTOR_EN_PIN = 19  # PWM
 
-# Servo Names
+# Motor driver to motor connection :
+#   - OUT 1 -> Left motor red pin
+#   - OUT 2 -> Left motor black pin
+#   - OUT 3 -> Right motor red pin
+#   - OUT 4 -> Right motor black pin
+
+## Servo Claws Pins ##
+# CENTER_RIGHT_CLAW_PIN = 12
 CENTER_RIGHT_CLAW_NAME = "centerRightClaw"
 
-# Servo Claws Pins
-CENTER_RIGHT_CLAW_PIN = 12
+# Adafruit Servo Controller Channels
+SERVO_CHANNELS = 16
+# Servo Claws Adafruit Pins
+CENTER_RIGHT_CLAW_ADAFRUIT_PIN = 0
 
+## Ultrasonic Sensors Pins ##
+US_FRONT_RIGHT_TRIG_PIN = 7
+US_FRONT_RIGHT_ECHO_PIN = 8
 
-# Ultrasonic Sensors Pins
-US_FRONT_RIGHT_TRIG_PIN = 0
-US_FRONT_RIGHT_ECHO_PIN = 0
+US_FRONT_LEFT_TRIG_PIN = 20
+US_FRONT_LEFT_ECHO_PIN = 21
 
-US_FRONT_LEFT_TRIG_PIN = 0
-US_FRONT_LEFT_ECHO_PIN = 0
+US_BACK_RIGHT_TRIG_PIN = 16
+US_BACK_RIGHT_ECHO_PIN = 25
 
-US_BACK_RIGHT_TRIG_PIN = 0
-US_BACK_RIGHT_ECHO_PIN = 0
-
-US_BACK_LEFT_TRIG_PIN = 0
-US_BACK_LEFT_ECHO_PIN = 0
+US_BACK_LEFT_TRIG_PIN = 23
+US_BACK_LEFT_ECHO_PIN = 24
 
 # Reed Switch Pin
-REED_SWITCH_PIN = 0
+REED_SWITCH_PIN = 26
+
+# ===================================================================
+# Robot Configuration
+# ===================================================================
+
+MAX_OBSTACLE_DURATION = 5.0  # seconds
+"""Maximum duration (in seconds) of obstacle detection, after which the robot should take action."""

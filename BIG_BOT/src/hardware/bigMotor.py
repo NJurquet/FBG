@@ -16,9 +16,8 @@ class BigMotor:
         
         """
     
-
-    def __init__(self, forwardPin, backwardPin):
-        self.motor = Motor(forwardPin, backwardPin)
+    def __init__(self, forwardPin, backwardPin, enablePin):
+        self.motor = Motor(forwardPin, backwardPin, enable=enablePin)
         self.speed = 0
 
     def forward(self, speed):

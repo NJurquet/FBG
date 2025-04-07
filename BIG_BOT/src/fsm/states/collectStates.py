@@ -59,8 +59,8 @@ class OpenClawState(State):
         
     """
 
-    def __init__(self, fsm: 'RobotFSM'):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event) -> None:
         if event == 'collected':
@@ -72,7 +72,7 @@ class OpenClawState(State):
 
     @override
     def execute(self) -> None:
-        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, -0.4)  # Goal angle => 40° ~= -0.4
+        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 120)
 
     @override
     def exit(self) -> None:
@@ -96,8 +96,8 @@ class CloseClawState(State):
         execute(): Closes the claw
     """
 
-    def __init__(self, fsm: 'RobotFSM'):
-        super().__init__(fsm)
+    def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
+        super().__init__(fsm, enum)
 
     def on_event(self, event) -> None:
         if event == 'collected':
@@ -109,7 +109,7 @@ class CloseClawState(State):
 
     @override
     def execute(self) -> None:
-        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, -0.8)  # Goal angle => 80° ~= -0.8
+        self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 75)
 
     @override
     def exit(self) -> None:
