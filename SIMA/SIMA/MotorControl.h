@@ -20,6 +20,8 @@ private:
      */
     int motorSpeed;
     int motorRotationSpeed;
+    int leftOffset;
+    int rightOffset;
 
 public:
     /**
@@ -79,6 +81,20 @@ public:
      * @param speedRatio The ratio of the main speed to apply.
      */
     void setRotationSpeed(double speedRatio);
+
+    /**
+     * @brief Sets the speed offset to add to the left motor.
+     *
+     * @param offset The offset to apply.
+     */
+    void setLeftOffset(int offset);
+
+    /**
+     * @brief Sets the speed offset to add to the right motor.
+     *
+     * @param offset The offset to apply.
+     */
+    void setRightOffset(int offset);
 };
 
 #endif // MOTORCONTROL_H
