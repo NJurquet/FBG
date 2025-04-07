@@ -29,6 +29,8 @@ class Robot:
         self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, LEFT_MOTOR_EN_PIN,
                             RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_EN_PIN)
         # self.servoControl = AdafruitServoControl(channels=SERVO_CHANNELS,
+        #                                          names=[CENTER_RIGHT_CLAW_NAME],
+        #                                          pins=[CENTER_RIGHT_CLAW_ADAFRUIT_PIN])
         #                                          names=[CENTER_RIGHT_CLAW_NAME, CENTER_LEFT_CLAW_NAME, OUTER_RIGHT_CLAW_NAME, OUTER_LEFT_CLAW_NAME,
         #                                                 PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, HINGE_NAME, BANNER_DEPLOYER_NAME
         #                                           ],

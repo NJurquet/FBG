@@ -19,6 +19,7 @@ class ICommand(ABC):
         """Execute the command and return the time needed for completion"""
         pass
 
+
 class MoveForwardCommand(ICommand):
     def __init__(self, fsm: 'RobotFSM', distance: float, speed: float):
         self.fsm = fsm
@@ -26,8 +27,10 @@ class MoveForwardCommand(ICommand):
         self.speed = speed
 
     def execute(self) -> float:
+        # Get the time needed directly from the motor controller
+        time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
         self.fsm.set_state(StateEnum.FAST_MOVE, distance=self.distance, speed=self.speed)
-        return self.distance / (self.speed * 100)  # Estimated time
+        return time_needed
 
 class RotateLeftCommand(ICommand):
     def __init__(self, fsm: 'RobotFSM', degrees: float, speed: float):
@@ -36,8 +39,9 @@ class RotateLeftCommand(ICommand):
         self.speed = speed
 
     def execute(self) -> float:
+        time_needed = self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
         self.fsm.set_state(StateEnum.ROTATE_LEFT, degrees=self.degrees, speed=self.speed)
-        return self.degrees / (self.speed * 90)  # Estimated time
+        return time_needed
 
 class RotateRightCommand(ICommand):
     def __init__(self, fsm: 'RobotFSM', degrees: float, speed: float):
@@ -56,6 +60,24 @@ class StopCommand(ICommand):
         self.fsm.set_state(StateEnum.STOP)
         return 0.1  # Minimal time for stop
 
+
+class OpenClawCommand(ICommand):
+    def __init__(self, fsm: 'RobotFSM'):
+        self.fsm = fsm
+
+    def execute(self) -> float:
+        self.fsm.set_state(StateEnum.OPEN_CLAW)
+        return 2   # Minimal time for opening claw
+
+class CloseClawCommand(ICommand):
+    def __init__(self, fsm: 'RobotFSM'):
+        
+        self.fsm = fsm
+
+    def execute(self) -> float:
+        self.fsm.set_state(StateEnum.CLOSE_CLAW)
+        return 2  # Minimal time for closing claw
+
 class FirstCanMoveBuilder:
     def __init__(self, fsm: 'RobotFSM'):
         self.fsm = fsm
@@ -63,40 +85,59 @@ class FirstCanMoveBuilder:
         self._current_idx: int = 0
         self._is_finished: bool = False
         self._timer: MyTimer | None = None
+        self._execution_in_progress: bool = False
 
     def create_sequence(self):
         speed = 0.5
-        distance = 20.0  # cm
-        rotation = 180.0  # degrees
+        rotation = 90.0  # degrees
 
         self._sequence = [
-            RotateLeftCommand(self.fsm, rotation, speed),
+            #OpenClawCommand(self.fsm), 
+            MoveForwardCommand(self.fsm, 20, speed),
+            # CloseClawCommand(self.fsm),
+            # #RotateLeftCommand(self.fsm, rotation, speed),
+            # OpenClawCommand(self.fsm),
+            # #MoveForwardCommand(self.fsm, 20, speed),
+            # CloseClawCommand(self.fsm),
 
             StopCommand(self.fsm)
         ]
-        self.fsm.set_state(StateEnum.FAST_MOVE, distance=distance, speed=speed)
+        # Don't automatically execute first command here
+        self._current_idx = 0
+        self._is_finished = False
 
     def execute_step(self):
-        # If timer is running, check if it's completed
-        if self._timer:
-            if self._timer.timer.finished.is_set():
-                self._timer = None
-            else:
-                return
+        # Don't do anything if we're already executing a command
+        if self._execution_in_progress:
+            return
 
-        # Start next command if there is one
-        if self._current_idx < len(self._sequence):
-            command = self._sequence[self._current_idx]
-            print(f"Executing Step {self._current_idx + 1}")
-            time_needed = command.execute()
-            self._timer = MyTimer(time_needed, self._on_step_complete)
-        else:
+        # Check if we've finished the sequence (so no list error)
+        if self._current_idx >= len(self._sequence):
             self._is_finished = True
             print("FirstCanMove sequence complete")
+            return
+
+        # Start next command
+        command = self._sequence[self._current_idx]
+        print(f"Executing Step {self._current_idx + 1}")
+        
+        # Set the execution flag to prevent duplicate calls
+        self._execution_in_progress = True
+        
+        # Execute command and get time needed
+        time_needed = command.execute()
+        
+        # Create timer with callback to move to next step
+        self._timer = MyTimer(time_needed, self._on_step_complete)
 
     def _on_step_complete(self):
         """Callback when a step completes"""
+        print(f"Step {self._current_idx + 1} completed")
         self._current_idx += 1
+        self._execution_in_progress = False
+        
+        # Automatically proceed to next step
+        self.execute_step()
 
     @property
     def is_finished(self) -> bool:
