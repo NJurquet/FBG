@@ -196,7 +196,7 @@ class RotateRightState(State):
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
         super().__init__(fsm, enum)
 
-        self.degrees = 0.0
+        self.degrees = 90.0
         self.speed = 0.5
 
     def increment_step(self):

@@ -47,7 +47,6 @@ class RotateRightCommand(ICommand):
 
     def execute(self) -> float:
         self.fsm.set_state(StateEnum.ROTATE_RIGHT, degrees=self.degrees, speed=self.speed)
-        return self.degrees / (self.speed * 90)  # Estimated time
 
 class StopCommand(ICommand):
     def __init__(self, fsm: 'RobotFSM'):
@@ -68,13 +67,11 @@ class FirstCanMoveBuilder:
     def create_sequence(self):
         speed = 0.5
         distance = 20.0  # cm
-        rotation = 90.0  # degrees
+        rotation = 180.0  # degrees
 
         self._sequence = [
-            MoveForwardCommand(self.fsm, distance, speed),
-            RotateRightCommand(self.fsm, rotation, speed),
-            MoveForwardCommand(self.fsm, distance, speed),
             RotateLeftCommand(self.fsm, rotation, speed),
+
             StopCommand(self.fsm)
         ]
         self.fsm.set_state(StateEnum.FAST_MOVE, distance=distance, speed=speed)
@@ -82,7 +79,7 @@ class FirstCanMoveBuilder:
     def execute_step(self):
         # If timer is running, check if it's completed
         if self._timer:
-            if self._timer.is_finished():
+            if self._timer.timer.finished.is_set():
                 self._timer = None
             else:
                 return
