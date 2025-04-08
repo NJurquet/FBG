@@ -4,7 +4,7 @@ from ...config import CENTER_RIGHT_CLAW_NAME, CENTER_LEFT_CLAW_NAME, OUTER_RIGHT
 from ...config import PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, HINGE_NAME, BANNER_DEPLOYER_NAME
 from ..registry import Registry
 from ..myTimer import MyTimer
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
@@ -32,7 +32,6 @@ class OpenCentralClawsState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -45,11 +44,9 @@ class OpenCentralClawsState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -78,7 +75,6 @@ class CloseCentralClawsState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -91,11 +87,9 @@ class CloseCentralClawsState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -124,7 +118,6 @@ class OpenOuterClawsState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -137,11 +130,9 @@ class OpenOuterClawsState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -170,7 +161,6 @@ class CloseOuterClawsState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -183,11 +173,9 @@ class CloseOuterClawsState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -216,7 +204,6 @@ class DeployPankPushersState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -229,11 +216,9 @@ class DeployPankPushersState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -262,7 +247,6 @@ class DeployPankPushersState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -275,11 +259,9 @@ class DeployPankPushersState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -308,7 +290,6 @@ class DeployClawsState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -320,11 +301,9 @@ class DeployClawsState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -353,7 +332,6 @@ class DeployClawsState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -365,16 +343,13 @@ class DeployClawsState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
             self.fsm.timer = None
-
 
 
 @Registry.register_state(StateEnum.DEPLOY_CLAWS)
@@ -399,7 +374,6 @@ class DeployClawsState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -411,11 +385,9 @@ class DeployClawsState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -444,7 +416,6 @@ class RetractClawsState(State):
         if self.fsm.step < self.fsm.maxStep:
             self.fsm.step += 1
 
-    @override
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
@@ -456,14 +427,10 @@ class RetractClawsState(State):
 
         self.fsm.timer = MyTimer(0.5, self.increment_step)
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         if self.fsm.timer:
             self.fsm.timer.cancel()
             self.fsm.timer = None
-
-

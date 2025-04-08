@@ -1,5 +1,5 @@
 from .State import State
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
@@ -28,15 +28,12 @@ class DetectTargetsState(State):
             return MoveState(self.fsm)
         return self
 
-    @override
     def enter(self):
         pass
 
-    @override
     def execute(self):
         pass
 
-    @override
     def exit(self):
         pass
 
@@ -63,14 +60,11 @@ class CheckObstaclesState(State):
             return MoveState(self.fsm)
         return self
 
-    @override
     def enter(self):
         pass
 
-    @override
     def execute(self):
         pass
 
-    @override
     def exit(self):
         pass
