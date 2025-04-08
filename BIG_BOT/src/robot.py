@@ -1,3 +1,4 @@
+import atexit
 from .config import LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, LEFT_MOTOR_EN_PIN, RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_EN_PIN
 from .config import US_FRONT_RIGHT_TRIG_PIN, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN, US_FRONT_LEFT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN, US_BACK_RIGHT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN, US_BACK_LEFT_ECHO_PIN
 from .config import SERVO_CHANNELS
@@ -34,6 +35,8 @@ class Robot:
         self.__position: tuple[int, int] = (0, 0)
         # self.reedSwitch = reedSwitch(REED_SWITCH_PIN)
 
+        atexit.register(self.cleanup)
+
     @property
     def position(self):
         """
@@ -65,3 +68,8 @@ class Robot:
             self.__position = value
         else:
             raise ValueError("Position must be a tuple of the x and y coordinates (x, y).")
+        
+    def cleanup(self):
+        """Clean up GPIO resources"""
+        self.motor.stop()
+        # GPIOZero automatically handles cleanup for devices
