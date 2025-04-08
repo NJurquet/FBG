@@ -49,7 +49,9 @@ class RotateRightCommand(ICommand):
         self.speed = speed
 
     def execute(self) -> float:
+        time_needed = self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
         self.fsm.set_state(StateEnum.ROTATE_RIGHT, degrees=self.degrees, speed=self.speed)
+        return time_needed
 
 class StopCommand(ICommand):
     def __init__(self, fsm: 'RobotFSM'):

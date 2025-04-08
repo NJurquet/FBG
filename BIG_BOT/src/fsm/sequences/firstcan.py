@@ -1,6 +1,6 @@
 from .sequence import Sequence
 from ..commands.command import ICommand
-from ..commands.moveCommands import MoveForwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
+from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
 from ..commands.servoCommands import OpenClawCommand, CloseClawCommand
 from ...constants import StateEnum
 from ..myTimer import MyTimer
@@ -25,13 +25,17 @@ class FirstCanMoveBuilder(Sequence):
         rotation = 90.0  # degrees
 
         self._sequence = [
-            #OpenClawCommand(self.fsm), 
-            MoveForwardCommand(self.fsm, 20, speed),
+            MoveForwardCommand(self.fsm, 40, speed),
+            RotateLeftCommand(self.fsm, rotation, speed),
+            MoveForwardCommand(self.fsm, 15, speed),
+            RotateRightCommand(self.fsm, rotation, speed),
+            MoveForwardCommand(self.fsm, 30, speed),
             # CloseClawCommand(self.fsm),
-            # RotateLeftCommand(self.fsm, rotation, speed),
-            # OpenClawCommand(self.fsm),
-            # MoveForwardCommand(self.fsm, 20, speed),
-            # CloseClawCommand(self.fsm),
+            MoveBackwardCommand(self.fsm, 30, speed),
+            RotateRightCommand(self.fsm, rotation, speed),
+            MoveForwardCommand(self.fsm, 15, speed),
+            RotateRightCommand(self.fsm, rotation, speed),
+            MoveForwardCommand(self.fsm, 40, speed),
 
             StopCommand(self.fsm)
         ]
