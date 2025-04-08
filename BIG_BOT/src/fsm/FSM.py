@@ -2,7 +2,7 @@ from .state_factory import StateFactory
 from .myTimer import MyTimer
 from ..constants import StateEnum, USEvent, MAX_TIME
 import time
-from .firstcan import FirstCanMoveBuilder
+from .sequences.firstcan import FirstCanMoveBuilder
 
 from typing import TYPE_CHECKING
 

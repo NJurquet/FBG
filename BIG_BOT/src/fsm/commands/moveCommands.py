@@ -1,16 +1,10 @@
-from abc import ABC, abstractmethod
-from ....constants import StateEnum
-from ...myTimer import MyTimer
+from .command import ICommand
+from ...constants import StateEnum
+from ..myTimer import MyTimer
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...FSM import RobotFSM
-
-class ICommand(ABC):
-    @abstractmethod
-    def execute(self) -> float:
-        """Execute the command and return the time needed for completion"""
-        pass
+    from ..FSM import RobotFSM
 
 
 class MoveForwardCommand(ICommand):
