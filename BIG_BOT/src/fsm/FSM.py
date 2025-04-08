@@ -77,7 +77,26 @@ class RobotFSM:
 
         if not self.end_of_match:
             if self.start_match and self.step == 0:
-
+                
+                # self.robot.ultrasonicController.measure_distances()
+                # us_event = self.robot.ultrasonicController.check_obstacles()
+                # if us_event == USEvent.OBSTACLE_DETECTED:
+                #     self.paused_state = self.current_state.enum
+                #     if self.timer:
+                #         self.timer.pause()
+                #     self.set_state(StateEnum.AVOID_OBSTACLE)
+                #     return
+                # elif us_event == USEvent.OBSTACLE_PRESENT:
+                #     self.current_state.execute()
+                #     return
+                # elif us_event == USEvent.OBSTACLE_CLEARED:
+                #     if self.paused_state is not None:
+                #         if self.timer:
+                #             self.timer.resume()
+                #             self.step -= 1
+                #             print("newstep", self.step)
+                #         self.set_state(self.paused_state)  # Return to pre-obstacle state
+                #         self.paused_state = None
                 self.first_can_builder.create_sequence()
                 self.first_can_builder.execute_step()
                 self.step = 1  # Increment step so it dont start again
