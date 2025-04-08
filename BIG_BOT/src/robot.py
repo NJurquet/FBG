@@ -43,6 +43,7 @@ class Robot:
                                     step_delay=0.005, microstep=1,
                                     top_limit_pin=STEPPER_TOP_LIMIT_PIN, bottom_limit_pin=STEPPER_BOTTOM_LIMIT_PIN)
         # self.lcd = LCD()
+        self.lcd = LCD()
         self.camera = None
         # self.ultrasonicController = UltrasonicController()
         # self.ultrasonicController.add_sensor(USPosition.FRONT_RIGHT, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_RIGHT_TRIG_PIN)
