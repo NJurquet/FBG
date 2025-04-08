@@ -46,8 +46,8 @@ ServoMotor celebretionServo(celebrationServoPin);
 MagneticStart magneticStart(magneticStartPin);
 
 // CONFIGURATION CONSTANTS ///////////////////////
-const bool groupie = false;
-const bool leftStart = true;
+const bool groupie = true;
+const bool leftStart = false;
 const bool topStartLine = false;
 const int zoneNumber = topStartLine ? 1 : 2;
 //////////////////////////////////////////////////
