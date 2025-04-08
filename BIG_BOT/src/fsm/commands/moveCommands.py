@@ -16,7 +16,19 @@ class MoveForwardCommand(ICommand):
     def execute(self) -> float:
         # Get the time needed directly from the motor controller
         time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
-        self.fsm.set_state(StateEnum.FAST_MOVE, distance=self.distance, speed=self.speed)
+        self.fsm.set_state(StateEnum.MOVE_FORWARD, distance=self.distance, speed=self.speed)
+        return time_needed
+
+class MoveBackwardCommand(ICommand):
+    def __init__(self, fsm: 'RobotFSM', distance: float, speed: float):
+        self.fsm = fsm
+        self.distance = distance
+        self.speed = speed
+
+    def execute(self) -> float:
+        # Get the time needed directly from the motor controller
+        time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
+        self.fsm.set_state(StateEnum.MOVE_BACKWARD, distance=self.distance, speed=self.speed)
         return time_needed
 
 class RotateLeftCommand(ICommand):

@@ -36,7 +36,7 @@ class Robot:
         #                                                PLANK_PUSHER_RIGHT_ADAFRUIT_PIN, PLANK_PUSHER_LEFT_ADAFRUIT_PIN, HINGE_ADAFRUIT_PIN, BANNER_DEPLOYER_ADAFRUIT_PIN
         #                                           ])
 
-        self.lcd = LCD()
+        # self.lcd = LCD()
         self.camera = None
         # self.ultrasonicController = UltrasonicController()
         # self.ultrasonicController.add_sensor(USPosition.FRONT_RIGHT, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_RIGHT_TRIG_PIN)
@@ -47,7 +47,7 @@ class Robot:
 
         self.color = color
         self.score = score
-        self.lcd.write_score(self.score)
+        # self.lcd.write_score(self.score)
         self.__position: tuple[int, int] = (0, 0)
 
     @property

@@ -11,7 +11,7 @@ class OpenClawCommand(ICommand):
         self.fsm = fsm
 
     def execute(self) -> float:
-        self.fsm.set_state(StateEnum.OPEN_CLAW)
+        self.fsm.set_state(StateEnum.OPEN_CENTRAL_CLAWS)
         return 2   # Minimal time for opening claw
 
 class CloseClawCommand(ICommand):
@@ -20,5 +20,5 @@ class CloseClawCommand(ICommand):
         self.fsm = fsm
 
     def execute(self) -> float:
-        self.fsm.set_state(StateEnum.CLOSE_CLAW)
+        self.fsm.set_state(StateEnum.CLOSE_CENTRAL_CLAWS)
         return 2  # Minimal time for closing claw

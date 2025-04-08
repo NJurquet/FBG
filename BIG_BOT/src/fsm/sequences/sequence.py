@@ -12,7 +12,7 @@ class Sequence(ABC):
         pass
 
     @abstractmethod
-    def on_step_complete(self):
+    def _on_step_complete(self):
         """Callback for when a step is complete"""
         pass
 
