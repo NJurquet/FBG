@@ -1,4 +1,3 @@
-from .sequence import Sequence
 from ..commands.command import ICommand
 from ...constants import StateEnum
 from ..myTimer import MyTimer
