@@ -2,6 +2,7 @@ from .state_factory import StateFactory
 from .myTimer import MyTimer
 from ..constants import StateEnum, USEvent, MAX_TIME
 import time
+from .sequences.sequence import Sequence
 from .sequences.firstcan import FirstCanMoveBuilder
 
 from typing import TYPE_CHECKING
@@ -24,15 +25,17 @@ class RobotFSM:
         self.robot = robot
         self.state_factory = StateFactory(self)
 
-        self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
-        self.current_state.enter()
-        self.paused_state: StateEnum | None = None
+        self.current_sequence: Sequence | None = None
+
+        # self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
+        # self.current_state.enter()
+        # self.paused_state: StateEnum | None = None
 
         self.start_match: bool = False
         self.start_time: float = 0.0
         self.end_of_match: bool = False
 
-        self.timer: MyTimer | None = None
+        # self.timer: MyTimer | None = None
         self.step = 0
         self.maxStep = 15
 
@@ -57,46 +60,24 @@ class RobotFSM:
         Execute the current state of the FSM.
         """
 
-
-        #         elif self.start_match and self.step == 2:
-        #     self.set_state(StateEnum.ROTATE_LEFT, 
-        #                    degrees = 270.0, speed = 0.5)   
-
-        # elif self.start_match and self.step == 1:
-        #    self.set_state(StateEnum.STOP)
-
-        # elif self.start_match and self.step == 0:
-        #     self.set_state(StateEnum.MOVE_FORWARD,
-        #                    distance = 60.0, speed = 0.5)
-        # if self.start_match and (time.time() - self.start_time >= MAX_TIME):
-        #     self.set_state(StateEnum.STOP)
-        #     self.end_of_match = True
-
-
-
-
         if not self.end_of_match:
             if self.start_match and self.step == 0:
                 
-                # self.robot.ultrasonicController.measure_distances()
-                # us_event = self.robot.ultrasonicController.check_obstacles()
-                # if us_event == USEvent.OBSTACLE_DETECTED:
-                #     self.paused_state = self.current_state.enum
-                #     if self.timer:
-                #         self.timer.pause()
-                #     self.set_state(StateEnum.AVOID_OBSTACLE)
-                #     return
-                # elif us_event == USEvent.OBSTACLE_PRESENT:
-                #     self.current_state.execute()
-                #     return
-                # elif us_event == USEvent.OBSTACLE_CLEARED:
-                #     if self.paused_state is not None:
-                #         if self.timer:
-                #             self.timer.resume()
-                #             self.step -= 1
-                #             print("newstep", self.step)
-                #         self.set_state(self.paused_state)  # Return to pre-obstacle state
-                #         self.paused_state = None
+                self.robot.ultrasonicController.measure_distances()
+                us_event = self.robot.ultrasonicController.check_obstacles()
+                if us_event == USEvent.OBSTACLE_DETECTED:
+                    if self.current_sequence:
+                        self.current_sequence.pause()
+                    self.set_state(StateEnum.AVOID_OBSTACLE)
+                    return
+                elif us_event == USEvent.OBSTACLE_PRESENT:
+                    if self.current_sequence:
+                        self.current_sequence.resume()
+                    return
+                elif us_event == USEvent.OBSTACLE_CLEARED:
+                    if self.current_sequence:
+                        self.current_sequence.resume()
+
                 self.first_can_builder.create_sequence()
                 self.first_can_builder.execute_step()
                 self.step = 1  # Increment step so it dont start again

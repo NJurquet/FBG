@@ -10,8 +10,10 @@ class MyTimer:
         self.timer.start()
 
     def pause(self):
-        self.timer.cancel()
-        self.endTime = time.time()
+        if self.timer:
+            self.timer.cancel()
+            self.timer = None
+            self.endTime = time.time()
 
     def resume(self, delete):
         self.delete = delete
@@ -19,5 +21,6 @@ class MyTimer:
         self.timer.start()
 
     def cancel(self):
-        self.timer.cancel()
-        self.timer = None
+        if self.timer:
+            self.timer.cancel()
+            self.timer = None
