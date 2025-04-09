@@ -60,3 +60,5 @@ class StopCommand(ICommand):
     def execute(self) -> float:
         self.fsm.set_state(StateEnum.STOP)
         return 0.1  # Minimal time for stop
+
+
