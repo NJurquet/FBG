@@ -23,7 +23,8 @@ class StartSequence(Sequence):
     def create_sequence(self):
         self._sequence = [
             InitCommand(self.fsm, self.fsm.robot.color),
-            StopCommand(self.fsm)
+            StopCommand(self.fsm),
+            MoveForwardCommand(self.fsm, 0.5, 0.5),
         ]
 
         self._current_idx = 0
