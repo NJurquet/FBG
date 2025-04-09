@@ -38,10 +38,10 @@ void FSM_groupie::update()
     switch (currentState)
     {
     case INIT:
-        // while (!magneticStartDetected)
-        // {
-        //     magneticStartDetected = magneticStart.read();
-        // }
+        while (!magneticStartDetected)
+        {
+            magneticStartDetected = magneticStart.read();
+        }
         magneticStartTime = millis(); //Time when the rope is pulled
         currentState = WAIT;
         break;
@@ -55,6 +55,7 @@ void FSM_groupie::update()
         break;
 
     case CHECK_OBSTACLE:
+
         checkObstacle();
         break;
 
@@ -83,6 +84,7 @@ void FSM_groupie::update()
 void FSM_groupie::checkObstacle()
 {
     long distance = ultrasonicSensor.readDistance();
+    Serial.println(distance);
     // Checks if obstacle is closer than 10 cm
     if (distance < obstacleDistance)
     {
@@ -92,12 +94,13 @@ void FSM_groupie::checkObstacle()
             obstacleStartTime = currentTime;
         }
         previousState = currentState;
+
         currentState = AVOID_OBSTACLE;
     }
     else
     {
         // If the robot finished avoiding the obstacle, add the time to the total obstacle time
-        if (previousState == AVOID_OBSTACLE)
+        if (previousState == AVOID_OBSTACLE);
         {
             totalObstacleTime += currentTime - obstacleStartTime;
         }
