@@ -13,7 +13,7 @@ from .hardware.motorsControl import MotorsControl as Motors
 # from .hardware.adafruitServoController import AdafruitServoControl
 from .hardware.ultrasonicController import UltrasonicController
 # from .hardware.reedSwitch import reedSwitch
-from time import time
+import time
 from .fsm.newcommands.newFSM import RobotFSM
 
 from .fsm.newcommands.commands import ForwardCommand, BackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand, WaitCommand, CommandInvoker
