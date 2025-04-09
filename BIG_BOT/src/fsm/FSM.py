@@ -4,6 +4,7 @@ from ..constants import StateEnum, USEvent, MAX_TIME
 import time
 from .sequences.sequence import Sequence
 from .sequences.firstcan import FirstCanMoveBuilder
+from .sequences.startSequence import StartSequence
 
 from typing import TYPE_CHECKING
 
@@ -25,9 +26,10 @@ class RobotFSM:
         self.robot = robot
         self.state_factory = StateFactory(self)
 
-        self.current_sequence: Sequence | None = None
+        sequence = StartSequence(self)
+        self.current_sequence: Sequence | None = sequence
 
-        # self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
+        self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
         # self.current_state.enter()
         # self.paused_state: StateEnum | None = None
 
@@ -38,8 +40,6 @@ class RobotFSM:
         # self.timer: MyTimer | None = None
         self.step = 0
         self.maxStep = 15
-
-        self.first_can_builder = FirstCanMoveBuilder(self)
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """
@@ -61,7 +61,7 @@ class RobotFSM:
         """
 
         if not self.end_of_match:
-            if self.start_match and self.step == 0:
+            if self.start_match:
                 
                 self.robot.ultrasonicController.measure_distances()
                 us_event = self.robot.ultrasonicController.check_obstacles()
@@ -78,9 +78,10 @@ class RobotFSM:
                     if self.current_sequence:
                         self.current_sequence.resume()
 
-                self.first_can_builder.create_sequence()
-                self.first_can_builder.execute_step()
-                self.step = 1  # Increment step so it dont start again
+                if self.current_sequence:
+                    self.current_sequence.create_sequence()
+                    self.current_sequence.execute_step()
+                    self.step = 1  # Increment step so it dont start again
 
-
+            
             self.current_state.execute()
