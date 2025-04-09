@@ -1,6 +1,6 @@
 from .State import State
 from .detectionStates import DetectTargetsState
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
@@ -14,7 +14,7 @@ class DropState(State):
     ----------
     `fsm` : RobotFSM
         The Finite State Machine (FSM) instance that the state belongs to.
-    
+
     **Methods**:
         drop(): Opens the grippers to drop the cans.
     """
@@ -27,15 +27,12 @@ class DropState(State):
             return DetectTargetsState(self.fsm)
         return self
 
-    @override
     def enter(self):
         pass
 
-    @override
     def execute(self):
         pass
 
-    @override
     def exit(self):
         pass
 
@@ -53,7 +50,7 @@ class MoveToDrop(State):
         The Finite State Machine (FSM) instance that the state belongs to.
 
     **Methods**:
-    
+
     """
 
     def __init__(self, fsm: 'RobotFSM'):
@@ -64,14 +61,11 @@ class MoveToDrop(State):
             return DropState(self.fsm)
         return self
 
-    @override
     def enter(self):
         pass
 
-    @override
     def execute(self):
         pass
 
-    @override
     def exit(self):
         pass

@@ -2,7 +2,7 @@ from .State import State
 from ...constants import StateEnum
 from ...config import CENTER_RIGHT_CLAW_NAME
 from ..registry import Registry
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
@@ -28,15 +28,12 @@ class CollectState(State):
         if event == 'collected':
             pass
 
-    @override
     def enter(self) -> None:
         pass
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         pass
 
@@ -56,7 +53,7 @@ class OpenClawState(State):
 
     **Methods**:
         execute(): Opens the claw
-        
+
     """
 
     def __init__(self, fsm: 'RobotFSM', enum: StateEnum):
@@ -66,15 +63,12 @@ class OpenClawState(State):
         if event == 'collected':
             pass
 
-    @override
     def enter(self) -> None:
         pass
 
-    @override
     def execute(self) -> None:
         self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 120)
 
-    @override
     def exit(self) -> None:
         pass
 
@@ -103,15 +97,12 @@ class CloseClawState(State):
         if event == 'collected':
             pass
 
-    @override
     def enter(self) -> None:
         pass
 
-    @override
     def execute(self) -> None:
         self.fsm.robot.servoControl.setAngle(CENTER_RIGHT_CLAW_NAME, 75)
 
-    @override
     def exit(self) -> None:
         pass
 
@@ -136,14 +127,11 @@ class MoveToCollectState(State):
         if event == 'on_position':
             pass
 
-    @override
     def enter(self) -> None:
         pass
 
-    @override
     def execute(self) -> None:
         pass
 
-    @override
     def exit(self) -> None:
         pass
