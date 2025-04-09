@@ -4,7 +4,8 @@ from ..constants import StateEnum, USEvent, MAX_TIME
 import time
 from .sequences.sequence import Sequence
 from .sequences.firstcan import FirstCanMoveBuilder
-from .sequences.startSequence import StartSequence
+from .sequences.sequenceManager import SequenceManager
+from .sequences.sequenceCreator import SequenceCreator
 
 from typing import TYPE_CHECKING
 
@@ -26,8 +27,12 @@ class RobotFSM:
         self.robot = robot
         self.state_factory = StateFactory(self)
 
-        sequence = StartSequence(self)
-        self.current_sequence: Sequence | None = sequence
+        self.sequenceCreator = SequenceCreator(self)
+
+        self.sequenceManager = SequenceManager(self, 
+                    [self.sequenceCreator.Init, self.sequenceCreator.FirstCanMove, self.sequenceCreator.FirstCanBuildMove])                           
+        
+        self.us_event: USEvent = USEvent.NO_EVENT
 
         self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
         # self.current_state.enter()
@@ -64,24 +69,15 @@ class RobotFSM:
             if self.start_match:
                 
                 self.robot.ultrasonicController.measure_distances()
-                us_event = self.robot.ultrasonicController.check_obstacles()
-                if us_event == USEvent.OBSTACLE_DETECTED:
-                    if self.current_sequence:
-                        self.current_sequence.pause()
-                    self.set_state(StateEnum.AVOID_OBSTACLE)
+                self.us_event = self.robot.ultrasonicController.check_obstacles()
+                if self.us_event == USEvent.OBSTACLE_DETECTED:
+                    self.sequenceManager.pause()
                     return
-                elif us_event == USEvent.OBSTACLE_PRESENT:
-                    if self.current_sequence:
-                        self.current_sequence.resume()
+                elif self.us_event == USEvent.OBSTACLE_PRESENT:
+                    
                     return
-                elif us_event == USEvent.OBSTACLE_CLEARED:
-                    if self.current_sequence:
-                        self.current_sequence.resume()
+                elif self.us_event == USEvent.OBSTACLE_CLEARED:
+                    self.sequenceManager.resume()
 
-                if self.current_sequence:
-                    self.current_sequence.create_sequence()
-                    self.current_sequence.execute_step()
-                    self.step = 1  # Increment step so it dont start again
-
-            
-            self.current_state.execute()
+            if self.us_event == USEvent.NO_EVENT:
+                self.sequenceManager.execute_step()

@@ -11,31 +11,23 @@ class InitCommand(ICommand):
     Command to initialize the robot.
     """
     def __init__(self, fsm: 'RobotFSM', color):
-        self.timer = None
         self.fsm = fsm
         self._is_finished = False
 
         self.color = color
         
-    def execute(self) -> MyTimer:
-        # Initialize the robot
+    def execute(self) -> float:
         self.fsm.start_match = True
-        return MyTimer(0.5, self.finished)
+        return 0.2
     
     def pause(self):
-        if self.timer:
-            self.timer.pause()
         self.fsm.robot.motor.stop()
 
     def resume(self):
-        if self.timer:
-            self.timer.resume(self.finished)
+        pass
 
     def stop(self):
         self.fsm.robot.motor.stop()
-        if self.timer:
-            self.timer.cancel()
-            self.timer = None
 
     def finished(self):
         self._is_finished = True
