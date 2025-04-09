@@ -2,8 +2,6 @@ from .state_factory import StateFactory
 from .myTimer import MyTimer
 from ..constants import StateEnum, USEvent, MAX_TIME
 import time
-from .sequences.sequence import Sequence
-from .sequences.firstcan import FirstCanMoveBuilder
 from .sequences.sequenceManager import SequenceManager
 from .sequences.sequenceCreator import SequenceCreator
 
