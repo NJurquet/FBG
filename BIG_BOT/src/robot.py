@@ -54,7 +54,7 @@ class Robot:
 
         self.color = color
         self.score = score
-        self.lcd.write_score(self.score)
+        #self.lcd.write_score(self.score)
         self.__position: tuple[int, int] = (0, 0)
 
     @property

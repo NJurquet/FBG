@@ -1,5 +1,5 @@
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
-from ..commands.servoCommands import SetServoAngleCommand
+from ..commands.servoCommands import SetServoAngleCommand, SetAllServoAnglesCommand
 from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import UltrasonicSensorCommand
 from ...constants import USPosition
@@ -54,6 +54,8 @@ class SequenceCreator():
         ]
 
         self.clawtest = [
-            SetServoAngleCommand(fsm, "OUTER_RIGHT_CLAW_NAME", 0),
-            MoveForwardCommand(fsm, 10),
-            SetServoAngleCommand(fsm, "OUTER_RIGHT_CLAW_NAME", 90),]
+            #SetServoAngleCommand(fsm, "centerRightClaw", 0),
+            #SetServoAngleCommand(fsm, "centerRightClaw", 90),
+            SetAllServoAnglesCommand(fsm, [30,30,30,30]),
+            SetAllServoAnglesCommand(fsm, [30,50,30,50])
+            ]
