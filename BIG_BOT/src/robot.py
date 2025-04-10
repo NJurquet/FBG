@@ -28,9 +28,9 @@ class Robot:
         self.fsm = RobotFSM(self)
         self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, LEFT_MOTOR_EN_PIN,
                             RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_EN_PIN)
-        # self.servoControl = AdafruitServoControl(channels=SERVO_CHANNELS,
-        #                                          names=[CENTER_RIGHT_CLAW_NAME],
-        #                                          pins=[CENTER_RIGHT_CLAW_ADAFRUIT_PIN])
+        self.servoControl = AdafruitServoControl(channels=SERVO_CHANNELS,
+                                                 names=[OUTER_RIGHT_CLAW_NAME],
+                                                 pins=[OUTER_RIGHT_CLAW_ADAFRUIT_PIN])
         #                                          names=[CENTER_RIGHT_CLAW_NAME, CENTER_LEFT_CLAW_NAME, OUTER_RIGHT_CLAW_NAME, OUTER_LEFT_CLAW_NAME,
         #                                                 PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, HINGE_NAME, BANNER_DEPLOYER_NAME
         #                                           ],
@@ -43,7 +43,7 @@ class Robot:
                                     step_delay=0.005, microstep=1,
                                     top_limit_pin=STEPPER_TOP_LIMIT_PIN, bottom_limit_pin=STEPPER_BOTTOM_LIMIT_PIN)
         # self.lcd = LCD()
-        # self.lcd = LCD()
+        self.lcd = LCD()
         self.camera = None
         self.ultrasonicController = UltrasonicController()
         self.ultrasonicController.add_sensor(USPosition.FRONT_RIGHT, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_RIGHT_TRIG_PIN)
@@ -54,7 +54,7 @@ class Robot:
 
         self.color = color
         self.score = score
-        # self.lcd.write_score(self.score)
+        self.lcd.write_score(self.score)
         self.__position: tuple[int, int] = (0, 0)
 
     @property
