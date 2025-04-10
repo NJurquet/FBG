@@ -14,6 +14,8 @@ class UltrasonicController:
         self._sensors: list[UltrasonicSensor] = []
         self._last_obstacle: bool = False
         self._distances: dict[USPosition, float] = {}
+        self._enabled_sensors: dict[USPosition, bool] = {}
+
 
     def add_sensor(self, pos: USPosition, echoPin: int, trigPin: int) -> None:
         """
@@ -34,7 +36,28 @@ class UltrasonicController:
         if any(sensor.pos == pos for sensor in self._sensors):
             raise ValueError(f"Sensor with position {pos} already exists in the controller.")
         self._sensors.append(UltrasonicSensor(pos, echoPin, trigPin))
+        self._enabled_sensors[pos] = True
 
+
+    def enable_sensor(self, pos: USPosition) -> None:
+        """
+        Enable the ultrasonic sensor at the specified position.
+
+        Parameters:
+            `pos` (USPosition): The position of the sensor.
+        """
+        if pos in self._enabled_sensors:
+            self._enabled_sensors[pos] = True
+
+    def disable_sensor(self, pos: USPosition) -> None:
+        """
+        Disable the ultrasonic sensor at the specified position.
+
+        Parameters:
+            `pos` (USPosition): The position of the sensor.
+        """
+        if pos in self._enabled_sensors:
+            self._enabled_sensors[pos] = False
     def check_obstacles(self) -> USEvent:
         """
         Check if any of the ultrasonic sensors detects an obstacle.
@@ -51,8 +74,8 @@ class UltrasonicController:
         if len(self._sensors) == 0 or len(self._distances) == 0:
             return USEvent.NO_EVENT
 
-        # If any sensor detects an obstacle within range
-        if min(self._distances.values()) < 20:
+        # If any enabled sensor detects an obstacle within range
+        if any(distance < 20 for pos, distance in self._distances.items() if self._enabled_sensors[pos]):
             # If the obstacle was not detected before
             if not self._last_obstacle:
                 self._last_obstacle = True
@@ -71,7 +94,8 @@ class UltrasonicController:
         """
         Measure distances from all ultrasonic sensors.
         """
-        self._distances = {sensor.pos: sensor.getDistance() for sensor in self._sensors}
+        self._distances = {sensor.pos: sensor.getDistance() for sensor in self._sensors
+                           if self._enabled_sensors[sensor.pos]}
 
     def get_distance(self, pos: USPosition) -> float:
         """

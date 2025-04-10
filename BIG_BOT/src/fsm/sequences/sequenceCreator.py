@@ -1,6 +1,8 @@
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
 from ..commands.servoCommands import OpenClawCommand, CloseClawCommand
 from ..commands.startCommands import InitCommand
+from ..commands.ultrasonicCommands import UltrasonicSensorCommand
+from ...constants import USPosition
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -17,9 +19,13 @@ class SequenceCreator():
             ]
         
         self.FirstCanMove = [
-            MoveForwardCommand(fsm, 40),
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  # Disable front left sensor
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+            MoveForwardCommand(fsm, 50),
             RotateLeftCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 15),
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, True),  # Enable front left sensor
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, True),
+            MoveForwardCommand(fsm, 50),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 30),
         ]
