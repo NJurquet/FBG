@@ -28,7 +28,7 @@ class RobotFSM:
         self.sequenceCreator = SequenceCreator(self)
 
         self.sequenceManager = SequenceManager(self, 
-                    [self.sequenceCreator.Sprint4Yellow])                           
+                    [ self.sequenceCreator.clawtest])                           
         
         self.us_event: USEvent = USEvent.NO_EVENT
 

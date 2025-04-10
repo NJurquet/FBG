@@ -1,8 +1,9 @@
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
-from ..commands.servoCommands import OpenClawCommand, CloseClawCommand
+from ..commands.servoCommands import SetServoAngleCommand
 from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import UltrasonicSensorCommand
 from ...constants import USPosition
+from ...config import OUTER_RIGHT_CLAW_NAME
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -41,11 +42,18 @@ class SequenceCreator():
         self.Sprint4Yellow = [
             UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
             UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
+            # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
+            # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
             MoveForwardCommand(fsm, 50),
-            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
-            RotateLeftCommand(fsm, 100),
+            #UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
+            #UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            RotateLeftCommand(fsm, rotation),
             MoveForwardCommand(fsm, 100),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 130),
         ]
+
+        self.clawtest = [
+            SetServoAngleCommand(fsm, "OUTER_RIGHT_CLAW_NAME", 0),
+            MoveForwardCommand(fsm, 10),
+            SetServoAngleCommand(fsm, "OUTER_RIGHT_CLAW_NAME", 90),]
