@@ -40,7 +40,7 @@ class StepperMotor:
     _BASE_STEPS_PER_REV = 200  # Full step base (1.8° per step)
 
     def __init__(self, step: int, dir: int, ms1: int, ms2: int, ms3: int,
-                 step_delay: float = 0.001, microstep: int = 1,
+                 step_delay: float = 0.002, microstep: int = 1,
                  top_limit_pin: int | None = None, bottom_limit_pin: int | None = None):
         """
         Initialize the stepper motor and, optionally, limit switches.
@@ -51,7 +51,7 @@ class StepperMotor:
             ms1 (int):  GPIO pin for MS1.
             ms2 (int):  GPIO pin for MS2.
             ms3 (int):  GPIO pin for MS3.
-            step_delay (float): Delay between high and low transitions (in seconds), default is 0.001s.
+            step_delay (float): Delay between high and low transitions (in seconds), default is 0.002s. Step delay must be higher or equal to 0.002s.
             microstep (int): Microstepping resolution (1, 1/2, 1/4, 1/8, 1/16), default is 1. Defines the number of microsteps per full step.
             top_limit_pin (int): Optional GPIO pin for the top limit switch, default is None.
             bottom_limit_pin (int): Optional GPIO pin for the bottom limit switch, default is None.
@@ -62,9 +62,19 @@ class StepperMotor:
         self._ms1_device = DigitalOutputDevice(ms1)
         self._ms2_device = DigitalOutputDevice(ms2)
         self._ms3_device = DigitalOutputDevice(ms3)
-        self._top_switch = Button(top_limit_pin) if top_limit_pin is not None else None
-        self._bottom_switch = Button(bottom_limit_pin) if bottom_limit_pin is not None else None
+        try:
+            self._top_switch = Button(top_limit_pin) if top_limit_pin is not None else None
+            self._bottom_switch = Button(bottom_limit_pin) if bottom_limit_pin is not None else None
+        except ValueError as e:
+            self._top_switch = None
+            self._bottom_switch = None
+            import warnings
+            warnings.warn(
+                f"Top or bottom limit switches are invalid or not connected:\nTop = '{self._top_switch}' | Bottom = '{self._bottom_switch}'\nError: {e}", stacklevel=2)
+        precise_sleep(0.001)
 
+        if step_delay < 0.002:
+            raise ValueError("step_delay must be >= 0.002 seconds.")
         self._step_delay = step_delay
         self._current_resolution = microstep
         self._steps_per_rev = self._BASE_STEPS_PER_REV * microstep
@@ -82,9 +92,9 @@ class StepperMotor:
         if resolution not in self._MICROSTEP_RESOLUTION:
             raise ValueError(f"Unsupported resolution: {resolution}. Choose from {list(self._MICROSTEP_RESOLUTION.keys())}")
         ms1_state, ms2_state, ms3_state = self._MICROSTEP_RESOLUTION[resolution]
-        self._ms1_device.value = bool(ms1_state)
-        self._ms2_device.value = bool(ms2_state)
-        self._ms3_device.value = bool(ms3_state)
+        self._ms1_device.on() if ms1_state else self._ms1_device.off()
+        self._ms2_device.on() if ms2_state else self._ms2_device.off()
+        self._ms3_device.on() if ms3_state else self._ms3_device.off()
         self._current_resolution = resolution
         self._steps_per_rev = self._BASE_STEPS_PER_REV * resolution
 
@@ -209,7 +219,7 @@ if __name__ == '__main__':
     # Create the motor instance (using half-step resolution, for example).
     stepper = StepperMotor(step=STEPPER_STEP_PIN, dir=STEPPER_DIR_PIN,
                            ms1=STEPPER_MS1_PIN, ms2=STEPPER_MS2_PIN, ms3=STEPPER_MS3_PIN,
-                           step_delay=0.002, microstep=1,
+                           step_delay=0.005, microstep=1,
                            top_limit_pin=STEPPER_TOP_LIMIT_PIN, bottom_limit_pin=STEPPER_BOTTOM_LIMIT_PIN)
 
     try:
