@@ -37,3 +37,15 @@ class SequenceCreator():
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 40)
             ]
+        
+        self.Sprint4Yellow = [
+            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
+            MoveForwardCommand(fsm, 50),
+            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            RotateLeftCommand(fsm, 100),
+            MoveForwardCommand(fsm, 100),
+            RotateRightCommand(fsm, rotation),
+            MoveForwardCommand(fsm, 130),
+        ]
