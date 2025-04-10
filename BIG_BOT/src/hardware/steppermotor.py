@@ -23,8 +23,7 @@ class StepperMotor:
       - 1/8  → Eighth step  (MS1=HIGH, MS2=HIGH, MS3=LOW)  → 1600 steps/rev
       - 1/16 → Sixteenth    (MS1=HIGH, MS2=HIGH, MS3=HIGH) → 3200 steps/rev (if supported)
 
-    A simple position tracking (in steps) is implemented so that after homing (typically at the bottom limit)
-    the vertical position can be monitored and controlled.
+    A simple position tracking (in steps) is implemented so that after homing the vertical position can be monitored and controlled.
 
     **Note:** The reset and sleep pins on your A4988 are assumed to be wired together to keep the stepper motor at full power.
     """
@@ -46,15 +45,15 @@ class StepperMotor:
         Initialize the stepper motor and, optionally, limit switches.
 
         Parameters:
-            step (int):   GPIO pin for STEP.
-            dir (int):    GPIO pin for DIR.
-            ms1 (int):  GPIO pin for MS1.
-            ms2 (int):  GPIO pin for MS2.
-            ms3 (int):  GPIO pin for MS3.
-            step_delay (float): Delay between high and low transitions (in seconds), default is 0.002s. Step delay must be higher or equal to 0.002s.
-            microstep (int): Microstepping resolution (1, 1/2, 1/4, 1/8, 1/16), default is 1. Defines the number of microsteps per full step.
-            top_limit_pin (int): Optional GPIO pin for the top limit switch, default is None.
-            bottom_limit_pin (int): Optional GPIO pin for the bottom limit switch, default is None.
+            `step` (int):   GPIO pin for STEP.
+            `dir` (int):    GPIO pin for DIR.
+            `ms1` (int):  GPIO pin for MS1.
+            `ms2` (int):  GPIO pin for MS2.
+            `ms3` (int):  GPIO pin for MS3.
+            `step_delay` (float): Delay between high and low transitions (in seconds), default is 0.002s. Step delay must be higher or equal to 0.002s.
+            `microstep` (int): Number of microsteps to perform per full step, default is 1. The corresponding microstepping resolution is (1, 1/2, 1/4, 1/8, 1/16).
+            `top_limit_pin` (int): Optional GPIO pin for the top limit switch, default is None.
+            `bottom_limit_pin` (int): Optional GPIO pin for the bottom limit switch, default is None.
         """
         # Create gpiozero devices for A4988 control.
         self._step_device = DigitalOutputDevice(step)
@@ -69,8 +68,7 @@ class StepperMotor:
             self._top_switch = None
             self._bottom_switch = None
             import warnings
-            warnings.warn(
-                f"Top or bottom limit switches are invalid or not connected:\nTop = '{self._top_switch}' | Bottom = '{self._bottom_switch}'\nError: {e}", stacklevel=2)
+            warnings.warn(f"Top or bottom limit switches are invalid or not connected.\nError: {e}", stacklevel=2)
         precise_sleep(0.001)
 
         if step_delay < 0.002:
@@ -82,12 +80,19 @@ class StepperMotor:
 
         self.current_position: int | None = None  # Vertical position in steps (None until homed).
 
-    def set_microstepping(self, resolution: int):
+    def set_microstepping(self, resolution: int) -> None:
         """
-        Set the microstepping resolution.
+        Set the microstepping resolution to apply on MS1, MS2, MS3 pins.
 
-        :param resolution: One of (1, 2, 4, 8, 16).
-        :raises ValueError: If the resolution is unsupported.
+        Parameters:
+            `resolution` (int): The resolution to set, one of (1, 2, 4, 8, 16).
+                - 1: Full step (200 steps/rev).
+                - 2: Half step (400 steps/rev).
+                - 4: Quarter step (800 steps/rev).
+                - 8: Eighth step (1600 steps/rev).
+                - 16: Sixteenth step (3200 steps/rev).
+        Raises:
+            `ValueError`: If the resolution is unsupported.
         """
         if resolution not in self._MICROSTEP_RESOLUTION:
             raise ValueError(f"Unsupported resolution: {resolution}. Choose from {list(self._MICROSTEP_RESOLUTION.keys())}")
@@ -100,16 +105,18 @@ class StepperMotor:
 
     @property
     def steps_per_rev(self) -> int:
-        """Return the full number of steps per revolution including the current microstepping resolution."""
+        """Return the full number of steps per revolution, including the current microstepping resolution."""
         return self._steps_per_rev
 
     def step(self, steps: int, clockwise: bool = False, update_position: bool = True) -> None:
         """
-        Pulse the STEP pin a specific number of times.
+        Pulse the STEP pin a specific number of times to rotate the motor by a given number of steps.
+        The direction is controlled by the DIR pin.
 
-        :param steps: Number of steps to move (absolute count).
-        :param clockwise: Direction flag, default is False. Clockwise rotation increase vertical position.
-        :param update_position: If True and if current_position is set, update the internal position count.
+        Parameters:
+            `steps` (int): Number of steps to move (absolute count).
+            `clockwise` (bool): Direction flag, default is False. Clockwise rotation increases vertical position.
+            `update_position` (bool): If True and if current_position is set, update the internal position count.
         """
         self._dir_device.value = clockwise  # Set direction.
         for _ in range(abs(steps)):
@@ -124,8 +131,9 @@ class StepperMotor:
         """
         Rotate the motor a specific number of rotations (full or fractional).
 
-        :param rotations: Number of full or fractional rotations.
-        :param clockwise: Direction of rotation.
+        Parameters:
+            `rotations` (float): Number of full or fractional rotations.
+            `clockwise` (bool): Direction of rotation, default is True. Clockwise rotation increases vertical position.
         """
         total_steps = int(self._steps_per_rev * rotations)
         print(f"Rotating {rotations} rotations ({total_steps} steps) {'clockwise' if clockwise else 'counter-clockwise'}.")
@@ -135,6 +143,9 @@ class StepperMotor:
         """
         Move the motor downward until the bottom limit switch is triggered.
         After homing, the vertical position is set to 0.
+
+        Raises:
+            `Exception`: If the bottom limit switch is not configured.
         """
         if self._bottom_switch is None:
             raise Exception("Bottom limit switch not configured.")
@@ -147,6 +158,9 @@ class StepperMotor:
         """
         Step upward one step at a time until the top limit switch is activated.
         Updates the current position as it moves.
+
+        Raises:
+            `Exception`: If the top limit switch is not configured.
         """
         if self._top_switch is None:
             raise Exception("Top limit switch not configured.")
@@ -158,6 +172,9 @@ class StepperMotor:
         """
         Step downward one step at a time until the bottom limit switch is activated.
         Updates the current position as it moves.
+
+        Raises:
+            `Exception`: If the bottom limit switch is not configured.
         """
         if self._bottom_switch is None:
             raise Exception("Bottom limit switch not configured.")
@@ -166,21 +183,23 @@ class StepperMotor:
         print("Reached bottom limit.")
         self.current_position = 0
 
-    def move_to_position(self, target_position: int, tolerance: int = 1) -> None:
+    def move_to_position(self, target_position: int) -> None:
         """
         Move the motor one step at a time to a target vertical position.
         Current position is tracked in steps. It is assumed that the motor has been homed,
         so current_position is not None.
 
-        :param target_position: The desired vertical position (in step counts).
-        :param tolerance: Acceptable error in step count.
-        :raises Exception: If current_position is undefined.
+        Parameters:
+            `target_position` (int): The desired vertical position in step counts.
+
+        Raises:
+            `Exception`: If current_position is undefined (None).
         """
         if self.current_position is None:
             raise Exception("Current position is undefined. Please home the motor first.")
 
         print(f"Moving from position {self.current_position} to target {target_position}.")
-        while abs(self.current_position - target_position) > tolerance:
+        while abs(self.current_position - target_position) > 0:
             # If going upward, check if top limit is reached.
             if self.current_position < target_position:
                 if self._top_switch is not None and self._top_switch.is_active:
@@ -197,7 +216,7 @@ class StepperMotor:
 
     def cleanup(self) -> None:
         """
-        Clean up all gpiozero devices.
+        Clean up all gpiozero stepper devices.
         """
         self._step_device.close()
         self._dir_device.close()
@@ -214,9 +233,8 @@ if __name__ == '__main__':
     from ..config import STEPPER_DIR_PIN, STEPPER_STEP_PIN, STEPPER_MS1_PIN, STEPPER_MS2_PIN, STEPPER_MS3_PIN, STEPPER_BOTTOM_LIMIT_PIN, STEPPER_TOP_LIMIT_PIN
     from gpiozero import Device
     from gpiozero.pins.mock import MockFactory
-    Device.pin_factory = MockFactory()  # Use native GPIO pin factory.
+    Device.pin_factory = MockFactory()
 
-    # Create the motor instance (using half-step resolution, for example).
     stepper = StepperMotor(step=STEPPER_STEP_PIN, dir=STEPPER_DIR_PIN,
                            ms1=STEPPER_MS1_PIN, ms2=STEPPER_MS2_PIN, ms3=STEPPER_MS3_PIN,
                            step_delay=0.005, microstep=1,
@@ -229,12 +247,9 @@ if __name__ == '__main__':
         # Now, move until the top limit is reached.
         # stepper.move_to_top()
 
-        # Optionally, move back a number of steps (or to a specific vertical position)
-        # For instance, move to a target position of 1000 steps (if within the allowed range).
+        # Move to a target position of 1000 steps (if within the allowed range).
         # stepper.move_to_position(target_position=1000)
 
-        # Or, perform additional rotations (fractional rotations are supported).
-        # e.g., rotate an additional 2 rotations upward.
         stepper.rotate(rotations=4, clockwise=True)
 
     finally:
