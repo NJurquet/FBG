@@ -1,5 +1,5 @@
 from gpiozero import DigitalOutputDevice, Button
-import time
+from ..utils import precise_sleep
 
 
 class StepperMotor:
@@ -104,11 +104,9 @@ class StepperMotor:
         self._dir_device.value = clockwise  # Set direction.
         for _ in range(abs(steps)):
             self._step_device.on()
-            # time.sleep(self._step_delay)
-            StepperMotor.precise_sleep(self._step_delay)  # Precise sleep to avoid timing issues.
+            precise_sleep(self._step_delay)  # Precise sleep to avoid timing issues.
             self._step_device.off()
-            # time.sleep(self._step_delay)
-            StepperMotor.precise_sleep(self._step_delay)  # Precise sleep to avoid timing issues.
+            precise_sleep(self._step_delay)  # Precise sleep to avoid timing issues.
             if update_position and self.current_position is not None:
                 self.current_position += 1 if clockwise else -1
 
@@ -200,17 +198,6 @@ class StepperMotor:
             self._top_switch.close()
         if self._bottom_switch:
             self._bottom_switch.close()
-
-    @staticmethod
-    def precise_sleep(duration: float) -> None:
-        """
-        Sleep for a more precise duration using perf_counter.
-
-        :param duration: Time to sleep in seconds (can be fractional).
-        """
-        start_time = time.perf_counter()
-        while time.perf_counter() - start_time < duration:
-            pass
 
 
 if __name__ == '__main__':
