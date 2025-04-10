@@ -75,7 +75,7 @@ class UltrasonicController:
             return USEvent.NO_EVENT
 
         # If any enabled sensor detects an obstacle within range
-        if any(distance < 20 for pos, distance in self._distances.items() if self._enabled_sensors[pos]):
+        if any(distance < 10 for pos, distance in self._distances.items() if self._enabled_sensors[pos]):
             # If the obstacle was not detected before
             if not self._last_obstacle:
                 self._last_obstacle = True
