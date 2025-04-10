@@ -45,10 +45,10 @@ class SequenceCreator():
             # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
             # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
             MoveForwardCommand(fsm, 50),
-            #UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
-            #UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
             RotateLeftCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 100),
+            MoveForwardCommand(fsm, 95),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 130),
         ]
@@ -57,5 +57,7 @@ class SequenceCreator():
             #SetServoAngleCommand(fsm, "centerRightClaw", 0),
             #SetServoAngleCommand(fsm, "centerRightClaw", 90),
             SetAllServoAnglesCommand(fsm, [30,30,30,30]),
+            SetAllServoAnglesCommand(fsm, [50,50,30,50]),
             SetAllServoAnglesCommand(fsm, [30,50,30,50])
+
             ]
