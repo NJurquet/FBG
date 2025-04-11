@@ -32,12 +32,11 @@ class RobotFSM:
         if self.robot.color == "yellow": 
 
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.Sprint4CansYellow, self.sequenceCreator.clawtest])  
+                        [ self.sequenceCreator.reedswitchTest, self.sequenceCreator.clawtest])  
         else:
-            # self.sequenceManager = SequenceManager(self, 
-            #             [ self.sequenceCreator.Sprint4CansBlue, self.sequenceCreator.clawtest])
+
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.reedswitchTest, self.sequenceCreator.wheeltest])  
+                        [ self.sequenceCreator.reedswitchTest, self.sequenceCreator.clawtest])  
 
                                  
         

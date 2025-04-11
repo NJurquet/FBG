@@ -14,7 +14,7 @@ class ReedSwitchCommand(ICommand):
         self.fsm = fsm
 
 
-    def execute(self) -> None:
+    def execute(self) -> float:
         #Stays stucked in a loop if hte reedswitch value doesn't change
         value = self.fsm.robot.reedSwitch.read()
         new_value = value
@@ -22,6 +22,9 @@ class ReedSwitchCommand(ICommand):
             time.sleep(0.01)
             new_value = self.fsm.robot.reedSwitch.read()
         print("ReedSwitch value changed")
+        time_needed = 0.1
+        return time_needed
+
 
     def stop(self):
         pass
