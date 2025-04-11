@@ -32,6 +32,9 @@ const int HallSensorPin = 2;
 // Magnetic start pin
 const int magneticStartPin = 5;
 
+// Groupie start left select pin
+const int startLeftPin = 12;
+
 HallSensor hallSensor(HallSensorPin);
 UltrasonicSensor leftUltrasonicSensor(leftTrigPin, leftEchoPin);
 UltrasonicSensor rightUltrasonicSensor(rightTrigPin, rightEchoPin);
@@ -43,30 +46,14 @@ ServoMotor celebretionServo(celebrationServoPin);
 MagneticStart magneticStart(magneticStartPin);
 
 // CONFIGURATION CONSTANTS ///////////////////////
-const bool groupie = true;
-const bool leftStart = false;
+const bool groupie = false;
+const bool leftStart = digitalRead(startLeftPin);
 const bool topStartLine = false;
 const int zoneNumber = topStartLine ? 1 : 2;
 //////////////////////////////////////////////////
 
 FSM_groupie fsm_groupie(leftUltrasonicSensor, rightUltrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, magneticStart, zoneNumber, leftStart, topStartLine);
 FSM_star fsm_star(leftUltrasonicSensor, rightUltrasonicSensor, leftIRSensor, rightIRSensor, motorControl, magneticStart, celebrationLed, celebretionServo);
-
-void debug()
-{
-  // if (rotationChanged)
-  // {
-  //   if (rotatingLeft)
-  //   {
-  //     mySerial.println(F("Changed rotation to left"));
-  //   }
-  //   else
-  //   {
-  //     mySerial.println(F("Changed rotation to right"));
-  //   }
-  //   rotationChanged = false; // Reset the flag
-  // }
-}
 
 void setup()
 {
@@ -91,6 +78,4 @@ void setup()
 void loop()
 {
   groupie ? fsm_groupie.update() : fsm_star.update();
-
-  debug();
 }
