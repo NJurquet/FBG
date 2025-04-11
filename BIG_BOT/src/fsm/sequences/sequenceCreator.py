@@ -71,9 +71,9 @@ class SequenceCreator():
         self.clawtest = [
             #SetServoAngleCommand(fsm, "centerRightClaw", 0),
             #SetServoAngleCommand(fsm, "centerRightClaw", 90),
-            SetAllServoAnglesCommand(fsm, [30,30,30,30]),
-            SetAllServoAnglesCommand(fsm, [50,50,50,50]),
-            SetAllServoAnglesCommand(fsm, [30,30,30,30]),
+            SetAllServoAnglesCommand(fsm, [150,150,150,150]),
+            SetAllServoAnglesCommand(fsm, [90,90,90,90]),
+            SetAllServoAnglesCommand(fsm, [150,150,150,150]),
 
             SetOuterServoAngleCommand(fsm, [40,40,40,40]),
 
@@ -142,8 +142,5 @@ class SequenceCreator():
         ]
 
         self.reedswitchTest = [
-            ReedSwitchCommand(fsm),
-            MoveForwardCommand(fsm, 40),
-
-
+            ReedSwitchCommand(fsm)
         ]

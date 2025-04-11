@@ -13,7 +13,7 @@ class SetOuterServoAngleCommand(ICommand):
 
     def execute(self) -> float:
         # Set the angle of the specific servo motor
-        self.fsm.robot.servoControl.setOuterAngles(self.angle)
+        self.fsm.robot.servoControl.setOuterAngles(self.angles)
         time_needed = 2.0  
         return time_needed
 
