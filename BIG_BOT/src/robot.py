@@ -25,6 +25,8 @@ class Robot:
     """
 
     def __init__(self, color: str, score: int = DEFAULT_SCORE):
+        self.color = color
+
         self.fsm = RobotFSM(self)
         self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, LEFT_MOTOR_EN_PIN,
                             RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_EN_PIN)
@@ -52,7 +54,6 @@ class Robot:
         self.ultrasonicController.add_sensor(USPosition.BACK_LEFT, US_BACK_LEFT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN)
         # self.reedSwitch = reedSwitch(REED_SWITCH_PIN)
 
-        self.color = color
         self.score = score
         #self.lcd.write_score(self.score)
         self.__position: tuple[int, int] = (0, 0)

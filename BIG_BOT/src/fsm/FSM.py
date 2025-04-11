@@ -26,6 +26,9 @@ class RobotFSM:
         self.state_factory = StateFactory(self)
 
         self.sequenceCreator = SequenceCreator(self)
+
+        print(f"Robot color: {self.robot.color}")  # Debugging line
+
         if self.robot.color == "yellow":
 
             self.sequenceManager = SequenceManager(self, 
