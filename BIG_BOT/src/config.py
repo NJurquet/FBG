@@ -52,6 +52,11 @@ CENTER_LEFT_CLAW_ADAFRUIT_PIN = 1
 OUTER_RIGHT_CLAW_ADAFRUIT_PIN = 2
 OUTER_LEFT_CLAW_ADAFRUIT_PIN = 3
 
+## Servo Claws Angle list ##
+ALL_OPEN = [0, 0, 0, 0]
+ALL_CLOSED = [90, 90, 90, 90]
+OUTER_OPEN = [0, 0, 90, 90]
+
 ## Servo PlankPushers ##
 PLANK_PUSHER_RIGHT_NAME = "plankPusherRight"
 PLANK_PUSHER_LEFT_NAME = "plankPusherLeft"

@@ -5,16 +5,15 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
-class SetServoAngleCommand(ICommand):
-    def __init__(self, fsm: 'RobotFSM', name: str, angle: float):
+class SetOuterServoAngleCommand(ICommand):
+    def __init__(self, fsm: 'RobotFSM', angles: List[float]):
         self._is_finished = False
         self.fsm = fsm
-        self.name = name
-        self.angle = angle
+        self.angles = angles
 
     def execute(self) -> float:
         # Set the angle of the specific servo motor
-        self.fsm.robot.servoControl.setAngle(self.name, self.angle)
+        self.fsm.robot.servoControl.setOuterAngles(self.angle)
         time_needed = 2.0  
         return time_needed
 
