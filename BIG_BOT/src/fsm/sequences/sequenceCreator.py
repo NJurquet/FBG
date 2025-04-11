@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class SequenceCreator():
     def __init__(self, fsm: 'RobotFSM'):
         speed = 0.5
-        rotation = 90
+        rotation = 100
 
         self.Init = [
                 InitCommand(fsm, "yellow"),
@@ -75,3 +75,61 @@ class SequenceCreator():
             SetAllServoAnglesCommand(fsm, [30,50,30,50])
 
             ]
+        
+        self.Sprint4CansBlue = [
+            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
+            # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
+            # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+            MoveForwardCommand(fsm, 50),
+            #UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            RotateRightCommand(fsm, rotation),
+            MoveForwardCommand(fsm, 55),
+
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+
+            RotateRightCommand(fsm, rotation),
+            MoveForwardCommand(fsm, 60),
+
+            MoveBackwardCommand(fsm, 60),
+
+
+            RotateLeftCommand(fsm, rotation),
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, True),  
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, True),
+
+            MoveForwardCommand(fsm, 40),
+            RotateLeftCommand(fsm, 110),
+            MoveForwardCommand(fsm, 140),
+        ]
+
+        self.Sprint4CansYellows = [
+            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
+            # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
+            # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+            MoveForwardCommand(fsm, 50),
+            #UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            RotateLeftCommand(fsm, rotation),
+            MoveForwardCommand(fsm, 55),
+
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+
+            RotateLeftCommand(fsm, rotation),
+            MoveForwardCommand(fsm, 60),
+
+            MoveBackwardCommand(fsm, 60),
+
+
+            RotateRightCommand(fsm, rotation),
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, True),  
+            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, True),
+
+            MoveForwardCommand(fsm, 40),
+            RotateRightCommand(fsm, 110),
+            MoveForwardCommand(fsm, 140),
+        ]

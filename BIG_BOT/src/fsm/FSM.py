@@ -29,13 +29,13 @@ class RobotFSM:
 
         print(f"Robot color: {self.robot.color}")  # Debugging line
 
-        if self.robot.color == "yellow":
+        if self.robot.color == "yellow": 
 
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.Sprint4Yellow, self.sequenceCreator.clawtest])  
+                        [ self.sequenceCreator.Sprint4CansYellow, self.sequenceCreator.clawtest])  
         else:
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.Sprint4Blue, self.sequenceCreator.clawtest])
+                        [ self.sequenceCreator.Sprint4CansBlue, self.sequenceCreator.clawtest])
                                  
         
         self.us_event: USEvent = USEvent.NO_EVENT
