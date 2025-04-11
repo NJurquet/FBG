@@ -1,7 +1,8 @@
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
-from ..commands.servoCommands import SetServoAngleCommand, SetAllServoAnglesCommand
+from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand
 from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import UltrasonicSensorCommand
+from ..commands.reedswitchCommands import ReedSwitchCommand
 from ...constants import USPosition
 from ...config import OUTER_RIGHT_CLAW_NAME
 from typing import TYPE_CHECKING
@@ -71,8 +72,10 @@ class SequenceCreator():
             #SetServoAngleCommand(fsm, "centerRightClaw", 0),
             #SetServoAngleCommand(fsm, "centerRightClaw", 90),
             SetAllServoAnglesCommand(fsm, [30,30,30,30]),
-            SetAllServoAnglesCommand(fsm, [50,50,30,50]),
-            SetAllServoAnglesCommand(fsm, [30,50,30,50])
+            SetAllServoAnglesCommand(fsm, [50,50,50,50]),
+            SetAllServoAnglesCommand(fsm, [30,30,30,30]),
+
+            SetOuterServoAngleCommand(fsm, [40,40,40,40]),
 
             ]
         
@@ -132,4 +135,15 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 40),
             RotateRightCommand(fsm, 110),
             MoveForwardCommand(fsm, 140),
+        ]
+
+        self.wheeltest = [
+            RotateLeftCommand(fsm, 10),
+        ]
+
+        self.reedswitchTest = [
+            ReedSwitchCommand(fsm),
+            MoveForwardCommand(fsm, 40),
+
+
         ]

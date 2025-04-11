@@ -34,8 +34,11 @@ class RobotFSM:
             self.sequenceManager = SequenceManager(self, 
                         [ self.sequenceCreator.Sprint4CansYellow, self.sequenceCreator.clawtest])  
         else:
+            # self.sequenceManager = SequenceManager(self, 
+            #             [ self.sequenceCreator.Sprint4CansBlue, self.sequenceCreator.clawtest])
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.Sprint4CansBlue, self.sequenceCreator.clawtest])
+                        [ self.sequenceCreator.reedswitchTest, self.sequenceCreator.wheeltest])  
+
                                  
         
         self.us_event: USEvent = USEvent.NO_EVENT
