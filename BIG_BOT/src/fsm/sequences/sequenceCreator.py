@@ -53,6 +53,20 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 130),
         ]
 
+        self.Sprint4Blue = [
+            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
+            # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
+            # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+            MoveForwardCommand(fsm, 50),
+            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
+            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            RotateRightCommand(fsm, rotation),
+            MoveForwardCommand(fsm, 95),
+            RotateLeftCommand(fsm, rotation),
+            MoveForwardCommand(fsm, 130),
+        ]
+
         self.clawtest = [
             #SetServoAngleCommand(fsm, "centerRightClaw", 0),
             #SetServoAngleCommand(fsm, "centerRightClaw", 90),
