@@ -5,6 +5,7 @@ from .config import REED_SWITCH_PIN
 from .config import CENTER_RIGHT_CLAW_NAME, CENTER_LEFT_CLAW_NAME, OUTER_RIGHT_CLAW_NAME, OUTER_LEFT_CLAW_NAME, CENTER_RIGHT_CLAW_ADAFRUIT_PIN, CENTER_LEFT_CLAW_ADAFRUIT_PIN, OUTER_RIGHT_CLAW_ADAFRUIT_PIN, OUTER_LEFT_CLAW_ADAFRUIT_PIN
 from .config import PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, PLANK_PUSHER_RIGHT_ADAFRUIT_PIN, PLANK_PUSHER_LEFT_ADAFRUIT_PIN, HINGE_NAME, HINGE_ADAFRUIT_PIN, BANNER_DEPLOYER_NAME, BANNER_DEPLOYER_ADAFRUIT_PIN
 from .config import REED_SWITCH_PIN
+from .config import STEPPER_DIR_PIN, STEPPER_STEP_PIN, STEPPER_MS1_PIN, STEPPER_MS2_PIN, STEPPER_MS3_PIN, STEPPER_BOTTOM_LIMIT_PIN, STEPPER_TOP_LIMIT_PIN
 from .config import DEFAULT_SCORE
 from .constants import USPosition
 from .fsm.FSM import RobotFSM
@@ -14,6 +15,7 @@ from .hardware.lcd import LCD
 from .hardware.adafruitServoController import AdafruitServoControl
 from .hardware.ultrasonicController import UltrasonicController
 from .hardware.reedSwitch import reedSwitch
+from .hardware.steppermotor import StepperMotor
 
 
 class Robot:
@@ -34,6 +36,10 @@ class Robot:
         #                                                PLANK_PUSHER_RIGHT_ADAFRUIT_PIN, PLANK_PUSHER_LEFT_ADAFRUIT_PIN, HINGE_ADAFRUIT_PIN, BANNER_DEPLOYER_ADAFRUIT_PIN
         #                                           ])
 
+        self.stepper = StepperMotor(step=STEPPER_STEP_PIN, dir=STEPPER_DIR_PIN,
+                                    ms1=STEPPER_MS1_PIN, ms2=STEPPER_MS2_PIN, ms3=STEPPER_MS3_PIN,
+                                    step_delay=0.005, microstep=1,
+                                    top_limit_pin=STEPPER_TOP_LIMIT_PIN, bottom_limit_pin=STEPPER_BOTTOM_LIMIT_PIN)
         # self.lcd = LCD()
         self.camera = None
         self.ultrasonicController = UltrasonicController()
@@ -45,7 +51,7 @@ class Robot:
 
         self.color = color
         self.score = score
-        self.lcd.write_score(self.score)
+        # self.lcd.write_score(self.score)
         self.__position: tuple[int, int] = (0, 0)
 
     @property
