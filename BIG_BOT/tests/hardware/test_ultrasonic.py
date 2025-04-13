@@ -231,20 +231,17 @@ class TestUltrasonicController:
         assert controller._distances[sensor1.pos] == 45.3
         assert USPosition.FRONT_LEFT not in controller._distances
 
-    @patch('BIG_BOT.src.hardware.ultrasonicController.UltrasonicSensor')
-    def test_get_distance_valid_position(self, mock_sensor_class, controller: UltrasonicController):
-        # Create mock sensor
+    def test_get_distance_valid_position(self, controller: UltrasonicController):
         mock_sensor = Mock(spec=UltrasonicSensor)
         mock_sensor.pos = USPosition.FRONT_RIGHT
         mock_sensor.getDistance.return_value = 45.0
-        
-        # Setup controller directly
+
         controller._sensors = [mock_sensor]
-        controller._enabled_sensors = {USPosition.FRONT_RIGHT: True}
 
         distance = controller.get_distance(USPosition.FRONT_RIGHT)
         assert distance == 45.0
         mock_sensor.getDistance.assert_called_once()
+
 
     def test_get_distance_invalid_position(self, controller: UltrasonicController):
         with pytest.raises(TypeError):
