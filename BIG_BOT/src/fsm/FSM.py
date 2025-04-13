@@ -32,11 +32,11 @@ class RobotFSM:
         if self.robot.color == "yellow": 
 
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.Init(), self.sequenceCreator.Sprint4CansYellows()])  
+                        [ self.sequenceCreator.Init, self.sequenceCreator.Sprint4CansYellows])  
         else:
 
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.Init(), self.sequenceCreator.Sprint4CansBlue()])  
+                        [ self.sequenceCreator.Init, self.sequenceCreator.Sprint4CansBlue])  
 
                                  
         
