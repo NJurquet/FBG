@@ -22,7 +22,7 @@ class SequenceCreator():
             StopCommand(fsm)
         ]
         
-        self._FirstCanMove = [
+        self._FirstCanMove: list[ICommand] = [
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Disable front sensors
             MoveForwardCommand(fsm, 50),
             RotateLeftCommand(fsm, rotation),
@@ -32,7 +32,7 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 30),
         ]
         
-        self._FirstCanBuildMove = [
+        self._FirstCanBuildMove: list[ICommand] = [
             MoveBackwardCommand(fsm, 30),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 15),
@@ -40,7 +40,7 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 40)
         ]
         
-        self._Sprint4Yellow = [
+        self._Sprint4Yellow: list[ICommand] = [
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),  # Disable back sensors
             MoveForwardCommand(fsm, 50),
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
@@ -50,7 +50,7 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 130),
         ]
 
-        self._Sprint4Blue = [
+        self._Sprint4Blue: list[ICommand] = [
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
@@ -60,14 +60,14 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 130),
         ]
 
-        self._clawtest = [
+        self._clawtest: list[ICommand] = [
             SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
             SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
             SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
             SetOuterServoAngleCommand(fsm, [40, 40, 40, 40]),
         ]
         
-        self._Sprint4CansBlue = [
+        self._Sprint4CansBlue: list[ICommand] = [
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
@@ -84,7 +84,7 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 140),
         ]
 
-        self._Sprint4CansYellows = [
+        self._Sprint4CansYellows: list[ICommand] = [
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
@@ -101,11 +101,11 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 140),
         ]
 
-        self._wheeltest = [
+        self._wheeltest: list[ICommand] = [
             RotateLeftCommand(fsm, 10),
         ]
 
-        self._reedswitchTest = [
+        self._reedswitchTest: list[ICommand] = [
             ReedSwitchCommand(fsm)
         ]
 
