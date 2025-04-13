@@ -48,8 +48,11 @@ class SequenceManager():
         self._execution_in_progress = True
         
         # Execute command and get timer
-        time_needed = self._command.execute()
-        self._timer = MyTimer(time_needed, self._on_step_complete)
+        self._command.execute()
+        if self._command.time_needed > 0:
+            self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
+        else:
+            self._timer = None  # If time is at 0, we don't need a timer
 
     def _on_step_complete(self):
         """Callback when a step completes"""

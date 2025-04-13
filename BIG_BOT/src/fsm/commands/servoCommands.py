@@ -1,63 +1,54 @@
 from .command import ICommand
-from ...constants import StateEnum
 from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
 class SetOuterServoAngleCommand(ICommand):
+    """Command to set the outer servo angles."""
     def __init__(self, fsm: 'RobotFSM', angles: List[float]):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
 
-    def execute(self) -> float:
-        # Set the angle of the specific servo motor
+    def execute(self):
         self.fsm.robot.servoControl.setOuterAngles(self.angles)
-        time_needed = 2.0  
-        return time_needed
+        self.time_needed = 2.0  
 
     def pause(self):
-        # Stop the specific servo motor
-        self.fsm.robot.servo_control.stop(self.name)
+        self.fsm.robot.servoControl.stopOuterServos()
 
     def resume(self):
-        # Resume setting the angle of the specific servo motor
-        self.fsm.robot.servoControl.setAngle(self.name, self.angle)
-        time_needed = 2.0 
-        return time_needed
+        self.fsm.robot.servoControl.setOuterAngles(self.angles)
+        self.time_needed = 2.0
 
     def stop(self):
-        # Stop the specific servo motor
-        pass
+        self.fsm.robot.servoControl.stopOuterServos()
 
     def finished(self):
         self.stop()
         self._is_finished = True
 
 class SetAllServoAnglesCommand(ICommand):
+    """Command to set the all servo angles."""
     def __init__(self, fsm: 'RobotFSM', angles: List[float]):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
 
-    def execute(self) -> float:
-        # Set the angles of ALL the servo motors
+    def execute(self):
         self.fsm.robot.servoControl.setAngles(self.angles)
-        time_needed = 2.0  
-        return time_needed
+        self.time_needed = 2.0
 
     def pause(self):
-        # Stop all servo motors
-        pass
+        self.fsm.robot.servoControl.stopServos()
 
     def resume(self):
-        # Resume setting the angles of the servo motors
-        pass
+        self.fsm.robot.servoControl.setAngles(self.angles)
+        self.time_needed = 2.0
 
     def stop(self):
-        # Stop all servo motors
-        pass
+        self.fsm.robot.servoControl.stopServos()
 
     def finished(self):
         self.stop()

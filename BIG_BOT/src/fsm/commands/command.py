@@ -4,7 +4,7 @@ from ..myTimer import MyTimer
 class ICommand(ABC):
     """Abstract base class for all commands."""
 
-    time_needed: float | None = None
+    time_needed: float = 0.0
     _is_finished: bool = False
 
     def is_finished(self, finished) -> bool:
@@ -14,7 +14,7 @@ class ICommand(ABC):
         return self._is_finished
 
     @abstractmethod
-    def execute(self) -> float | None:
+    def execute(self):
         """Execute the command and return the time needed for completion"""
         pass
     

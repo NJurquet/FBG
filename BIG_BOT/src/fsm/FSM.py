@@ -32,11 +32,11 @@ class RobotFSM:
         if self.robot.color == "yellow": 
 
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.reedswitchTest, self.sequenceCreator.clawtest])  
+                        [ self.sequenceCreator.get_Init(), self.sequenceCreator.get_Sprint4CansYellows()])  
         else:
 
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.reedswitchTest, self.sequenceCreator.clawtest])  
+                        [ self.sequenceCreator.get_Init(), self.sequenceCreator.get_Sprint4CansBlue()])  
 
                                  
         
@@ -72,6 +72,10 @@ class RobotFSM:
         """
         Execute the current state of the FSM.
         """
+
+        if self.start_match and (time.time() - self.start_time >= MAX_TIME):
+            self.set_state(StateEnum.STOP)
+            self.end_of_match = True
 
         if not self.end_of_match:
             if self.start_match:

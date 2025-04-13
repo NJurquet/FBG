@@ -5,24 +5,30 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
-class UltrasonicSensorCommand(ICommand):
-    def __init__(self, fsm: 'RobotFSM', pos: USPosition, enable: bool):
+class ToggleUltrasonicSensorsCommand(ICommand):
+    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
         self.fsm = fsm
-        self.pos = pos
-        self.enable = enable
+        self.initialStates = fsm.robot.ultrasonicController.get_enabled_sensors()
+        self.positions = positions
 
-    def execute(self) -> float:
-        if self.enable:
-            self.fsm.robot.ultrasonicController.enable_sensor(self.pos)
-        else:
-            self.fsm.robot.ultrasonicController.disable_sensor(self.pos)
-        return 0.2  #Small delay just to be sure
+    def execute(self):
+        for i in range(len(self.positions)):
+            self.fsm.robot.ultrasonicController.toggle_sensor(self.positions[i])
 
     def pause(self):
         pass  # No action needed for pause
 
     def resume(self):
-        pass  # No action needed for resume
+        current_states = self.fsm.robot.ultrasonicController.get_enabled_sensors()
+    
+        for position in self.positions:
+            # Check if the current state is different from the initial state
+            current_state = current_states[position]
+            initial_state = self.initialStates[position]
+
+            if current_state == initial_state:
+                # Toggle the neeeded sensor to the opposite state
+                self.fsm.robot.ultrasonicController.toggle_sensor(position)
 
     def stop(self):
         pass  # No action needed for stop

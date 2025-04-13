@@ -1,7 +1,8 @@
+from ..commands.command import ICommand
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
 from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand
 from ..commands.startCommands import InitCommand
-from ..commands.ultrasonicCommands import UltrasonicSensorCommand
+from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
 from ...constants import USPosition
 from ...config import OUTER_RIGHT_CLAW_NAME
@@ -15,24 +16,23 @@ class SequenceCreator():
         speed = 0.5
         rotation = 100
 
-        self.Init = [
-                InitCommand(fsm, "yellow"),
+        self._Init: list[ICommand] = [
+                ReedSwitchCommand(fsm),
+                InitCommand(fsm),
                 StopCommand(fsm)
             ]
         
-        self.FirstCanMove = [
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  # Disable front left sensor
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+        self._FirstCanMove: list[ICommand] = [
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Disable front sensors
             MoveForwardCommand(fsm, 50),
             RotateLeftCommand(fsm, rotation),
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, True),  # Enable front left sensor
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, True),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Enable front sensors
             MoveForwardCommand(fsm, 50),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 30),
         ]
         
-        self.FirstCanBuildMove = [
+        self._FirstCanBuildMove: list[ICommand] = [
             MoveBackwardCommand(fsm, 30),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 15),
@@ -40,37 +40,27 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 40)
             ]
         
-        self.Sprint4Yellow = [
-            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
-            # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
-            # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+        self._Sprint4Yellow: list[ICommand] = [
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),  # Disable back sensors
             MoveForwardCommand(fsm, 50),
-            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             RotateLeftCommand(fsm, rotation),
             MoveForwardCommand(fsm, 95),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 130),
         ]
 
-        self.Sprint4Blue = [
-            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
-            # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
-            # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+        self._Sprint4Blue: list[ICommand] = [
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
-            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 95),
             RotateLeftCommand(fsm, rotation),
             MoveForwardCommand(fsm, 130),
         ]
 
-        self.clawtest = [
-            #SetServoAngleCommand(fsm, "centerRightClaw", 0),
-            #SetServoAngleCommand(fsm, "centerRightClaw", 90),
+        self.clawtest: list[ICommand] = [
             SetAllServoAnglesCommand(fsm, [150,150,150,150]),
             SetAllServoAnglesCommand(fsm, [90,90,90,90]),
             SetAllServoAnglesCommand(fsm, [150,150,150,150]),
@@ -79,19 +69,13 @@ class SequenceCreator():
 
             ]
         
-        self.Sprint4CansBlue = [
-            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
-            # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
-            # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+        self._Sprint4CansBlue: list[ICommand] = [
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
-            #UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 55),
-
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
 
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 60),
@@ -100,47 +84,61 @@ class SequenceCreator():
 
 
             RotateLeftCommand(fsm, rotation),
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, True),  
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, True),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
 
             MoveForwardCommand(fsm, 40),
             RotateLeftCommand(fsm, 110),
             MoveForwardCommand(fsm, 140),
         ]
 
-        self.Sprint4CansYellows = [
-            UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, False),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, False),
-            # UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
-            # UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+        self._Sprint4CansYellows: list[ICommand] = [
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
-            #UltrasonicSensorCommand(fsm, USPosition.BACK_LEFT, True),  
-            UltrasonicSensorCommand(fsm, USPosition.BACK_RIGHT, True),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             RotateLeftCommand(fsm, rotation),
             MoveForwardCommand(fsm, 55),
 
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, False),  
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, False),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
 
             RotateLeftCommand(fsm, rotation),
             MoveForwardCommand(fsm, 60),
 
             MoveBackwardCommand(fsm, 60),
 
-
             RotateRightCommand(fsm, rotation),
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_LEFT, True),  
-            UltrasonicSensorCommand(fsm, USPosition.FRONT_RIGHT, True),
+            ToggleUltrasonicSensorsCommand(fsm, positions= [USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
 
             MoveForwardCommand(fsm, 40),
             RotateRightCommand(fsm, 110),
             MoveForwardCommand(fsm, 140),
         ]
 
-        self.wheeltest = [
+        self.wheeltest: list[ICommand] = [
             RotateLeftCommand(fsm, 10),
         ]
 
-        self.reedswitchTest = [
+        self.reedswitchTest: list[ICommand] = [
             ReedSwitchCommand(fsm)
         ]
+
+    def get_Init(self) -> list[ICommand]:
+        return self._Init
+
+    def get_FirstCanMove(self) -> list[ICommand]:
+        return self._FirstCanMove
+    
+    def get_FirstCanBuildMove(self) -> list[ICommand]:
+        return self._FirstCanBuildMove
+    
+    def get_Sprint4Yellow(self) -> list[ICommand]:
+        return self._Sprint4Yellow
+    
+    def get_Sprint4Blue(self) -> list[ICommand]:
+        return self._Sprint4Blue
+    
+    def get_Sprint4CansBlue(self) -> list[ICommand]:    
+        return self._Sprint4CansBlue
+    
+    def get_Sprint4CansYellows(self) -> list[ICommand]:
+        return self._Sprint4CansYellows
+    

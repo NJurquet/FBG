@@ -68,3 +68,10 @@ class AdafruitServoControl:
         """
         for i in range(16):
             self.kit.servo[i].angle = None
+
+    def stopOuterServos(self):
+        """
+        Stops all outer servo motors.
+        """
+        for i in range(2, 4):
+            self.kit.servo[i].angle = None

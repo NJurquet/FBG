@@ -48,6 +48,8 @@ class UltrasonicController:
         """
         if pos in self._enabled_sensors:
             self._enabled_sensors[pos] = True
+        else:
+            print(f"Tried to enable sensor at position {pos}, but was not in the list of enabled sensors.")
 
     def disable_sensor(self, pos: USPosition) -> None:
         """
@@ -58,6 +60,21 @@ class UltrasonicController:
         """
         if pos in self._enabled_sensors:
             self._enabled_sensors[pos] = False
+        else:
+            print(f"Tried to disable sensor at position {pos}, but was not in the list of enabled sensors.")
+
+    def toggle_sensor(self, pos: USPosition) -> None:
+        """
+        Toggle the ultrasonic sensor at the specified position.
+
+        Parameters:
+            `pos` (USPosition): The position of the sensor.
+        """
+        if pos in self._enabled_sensors:
+            self._enabled_sensors[pos] = not self._enabled_sensors[pos]
+        else:
+            print(f"Tried to toggle sensor at position {pos}, but was not in the list of enabled sensors.")
+    
     def check_obstacles(self) -> USEvent:
         """
         Check if any of the ultrasonic sensors detects an obstacle.
@@ -89,6 +106,15 @@ class UltrasonicController:
 
         # If no obstacle detected
         return USEvent.NO_EVENT
+    
+    def get_enabled_sensors(self) -> dict[USPosition, bool]:
+        """
+        Get the enabled sensors.
+
+        Returns:
+            dict[USPosition, bool]: A dictionary of enabled sensors.
+        """
+        return self._enabled_sensors
 
     def measure_distances(self) -> None:
         """
