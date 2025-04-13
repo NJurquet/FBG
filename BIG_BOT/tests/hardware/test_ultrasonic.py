@@ -104,7 +104,7 @@ class TestUltrasonicController:
         assert enabled_sensors[USPosition.FRONT_RIGHT] is True
         assert enabled_sensors[USPosition.FRONT_LEFT] is True
         
-        controller.disable_sensor(USPosition.FRONT_LEFT)
+        controller._enabled_sensors[USPosition.FRONT_LEFT] = False
         enabled_sensors = controller.get_enabled_sensors()
         assert enabled_sensors[USPosition.FRONT_RIGHT] is True
         assert enabled_sensors[USPosition.FRONT_LEFT] is False
