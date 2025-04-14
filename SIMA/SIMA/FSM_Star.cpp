@@ -71,10 +71,11 @@ void FSM_star::checkObstacle()
     long distanceL = leftUltrasonicSensor.readDistance();
     long distanceR = rightUltrasonicSensor.readDistance();
 
-    Serial.print("distL : ");
-    Serial.println(distanceL);
-    Serial.print("distR : ");
-    Serial.println(distanceR);
+    // Serial.print("distL : ");
+    // Serial.println(distanceL);
+    // Serial.print("distR : ");
+    // Serial.println(distanceR);
+
     // Checks if obstacle is closer than 10 cm
     if (distanceL < obstacleDistance || distanceR < obstacleDistance)
     { // If a new obstacle is detected, start counting the time
@@ -145,7 +146,7 @@ void FSM_star::stopMotors()
 {
     motorControl.stop();
     currentState = CELEBRATE;
-    Serial.println(F("Celebration"));
+    //Serial.println(F("Celebration"));
 }
 
 void FSM_star::celebrate()

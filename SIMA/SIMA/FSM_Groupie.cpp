@@ -106,7 +106,7 @@ void FSM_groupie::checkObstacle()
     else
     {
         // If the robot finished avoiding the obstacle, add the time to the total obstacle time
-        if (previousState == AVOID_OBSTACLE);
+        if (previousState == AVOID_OBSTACLE)
         {
             totalObstacleTime += currentTime - obstacleStartTime;
         }
