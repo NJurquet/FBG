@@ -3,21 +3,32 @@ import time
 
 class MyTimer:
     def __init__(self, time_needed, delete):
-        self.time_needed = time_needed
-        self.delete = delete
-        self.startTime = time.time()
-        self.timer = Timer(self.time_needed, self.delete)
-        self.timer.start()
+        self._time_needed = time_needed
+        self._delete = delete
+        self._startTime = time.time()
+        self._elapsedTime = 0  
+        self._timer = Timer(self._time_needed, self._delete)
+        self._timer.start()
 
     def pause(self):
-        self.timer.cancel()
-        self.endTime = time.time()
+        if self._timer:
+            self._timer.cancel()
+            self._timer = None
+            self.endTime = time.time()
+            self._elapsedTime += (self.endTime - self._startTime)
 
-    def resume(self, delete):
-        self.delete = delete
-        self.timer = Timer(self.time_needed-(self.endTime-self.startTime), self.delete)
-        self.timer.start()
+    def resume(self, delete) -> float:
+        self._startTime = time.time()
+        self._delete = delete
+        self._time_needed = max(0, self._time_needed - self._elapsedTime)
+        self._elapsedTime = 0 
+        
+        self._timer = Timer(self._time_needed, self._delete)
+        self._timer.start()
+
+        return self._time_needed
 
     def cancel(self):
-        self.timer.cancel()
-        self.timer = None
+        if self._timer:
+            self._timer.cancel()
+            self._timer = None

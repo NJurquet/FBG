@@ -25,10 +25,14 @@ class Robot:
     """
 
     def __init__(self, color: str, score: int = DEFAULT_SCORE):
+        self.color = color
+
         self.fsm = RobotFSM(self)
         self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, LEFT_MOTOR_EN_PIN,
                             RIGHT_MOTOR_FORWARD_PIN, RIGHT_MOTOR_BACKWARD_PIN, RIGHT_MOTOR_EN_PIN)
-        # self.servoControl = AdafruitServoControl(channels=SERVO_CHANNELS,
+        self.servoControl = AdafruitServoControl(channels=SERVO_CHANNELS,
+                                                 names=[OUTER_RIGHT_CLAW_NAME],
+                                                 pins=[OUTER_RIGHT_CLAW_ADAFRUIT_PIN])
         #                                          names=[CENTER_RIGHT_CLAW_NAME, CENTER_LEFT_CLAW_NAME, OUTER_RIGHT_CLAW_NAME, OUTER_LEFT_CLAW_NAME,
         #                                                 PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, HINGE_NAME, BANNER_DEPLOYER_NAME
         #                                           ],
@@ -40,18 +44,17 @@ class Robot:
                                     ms1=STEPPER_MS1_PIN, ms2=STEPPER_MS2_PIN, ms3=STEPPER_MS3_PIN,
                                     step_delay=0.005, microstep=1,
                                     top_limit_pin=STEPPER_TOP_LIMIT_PIN, bottom_limit_pin=STEPPER_BOTTOM_LIMIT_PIN)
-        # self.lcd = LCD()
+        self.lcd = LCD()
         self.camera = None
         self.ultrasonicController = UltrasonicController()
         self.ultrasonicController.add_sensor(USPosition.FRONT_RIGHT, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_RIGHT_TRIG_PIN)
         self.ultrasonicController.add_sensor(USPosition.FRONT_LEFT, US_FRONT_LEFT_ECHO_PIN, US_FRONT_LEFT_TRIG_PIN)
-        # self.ultrasonicController.add_sensor(USPosition.BACK_RIGHT, US_BACK_RIGHT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN)
-        # self.ultrasonicController.add_sensor(USPosition.BACK_LEFT, US_BACK_LEFT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN)
-        # self.reedSwitch = reedSwitch(REED_SWITCH_PIN)
+        self.ultrasonicController.add_sensor(USPosition.BACK_RIGHT, US_BACK_RIGHT_ECHO_PIN, US_BACK_RIGHT_TRIG_PIN)
+        self.ultrasonicController.add_sensor(USPosition.BACK_LEFT, US_BACK_LEFT_ECHO_PIN, US_BACK_LEFT_TRIG_PIN)
+        self.reedSwitch = reedSwitch(REED_SWITCH_PIN)
 
-        self.color = color
         self.score = score
-        # self.lcd.write_score(self.score)
+        self.lcd.write_score(self.score)
         self.__position: tuple[int, int] = (0, 0)
 
     @property

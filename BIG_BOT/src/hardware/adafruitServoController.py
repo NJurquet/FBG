@@ -30,6 +30,16 @@ class AdafruitServoControl:
         """
         for i in range(len(angles)):
             self.kit.servo[i].angle = angles[i]
+            
+    def setOuterAngles(self, angles: list):
+        """
+        Sets the goal angles of the outer servo motors.
+
+        Parameters:
+            angles (list): A list of goal angles in degrees.
+        """
+        for i in range(2, 4):
+            self.kit.servo[i].angle = angles[i]
 
     def stopServo(self, channel: int):
         """
@@ -57,4 +67,11 @@ class AdafruitServoControl:
         Stops all servo motors.
         """
         for i in range(16):
+            self.kit.servo[i].angle = None
+
+    def stopOuterServos(self):
+        """
+        Stops all outer servo motors.
+        """
+        for i in range(2, 4):
             self.kit.servo[i].angle = None

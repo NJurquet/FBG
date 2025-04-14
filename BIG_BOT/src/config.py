@@ -15,18 +15,20 @@ I2C_DATA_PIN = 2
 I2C_CLOCK_PIN = 3
 
 ## Motor Pins ##
+
+LEFT_MOTOR_FORWARD_PIN = 17
+LEFT_MOTOR_BACKWARD_PIN = 27
+LEFT_MOTOR_EN_PIN = 18  # PWM
+
+RIGHT_MOTOR_FORWARD_PIN = 5
+RIGHT_MOTOR_BACKWARD_PIN = 6
+RIGHT_MOTOR_EN_PIN = 19  # PWM
+
 # Motor driver to motor connection :
 #   - OUT 1 -> Left motor red pin
 #   - OUT 2 -> Left motor black pin
 #   - OUT 3 -> Right motor red pin
 #   - OUT 4 -> Right motor black pin
-LEFT_MOTOR_FORWARD_PIN = 5
-LEFT_MOTOR_BACKWARD_PIN = 6
-LEFT_MOTOR_EN_PIN = 19  # PWM
-
-RIGHT_MOTOR_FORWARD_PIN = 17
-RIGHT_MOTOR_BACKWARD_PIN = 27
-RIGHT_MOTOR_EN_PIN = 18  # PWM
 
 ## Stepper Motor NEMA pins ##
 STEPPER_DIR_PIN = 4
@@ -49,6 +51,11 @@ CENTER_RIGHT_CLAW_ADAFRUIT_PIN = 0
 CENTER_LEFT_CLAW_ADAFRUIT_PIN = 1
 OUTER_RIGHT_CLAW_ADAFRUIT_PIN = 2
 OUTER_LEFT_CLAW_ADAFRUIT_PIN = 3
+
+## Servo Claws Angle list ##
+ALL_OPEN = [0, 0, 0, 0]
+ALL_CLOSED = [90, 90, 90, 90]
+OUTER_OPEN = [0, 0, 90, 90]
 
 ## Servo PlankPushers ##
 PLANK_PUSHER_RIGHT_NAME = "plankPusherRight"

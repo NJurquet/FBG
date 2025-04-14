@@ -30,7 +30,7 @@ class StateEnum(Enum):
     RETRACT_BANNER_PUSHER = 14
     DEPLOY_CLAWS = 15
     RETRACT_CLAWS = 16
-    
+    FIRST_CAN_MOVE = 17
 
 
 class USPosition(Enum):

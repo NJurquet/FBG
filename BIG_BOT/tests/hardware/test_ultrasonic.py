@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from time import sleep, perf_counter
 
 from ...src.hardware.ultrasonicController import UltrasonicController
@@ -37,16 +37,25 @@ class TestUltrasonicController:
         assert controller._sensors == []
         assert controller._distances == {}
         assert controller._last_obstacle is False
+        assert controller._enabled_sensors == {}
 
-    def test_add_sensor(self, controller: UltrasonicController):
-        Device.pin_factory = MockFactory()
+    @patch('BIG_BOT.src.hardware.ultrasonicController.UltrasonicSensor')
+    def test_add_sensor(self, mock_sensor_class, controller: UltrasonicController):
+        # Setup mock sensor instance
+        mock_sensor = Mock()
+        mock_sensor.pos = USPosition.FRONT_RIGHT
+        mock_sensor.echoPin = 1
+        mock_sensor.trigPin = 2
+        mock_sensor_class.return_value = mock_sensor
 
         controller.add_sensor(USPosition.FRONT_RIGHT, 1, 2)
 
+        # Verify UltrasonicSensor was created with correct parameters
+        mock_sensor_class.assert_called_once_with(USPosition.FRONT_RIGHT, 1, 2)
+        
         assert len(controller._sensors) == 1
-        assert controller._sensors[0].pos == USPosition.FRONT_RIGHT
-        assert controller._sensors[0].echoPin == 1
-        assert controller._sensors[0].trigPin == 2
+        assert controller._sensors[0] == mock_sensor
+        assert controller._enabled_sensors[USPosition.FRONT_RIGHT] is True
 
         with pytest.raises(ValueError):
             controller.add_sensor(USPosition.FRONT_RIGHT, 3, 4)
@@ -59,9 +68,52 @@ class TestUltrasonicController:
         with pytest.raises(ValueError):
             controller.add_sensor(USPosition.FRONT_RIGHT, 3, 3)
 
+    def test_enable_disable_toggle_sensor(self, controller: UltrasonicController):
+        # Directly setup the controller's internal state
+        controller._enabled_sensors[USPosition.FRONT_RIGHT] = True
+        
+        # Test disable
+        controller.disable_sensor(USPosition.FRONT_RIGHT)
+        assert controller._enabled_sensors[USPosition.FRONT_RIGHT] is False
+        
+        # Test enable
+        controller.enable_sensor(USPosition.FRONT_RIGHT)
+        assert controller._enabled_sensors[USPosition.FRONT_RIGHT] is True
+        
+        # Test toggle (from True to False)
+        controller.toggle_sensor(USPosition.FRONT_RIGHT)
+        assert controller._enabled_sensors[USPosition.FRONT_RIGHT] is False
+        
+        # Test toggle (from False to True)
+        controller.toggle_sensor(USPosition.FRONT_RIGHT)
+        assert controller._enabled_sensors[USPosition.FRONT_RIGHT] is True
+        
+        # Test with nonexistent sensor position
+        controller.disable_sensor(USPosition.FRONT_LEFT)  # Should just print a message, not raise exception
+        controller.enable_sensor(USPosition.FRONT_LEFT)   # Should just print a message, not raise exception
+        controller.toggle_sensor(USPosition.FRONT_LEFT)   # Should just print a message, not raise exception
+
+    def test_get_enabled_sensors(self, controller: UltrasonicController):
+        # Directly setup the controller's internal state
+        controller._enabled_sensors = {
+            USPosition.FRONT_RIGHT: True,
+            USPosition.FRONT_LEFT: True
+        }
+        
+        enabled_sensors = controller.get_enabled_sensors()
+        assert enabled_sensors[USPosition.FRONT_RIGHT] is True
+        assert enabled_sensors[USPosition.FRONT_LEFT] is True
+        
+        controller._enabled_sensors[USPosition.FRONT_LEFT] = False
+        enabled_sensors = controller.get_enabled_sensors()
+        assert enabled_sensors[USPosition.FRONT_RIGHT] is True
+        assert enabled_sensors[USPosition.FRONT_LEFT] is False
+
     def test_check_obstacles_no_event(self, controller: UltrasonicController):
         sensor1 = Mock(spec=UltrasonicSensor)
+        sensor1.pos = USPosition.FRONT_RIGHT
         sensor2 = Mock(spec=UltrasonicSensor)
+        sensor2.pos = USPosition.FRONT_LEFT
 
         sensors: list[UltrasonicSensor] = [sensor1, sensor2]
         distances: dict[USPosition, float] = {
@@ -70,6 +122,10 @@ class TestUltrasonicController:
         }
         controller._sensors = sensors
         controller._distances = distances
+        controller._enabled_sensors = {
+            USPosition.FRONT_RIGHT: True,
+            USPosition.FRONT_LEFT: True
+        }
 
         assert controller.check_obstacles() == USEvent.NO_EVENT
         # Sensors present with no distances
@@ -85,7 +141,9 @@ class TestUltrasonicController:
 
     def test_check_obstacles_obstacle_detected_present(self, controller: UltrasonicController):
         sensor1 = Mock(spec=UltrasonicSensor)
+        sensor1.pos = USPosition.FRONT_RIGHT
         sensor2 = Mock(spec=UltrasonicSensor)
+        sensor2.pos = USPosition.FRONT_LEFT
 
         sensors: list[UltrasonicSensor] = [sensor1, sensor2]
         distances: dict[USPosition, float] = {
@@ -94,15 +152,43 @@ class TestUltrasonicController:
         }
         controller._sensors = sensors
         controller._distances = distances
+        controller._enabled_sensors = {
+            USPosition.FRONT_RIGHT: True,
+            USPosition.FRONT_LEFT: True
+        }
 
         assert controller.check_obstacles() == USEvent.OBSTACLE_DETECTED
         assert controller._last_obstacle is True
         assert controller.check_obstacles() == USEvent.OBSTACLE_PRESENT
         assert controller._last_obstacle is True
 
+    def test_check_obstacles_disabled_sensor(self, controller: UltrasonicController):
+        sensor1 = Mock(spec=UltrasonicSensor)
+        sensor1.pos = USPosition.FRONT_RIGHT
+        sensor2 = Mock(spec=UltrasonicSensor)
+        sensor2.pos = USPosition.FRONT_LEFT
+
+        sensors: list[UltrasonicSensor] = [sensor1, sensor2]
+        distances: dict[USPosition, float] = {
+            USPosition.FRONT_RIGHT: 5.0,  # Would trigger obstacle if enabled
+            USPosition.FRONT_LEFT: 80.0,
+        }
+        controller._sensors = sensors
+        controller._distances = distances
+        controller._enabled_sensors = {
+            USPosition.FRONT_RIGHT: False,  # Disabled sensor with obstacle
+            USPosition.FRONT_LEFT: True
+        }
+
+        # Should return NO_EVENT since the sensor with obstacle is disabled
+        assert controller.check_obstacles() == USEvent.NO_EVENT
+        assert controller._last_obstacle is False
+
     def test_check_obstacles_obstacle_cleared(self, controller: UltrasonicController):
         sensor1 = Mock(spec=UltrasonicSensor)
+        sensor1.pos = USPosition.FRONT_RIGHT
         sensor2 = Mock(spec=UltrasonicSensor)
+        sensor2.pos = USPosition.FRONT_LEFT
 
         sensors: list[UltrasonicSensor] = [sensor1, sensor2]
         distances: dict[USPosition, float] = {
@@ -111,6 +197,10 @@ class TestUltrasonicController:
         }
         controller._sensors = sensors
         controller._distances = distances
+        controller._enabled_sensors = {
+            USPosition.FRONT_RIGHT: True,
+            USPosition.FRONT_LEFT: True
+        }
         controller._last_obstacle = True
 
         assert controller.check_obstacles() == USEvent.OBSTACLE_CLEARED
@@ -124,20 +214,34 @@ class TestUltrasonicController:
         sensor2.pos = USPosition.FRONT_LEFT
         sensor2.getDistance.return_value = 80.0
         controller._sensors = [sensor1, sensor2]
+        controller._enabled_sensors = {
+            USPosition.FRONT_RIGHT: True,
+            USPosition.FRONT_LEFT: True
+        }
 
         controller.measure_distances()
         assert len(controller._distances) == 2
         assert controller._distances[sensor1.pos] == 45.3
         assert controller._distances[sensor2.pos] == 80.0
+        
+        # Test with one disabled sensor
+        controller._enabled_sensors[USPosition.FRONT_LEFT] = False
+        controller.measure_distances()
+        assert len(controller._distances) == 1
+        assert controller._distances[sensor1.pos] == 45.3
+        assert USPosition.FRONT_LEFT not in controller._distances
 
     def test_get_distance_valid_position(self, controller: UltrasonicController):
-        sensor1 = Mock(spec=UltrasonicSensor)
-        sensor1.pos = USPosition.FRONT_RIGHT
-        sensor1.getDistance.return_value = 45.0
-        controller._sensors = [sensor1]
+        mock_sensor = Mock(spec=UltrasonicSensor)
+        mock_sensor.pos = USPosition.FRONT_RIGHT
+        mock_sensor.getDistance.return_value = 45.0
+
+        controller._sensors = [mock_sensor]
 
         distance = controller.get_distance(USPosition.FRONT_RIGHT)
         assert distance == 45.0
+        mock_sensor.getDistance.assert_called_once()
+
 
     def test_get_distance_invalid_position(self, controller: UltrasonicController):
         with pytest.raises(TypeError):
