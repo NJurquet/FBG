@@ -13,7 +13,8 @@
  *
  * The class includes methods to update the state, check for obstacles, avoid obstacles, stop the motors, and follow a line.
  *
- * @param us An instance of the UltrasonicSensor class for detecting obstacles.
+ * @param us1 An instance of the UltrasonicSensor class for detecting obstacles.
+ * @param us2 An instance of the UltrasonicSensor class for detecting obstacles.
  * @param leftIR An instance of the IRSensor class for detecting the left line.
  * @param rightIR An instance of the IRSensor class for detecting the right line.
  * @param mc An instance of the MotorControl class for controlling the robot's motors/movements.
@@ -26,7 +27,7 @@ public:
     /**
      * @brief Constructor for the FSM_star class.
      */
-    FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, MagneticStart ms, Led lc, ServoMotor sc);
+    FSM_star(UltrasonicSensor us1, UltrasonicSensor us2, IRSensor leftIR, IRSensor rightIR, MotorControl mc, MagneticStart ms, Led lc, ServoMotor sc);
 
     /**
      * @brief Updates the state of the FSM_star and the robot's actions.
@@ -34,7 +35,8 @@ public:
     void update();
 
 private:
-    UltrasonicSensor ultrasonicSensor;
+    UltrasonicSensor leftUltrasonicSensor;
+    UltrasonicSensor rightUltrasonicSensor;
     IRSensor leftIRSensor;
     IRSensor rightIRSensor;
     MotorControl motorControl;
@@ -55,7 +57,7 @@ private:
     State previousState;
     const unsigned long startDelay = 5000;   // 85 seconds in milliseconds / 5 seconds for testing
     const unsigned long stopTime = 15000;    // 100 seconds in milliseconds / 15 seconds for testing
-    const unsigned long edgeStopTime = 6950; // 7s35ms seconds in milliseconds
+    const unsigned long edgeStopTime = 6600; // 7s35ms seconds in milliseconds
     unsigned long currentTime;               // Time from the start of the program in milliseconds
     unsigned long obstacleStartTime = 0;     // Time when a new obstacle is detected in milliseconds
     unsigned long totalObstacleTime = 0;     // Total time spent avoiding obstacles in milliseconds

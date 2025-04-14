@@ -6,7 +6,7 @@
 #include "IRSensor.h"
 #include "MagneticStart.h"
 
-FSM_star::FSM_star(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, MagneticStart ms,  Led lc, ServoMotor sc) : ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), magneticStart(ms), ledCelebretion(lc), servoCelebretion(sc)
+FSM_star::FSM_star(UltrasonicSensor us1, UltrasonicSensor us2, IRSensor leftIR, IRSensor rightIR, MotorControl mc, MagneticStart ms,  Led lc, ServoMotor sc) : leftUltrasonicSensor(us1), rightUltrasonicSensor(us2), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), magneticStart(ms), ledCelebretion(lc), servoCelebretion(sc)
 {
     currentState = INIT;
     previousState = INIT;
@@ -68,9 +68,16 @@ void FSM_star::update()
 
 void FSM_star::checkObstacle()
 {
-    long distance = ultrasonicSensor.readDistance();
+    long distanceL = leftUltrasonicSensor.readDistance();
+    long distanceR = rightUltrasonicSensor.readDistance();
+
+    // Serial.print("distL : ");
+    // Serial.println(distanceL);
+    // Serial.print("distR : ");
+    // Serial.println(distanceR);
+
     // Checks if obstacle is closer than 10 cm
-    if (distance < obstacleDistance)
+    if (distanceL < obstacleDistance || distanceR < obstacleDistance)
     { // If a new obstacle is detected, start counting the time
         if (previousState != AVOID_OBSTACLE)
         {
@@ -139,7 +146,7 @@ void FSM_star::stopMotors()
 {
     motorControl.stop();
     currentState = CELEBRATE;
-    Serial.println(F("Celebration"));
+    //Serial.println(F("Celebration"));
 }
 
 void FSM_star::celebrate()

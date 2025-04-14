@@ -5,12 +5,23 @@
 #include "IRSensor.h"
 #include "MagneticStart.h"
 
-FSM_groupie::FSM_groupie(UltrasonicSensor us, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, MagneticStart ms, int zN, bool lS, bool tSL) : 
-ultrasonicSensor(us), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc), magneticStart(ms), zoneNumber(zN), leftStart(lS), topStartLine(tSL)
+FSM_groupie::FSM_groupie(UltrasonicSensor usl, UltrasonicSensor usr, IRSensor leftIR, IRSensor rightIR, MotorControl mc, Led lc, ServoMotor sc, MagneticStart ms, int zN, bool lS, bool tSL) : 
+leftUltrasonicSensor(usl), rightUltrasonicSensor(usr), leftIRSensor(leftIR), rightIRSensor(rightIR), motorControl(mc), ledCelebretion(lc), servoCelebretion(sc), magneticStart(ms), zoneNumber(zN), leftStart(lS), topStartLine(tSL)
 {
     currentState = INIT;
     previousState = INIT;
-    motorControl.setSpeed(110);
+    motorControl.setSpeed(75);
+    if (topStartLine)
+    {
+      motorControl.setRightOffset(5);
+      motorControl.setRotationSpeed(topRotationSpeedRatio*1.1);
+    }
+    else
+    {
+      leftStart ? motorControl.setLeftOffset(1) : motorControl.setLeftOffset(3);
+      leftStart ? motorControl.setRotationSpeed(0.7) : motorControl.setRotationSpeed(bottomRotationSpeedRatio*0.6);
+    }
+    // topStartLine ? motorControl.setRotationSpeed(topRotationSpeedRatio*1.1) : motorControl.setRotationSpeed(0.9);
     servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
 }
@@ -44,7 +55,9 @@ void FSM_groupie::update()
         break;
 
     case CHECK_OBSTACLE:
+
         checkObstacle();
+        
         break;
 
     case AVOID_OBSTACLE:
@@ -71,9 +84,15 @@ void FSM_groupie::update()
 
 void FSM_groupie::checkObstacle()
 {
-    long distance = ultrasonicSensor.readDistance();
+    long distanceL = leftUltrasonicSensor.readDistance();
+    long distanceR = rightUltrasonicSensor.readDistance();
+    //Serial.print("distL: ");
+    //Serial.println(distanceL);
+    //Serial.print("distR: ");
+    //Serial.println(distanceR);
+
     // Checks if obstacle is closer than 10 cm
-    if (distance < obstacleDistance)
+    if (distanceL < obstacleDistance || distanceR < obstacleDistance)
     {
         // If a new obstacle is detected, start counting the time
         if (previousState != AVOID_OBSTACLE)
@@ -81,6 +100,7 @@ void FSM_groupie::checkObstacle()
             obstacleStartTime = currentTime;
         }
         previousState = currentState;
+
         currentState = AVOID_OBSTACLE;
     }
     else
@@ -104,8 +124,8 @@ void FSM_groupie::avoidObstacle()
 
 void FSM_groupie::followLine()
 {
-    bool leftIR = leftIRSensor.read();   // Is 1 if it detects black
-    bool rightIR = rightIRSensor.read(); // Is 1 if it detects black
+    bool leftIR = leftIRSensor.readAccurate();   // Is 1 if it detects black
+    bool rightIR = rightIRSensor.readAccurate(); // Is 1 if it detects black
 
     if (leftIR && rightIR) // If all sensors detect black
     {
@@ -125,6 +145,7 @@ void FSM_groupie::followLine()
         {
             if (currentTime - startDelayTop - totalObstacleTime >= turnZoneDelay)
             { // If at the minimum time for detecting a zone turn (considering time elapsed during obstacle avoidance), start turning
+                motorControl.setRotationSpeed(topRotationSpeedRatio);
                 enteringZone = true;
                 enterZoneTime = currentTime;
                 totalObstacleTime = 0;
@@ -138,10 +159,15 @@ void FSM_groupie::followLine()
         {
             if (currentTime - startDelayBottom - totalObstacleTime >= turnZoneDelay)
             { // If at the minimum time for detecting a zone turn (considering time elapsed during obstacle avoidance), start turning
+                motorControl.setRotationSpeed(bottomRotationSpeedRatio);
                 enteringZone = true;
                 enterZoneTime = currentTime;
                 totalObstacleTime = 0;
             }
+            // else if (currentTime - startDelayBottom - totalObstacleTime >= 0.6*turnZoneDelay)
+            // {
+            //   if (leftStart) {motorControl.setRotationSpeed(bottomRotationSpeedRatio*0.8);}
+            // }
             else
             { // It's not yet time to detect a zone turn, keep moving forward
                 // motorControl.moveForward();

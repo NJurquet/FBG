@@ -16,8 +16,11 @@ const int leftIRPin = A0;
 const int rightIRPin = A1;
 
 // Ultrasonic sensor pins
-const int trigPin = 11;
-const int echoPin = 12;
+const int leftTrigPin = 9;  //green cable
+const int leftEchoPin = 8;  //blue cable
+
+const int rightTrigPin = 11; //green cable
+const int rightEchoPin = 10;  //blue cable
 
 // Celebretion pins
 const int celebrationLedPin = 13;
@@ -29,15 +32,12 @@ const int HallSensorPin = 2;
 // Magnetic start pin
 const int magneticStartPin = 5;
 
-// RX/TX pins of Bluetooth module
-const int TX_Debug = 9;
-const int RX_Debug = 10;
-SoftwareSerial mySerial(TX_Debug, RX_Debug);
-Debugger debugger(TX_Debug, RX_Debug);
-
+// Groupie start left select pin
+const int startLeftPin = 12;
 
 HallSensor hallSensor(HallSensorPin);
-UltrasonicSensor ultrasonicSensor(trigPin, echoPin);
+UltrasonicSensor leftUltrasonicSensor(leftTrigPin, leftEchoPin);
+UltrasonicSensor rightUltrasonicSensor(rightTrigPin, rightEchoPin);
 IRSensor leftIRSensor(leftIRPin);
 IRSensor rightIRSensor(rightIRPin);
 MotorControl motorControl;
@@ -47,38 +47,13 @@ MagneticStart magneticStart(magneticStartPin);
 
 // CONFIGURATION CONSTANTS ///////////////////////
 const bool groupie = false;
-const bool leftStart = true;
-const bool topStartLine = true;
+const bool leftStart = digitalRead(startLeftPin);
+const bool topStartLine = false;
 const int zoneNumber = topStartLine ? 1 : 2;
 //////////////////////////////////////////////////
 
-FSM_groupie fsm_groupie(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, magneticStart, zoneNumber, leftStart, topStartLine);
-FSM_star fsm_star(ultrasonicSensor, leftIRSensor, rightIRSensor, motorControl, magneticStart, celebrationLed, celebretionServo);
-
-void debug()
-{
-  // if (rotationChanged)
-  // {
-  //   if (rotatingLeft)
-  //   {
-  //     mySerial.println(F("Changed rotation to left"));
-  //   }
-  //   else
-  //   {
-  //     mySerial.println(F("Changed rotation to right"));
-  //   }
-  //   rotationChanged = false; // Reset the flag
-  // }
-
-  if (Serial.available())
-  {
-    mySerial.write(Serial.read()); // Forward what Serial received to Software Serial Port
-  }
-  if (mySerial.available())
-  {
-    Serial.write(mySerial.read()); // Forward what Software Serial received to Serial Port
-  }
-}
+FSM_groupie fsm_groupie(leftUltrasonicSensor, rightUltrasonicSensor, leftIRSensor, rightIRSensor, motorControl, celebrationLed, celebretionServo, magneticStart, zoneNumber, leftStart, topStartLine);
+FSM_star fsm_star(leftUltrasonicSensor, rightUltrasonicSensor, leftIRSensor, rightIRSensor, motorControl, magneticStart, celebrationLed, celebretionServo);
 
 void setup()
 {
@@ -86,13 +61,12 @@ void setup()
   while (!Serial)
     ;
   Serial.begin(9600);
-  mySerial.begin(9600);
 
   Serial.println(F("Initializing..."));
-  mySerial.println(F("Starting..."));
 
   motorControl.init();
-  ultrasonicSensor.init();
+  leftUltrasonicSensor.init();
+  rightUltrasonicSensor.init();
   leftIRSensor.init();
   rightIRSensor.init();
   hallSensor.init();
@@ -104,6 +78,4 @@ void setup()
 void loop()
 {
   groupie ? fsm_groupie.update() : fsm_star.update();
-
-  debug();
 }
