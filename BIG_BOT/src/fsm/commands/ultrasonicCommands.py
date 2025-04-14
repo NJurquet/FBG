@@ -35,3 +35,54 @@ class ToggleUltrasonicSensorsCommand(ICommand):
 
     def finished(self):
         pass  # No action needed for finished
+
+class  DisableUltrasonicSensorsCommand(ICommand):
+    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
+        self.fsm = fsm
+        self.positions = positions
+
+    def execute(self):
+        for position in self.positions:
+            self.fsm.robot.ultrasonicController.disable_sensor(position)
+
+
+
+    def pause(self):
+        pass  # No action needed for pause
+
+    def resume(self):
+        for position in self.positions:
+            self.fsm.robot.ultrasonicController.disable_sensor(position)
+
+
+    def stop(self):
+        pass  # No action needed for stop
+
+    def finished(self):
+        pass  # No action needed for finished
+
+class EnableUltrasonicSensorsCommand(ICommand):
+    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
+        self.fsm = fsm
+        self.positions = positions
+
+    def execute(self):
+        for position in self.positions:
+            self.fsm.robot.ultrasonicController.enable_sensor(position)
+
+
+
+    def pause(self):
+        pass  # No action needed for pause
+
+    def resume(self):
+        for position in self.positions:
+            self.fsm.robot.ultrasonicController.enable_sensor(position)
+
+
+    def stop(self):
+        pass  # No action needed for stop
+
+    def finished(self):
+        pass  # No action needed for finished
+
