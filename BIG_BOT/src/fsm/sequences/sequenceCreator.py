@@ -4,6 +4,7 @@ from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAngle
 from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
+from ..commands.frontPlateCommands import RaiseFrontPlateCommand, LowerFrontPlateCommand, InitFrontPlateCommand, MoveFrontPlateCommand
 from ...constants import USPosition
 from ...config import OUTER_RIGHT_CLAW_NAME, ALL_CLOSED, ALL_OPEN, OUTER_OPEN, PLANK_PUSHER_INIT, PLANK_PUSHER_PUSH, BANNER_DEPLOYER_DEPLOY, BANNER_DEPLOYER_INIT, BANNER_DEPLOYER_END
 from typing import TYPE_CHECKING
@@ -114,6 +115,14 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 40),
             RotateRightCommand(fsm, 110),
             MoveForwardCommand(fsm, 140),
+        ]
+
+        self._frontPlantTest: list[ICommand] = [
+            InitFrontPlateCommand(fsm),
+            MoveFrontPlateCommand(fsm, 10),
+            SetAllServoAnglesCommand(fsm, [100, 0, 100, 0]),
+            SetAllServoAnglesCommand(fsm, [150, 0, 150, 0]),
+            MoveFrontPlateCommand(fsm, 0),
         ]
 
         self._wheeltest: list[ICommand] = [
