@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
 class ToggleUltrasonicSensorsCommand(ICommand):
-    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition],):
+    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
         self.fsm = fsm
         self.initialStates = fsm.robot.ultrasonicController.get_enabled_sensors()
         self.positions = positions
@@ -37,7 +37,7 @@ class ToggleUltrasonicSensorsCommand(ICommand):
         pass  # No action needed for finished
 
 class  DisableUltrasonicSensorsCommand(ICommand):
-    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition],):
+    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
         self.fsm = fsm
         self.initialStates = fsm.robot.ultrasonicController.get_enabled_sensors()
         self.positions = positions
@@ -68,7 +68,7 @@ class  DisableUltrasonicSensorsCommand(ICommand):
         pass  # No action needed for finished
 
 class EnableUltrasonicSensorsCommand(ICommand):
-    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition],):
+    def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
         self.fsm = fsm
         self.initialStates = fsm.robot.ultrasonicController.get_enabled_sensors()
         self.positions = positions
