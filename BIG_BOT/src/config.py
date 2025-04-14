@@ -68,8 +68,8 @@ HINGE_NAME = "hinge"
 HINGE_ADAFRUIT_PIN = 6
 
 ## Servo Banner Deployer ##
-BANNER_DEPLOYER_NAME = "bannerDeployer"
-BANNER_DEPLOYER_ADAFRUIT_PIN = 7
+BANNER_SERVO_NAME = "bannerServo"
+BANNER_SERVO_ADAFRUIT_PIN = 7
 
 ## Ultrasonic Sensors Pins ##
 US_FRONT_RIGHT_TRIG_PIN = 7

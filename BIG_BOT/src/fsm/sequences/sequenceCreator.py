@@ -1,11 +1,10 @@
 from ..commands.command import ICommand
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
-from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand
+from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand, SetBannerServoAngleCommand
 from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
 from ...constants import USPosition
-from ...config import OUTER_RIGHT_CLAW_NAME
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -99,6 +98,13 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 40),
             RotateRightCommand(fsm, 110),
             MoveForwardCommand(fsm, 140),
+        ]
+
+        self._DeployBanner: list[ICommand] = [
+            SetBannerServoAngleCommand(fsm, 120),  # Deploy the weight
+            MoveBackwardCommand(fsm, 5),  # Move backward to deploy the banner
+            SetBannerServoAngleCommand(fsm, 170),  # Deploy the banner
+            MoveForwardCommand(fsm, 5),  # Move forward to initial position
         ]
 
         self._wheeltest: list[ICommand] = [

@@ -1,4 +1,7 @@
 from adafruit_servokit import ServoKit
+from ..config import CENTER_RIGHT_CLAW_ADAFRUIT_PIN, CENTER_LEFT_CLAW_ADAFRUIT_PIN, OUTER_RIGHT_CLAW_ADAFRUIT_PIN, OUTER_LEFT_CLAW_ADAFRUIT_PIN
+from ..config import PLANK_PUSHER_RIGHT_ADAFRUIT_PIN,PLANK_PUSHER_LEFT_ADAFRUIT_PIN
+from ..config import HINGE_ADAFRUIT_PIN, BANNER_SERVO_ADAFRUIT_PIN
 
 class AdafruitServoControl:
     """
@@ -21,7 +24,7 @@ class AdafruitServoControl:
         self.names = names
         self.pins = pins
 
-    def setAngles(self, angles: list):
+    def setClawsAngles(self, angles: list[int]):
         """
         Sets the goal angles of the servo motors.
 
@@ -31,7 +34,7 @@ class AdafruitServoControl:
         for i in range(len(angles)):
             self.kit.servo[i].angle = angles[i]
             
-    def setOuterAngles(self, angles: list):
+    def setOuterClawsAngles(self, angles: list[int]):
         """
         Sets the goal angles of the outer servo motors.
 
@@ -50,13 +53,13 @@ class AdafruitServoControl:
         """
         self.kit.servo[channel].angle = None
 
-    def setAngle(self, name: str, angle: float):
+    def setAngle(self, name: str, angle: int):
         """
         Sets the goal angle of a specific servo motor.
 
         Parameters:
             name (int): The channel number of the servo motor.
-            angle (float): The goal angle in degrees.
+            angle (int): The goal angle in degrees.
         """
         for i in range(len(self.names)):
             if self.names[i] == name:
@@ -75,3 +78,18 @@ class AdafruitServoControl:
         """
         for i in range(2, 4):
             self.kit.servo[i].angle = None
+
+    def setBannerServoAngle(self, angle: int):
+        """
+        Sets the goal angle of the banner servo motor.
+
+        Parameters:
+            angle (int): The goal angle in degrees.
+        """
+        self.kit.servo[BANNER_SERVO_ADAFRUIT_PIN].angle = angle
+
+    def stopBannerServo(self):
+        """
+        Stops the banner servo motor.
+        """
+        self.kit.servo[BANNER_SERVO_ADAFRUIT_PIN].angle = None

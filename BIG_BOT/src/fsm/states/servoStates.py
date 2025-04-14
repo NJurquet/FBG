@@ -1,7 +1,7 @@
 from .State import State
 from ...constants import StateEnum
 from ...config import CENTER_RIGHT_CLAW_NAME, CENTER_LEFT_CLAW_NAME, OUTER_RIGHT_CLAW_NAME, OUTER_LEFT_CLAW_NAME
-from ...config import PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, HINGE_NAME, BANNER_DEPLOYER_NAME
+from ...config import PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, HINGE_NAME, BANNER_SERVO_NAME
 from ..registry import Registry
 from ..myTimer import MyTimer
 from typing import TYPE_CHECKING
@@ -293,7 +293,7 @@ class DeployClawsState(State):
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
-        self.fsm.robot.servoControl.setAngle(BANNER_DEPLOYER_NAME, self.angle)
+        self.fsm.robot.servoControl.setAngle(BANNER_SERVO_NAME, self.angle)
 
         if self.fsm.timer:
             self.fsm.timer.cancel()
@@ -335,7 +335,7 @@ class DeployClawsState(State):
     def enter(self, **args) -> None:
         self.angle = args.get('angle', self.angle)
 
-        self.fsm.robot.servoControl.setAngle(BANNER_DEPLOYER_NAME, self.angle)
+        self.fsm.robot.servoControl.setAngle(BANNER_SERVO_NAME, self.angle)
 
         if self.fsm.timer:
             self.fsm.timer.cancel()
