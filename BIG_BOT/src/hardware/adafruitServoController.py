@@ -40,6 +40,31 @@ class AdafruitServoControl:
         """
         for i in range(2, 4):
             self.kit.servo[i].angle = angles[i]
+    
+    def setPlankPusherAngles(self, angles: list):
+        """
+        Sets the goal angles of the plank pusher servo motors.
+
+        Parameters:
+            angles (list): A list of goal angles in degrees.
+        """
+        for i in range(4, 6):
+            self.kit.servo[i].angle = angles[i]
+    def setHingeAngle(self, angle: float):
+        """
+        Sets the goal angle of the hinge servo motor.
+
+        Parameters:
+            angle (float): The goal angle in degrees.
+        """
+        self.kit.servo[6].angle = angle
+    def setBannerDeployerAngle(self, angle: float):
+        """
+        Sets the goal angle of the banner deployer servo motor.
+        Parameters:
+            angle (float): The goal angle in degrees.
+        """
+        self.kit.servo[7].angle = angle
 
     def stopServo(self, channel: int):
         """
