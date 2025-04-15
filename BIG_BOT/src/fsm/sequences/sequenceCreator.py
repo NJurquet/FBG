@@ -61,17 +61,23 @@ class SequenceCreator():
         ]
 
         self._clawtest: list[ICommand] = [
-            # SetAllServoAnglesCommand(fsm, ALL_OPEN ),
+            SetAllServoAnglesCommand(fsm, ALL_OPEN ),
 
-            # SetAllServoAnglesCommand(fsm, ALL_CLOSED),
+            SetAllServoAnglesCommand(fsm, ALL_CLOSED),
             # SetAllServoAnglesCommand(fsm, ALL_OPEN),
 
-            # SetOuterServoAngleCommand(fsm, [100, 100]), 
-            # SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
-            # SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT)
-            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_INIT),
-            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY),
-            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_END),
+            SetOuterServoAngleCommand(fsm, [100, 100]), 
+            SetOuterServoAngleCommand(fsm, [150, 150]), 
+
+            SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
+            SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
+            SetBannerDeployerServoAngleCommand(fsm, 10),
+            SetBannerDeployerServoAngleCommand(fsm, 120),
+            SetBannerDeployerServoAngleCommand(fsm, 179)
+
+
+            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY),
+            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_END),
 
 
         ]

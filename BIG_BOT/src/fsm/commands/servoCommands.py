@@ -12,8 +12,7 @@ class SetOuterServoAngleCommand(ICommand):
         self.angles = angles
 
     def execute(self):
-        new_angles = [0, 0, self.angles[0], self.angles[1]]
-        self.fsm.robot.servoControl.setOuterAngles(new_angles)
+        self.fsm.robot.servoControl.setOuterAngles(self.angles)
         self.time_needed = 2.0  
 
     def pause(self):
@@ -64,8 +63,7 @@ class SetPlankPusherServoAnglesCommand(ICommand):
         self.angles = angles
 
     def execute(self):
-        new_angles = [0, 0, 0, 0 , self.angles[0], self.angles[1]]
-        self.fsm.robot.servoControl.setPlankPusherAngles(new_angles)
+        self.fsm.robot.servoControl.setPlankPusherAngles(self.angles)
         self.time_needed = 2.0  
 
     def pause(self):
@@ -84,14 +82,14 @@ class SetPlankPusherServoAnglesCommand(ICommand):
 class SetBannerDeployerServoAngleCommand(ICommand):
 
     """Command to set the outer servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[float]):
+    def __init__(self, fsm: 'RobotFSM', angle: int):
         self._is_finished = False
         self.fsm = fsm
-        self.angles = angles
+        self.angle = angle
 
     def execute(self):
-        new_angles = [0, 0, 0, 0 , 0, 0, 0, self.angles[0]]
-        self.fsm.robot.servoControl.setBannerDeployerAngle(new_angles)
+
+        self.fsm.robot.servoControl.setBannerDeployerAngle(self.angle)
         self.time_needed = 2.0  
 
     def pause(self):
