@@ -10,7 +10,7 @@ FSM_star::FSM_star(UltrasonicSensor us1, UltrasonicSensor us2, IRSensor leftIR, 
 {
     currentState = INIT;
     previousState = INIT;
-    motorControl.setSpeed(80);
+    motorControl.setSpeed(66);
     motorControl.setRotationSpeed(rotationSpeedRatio);
     servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
@@ -31,7 +31,9 @@ void FSM_star::update()
         while (!magneticStartDetected)
         {
             magneticStartDetected = magneticStart.read();
+            digitalWrite(13, HIGH);
         }
+        digitalWrite(13,LOW);
         magneticStartTime = millis(); //Time when the rope is pulled
         currentState = WAIT;
         break;
@@ -113,9 +115,9 @@ void FSM_star::followLine()
         currentState = STOP;
         return;
     }
-    else if (currentTime - startDelay - totalObstacleTime >= 0.7*edgeStopTime)
+    else if (currentTime - startDelay - totalObstacleTime >= 0.45*edgeStopTime)
     {
-      motorControl.setRotationSpeed(0.55*rotationSpeedRatio);
+      motorControl.setRotationSpeed(0.22*rotationSpeedRatio);
     }
 
     bool leftIR = leftIRSensor.read();   // Is 1 if it detects black

@@ -10,7 +10,7 @@ leftUltrasonicSensor(usl), rightUltrasonicSensor(usr), leftIRSensor(leftIR), rig
 {
     currentState = INIT;
     previousState = INIT;
-    motorControl.setSpeed(75);
+    motorControl.setSpeed(60);
     if (topStartLine)
     {
       motorControl.setRightOffset(5);
@@ -18,8 +18,8 @@ leftUltrasonicSensor(usl), rightUltrasonicSensor(usr), leftIRSensor(leftIR), rig
     }
     else
     {
-      leftStart ? motorControl.setLeftOffset(1) : motorControl.setLeftOffset(3);
-      leftStart ? motorControl.setRotationSpeed(0.7) : motorControl.setRotationSpeed(bottomRotationSpeedRatio*0.6);
+      leftStart ? motorControl.setLeftOffset(1) : motorControl.setLeftOffset(2);
+      leftStart ? motorControl.setRotationSpeed(0.65) : motorControl.setRotationSpeed(0.7);
     }
     // topStartLine ? motorControl.setRotationSpeed(topRotationSpeedRatio*1.1) : motorControl.setRotationSpeed(0.9);
     servoCelebretion.setPosition(90);
@@ -41,7 +41,9 @@ void FSM_groupie::update()
         while (!magneticStartDetected)
         {
             magneticStartDetected = magneticStart.read();
+            digitalWrite(13,HIGH);
         }
+        digitalWrite(13,LOW);
         magneticStartTime = millis(); //Time when the rope is pulled
         currentState = WAIT;
         break;
@@ -84,8 +86,14 @@ void FSM_groupie::update()
 
 void FSM_groupie::checkObstacle()
 {
+
     long distanceL = leftUltrasonicSensor.readDistance();
     long distanceR = rightUltrasonicSensor.readDistance();
+
+    if (currentTime - startDelayBottom - totalObstacleTime <= turnZoneDelay){
+      distanceL = leftStart ? 40 : distanceL;
+      distanceR = leftStart ? distanceR : 40;
+    } 
     //Serial.print("distL: ");
     //Serial.println(distanceL);
     //Serial.print("distR: ");
