@@ -2,7 +2,7 @@ from ..commands.command import ICommand
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
 from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand, SetPlankPusherServoAnglesCommand, SetBannerDeployerServoAngleCommand
 from ..commands.startCommands import InitCommand
-from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand
+from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand, DisableUltrasonicSensorsCommand, EnableUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
 from ..commands.frontPlateCommands import RaiseFrontPlateCommand, LowerFrontPlateCommand, InitFrontPlateCommand, MoveFrontPlateCommand
 from ...constants import USPosition
@@ -34,6 +34,7 @@ class SequenceCreator():
         ]
         
         self._FirstCanBuildMove: list[ICommand] = [
+            EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT, USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),  # Enable front sensors
             MoveBackwardCommand(fsm, 30),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 15),
@@ -62,25 +63,13 @@ class SequenceCreator():
         ]
 
         self._clawtest: list[ICommand] = [
-            SetAllServoAnglesCommand(fsm, ALL_OPEN ),
+            SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
 
-            SetAllServoAnglesCommand(fsm, ALL_CLOSED),
-            # SetAllServoAnglesCommand(fsm, ALL_OPEN),
-
-            SetOuterServoAngleCommand(fsm, [100, 100]), 
-            SetOuterServoAngleCommand(fsm, [150, 150]), 
-
-            SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
-            SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
-            SetBannerDeployerServoAngleCommand(fsm, 10),
-            SetBannerDeployerServoAngleCommand(fsm, 120),
-            SetBannerDeployerServoAngleCommand(fsm, 179)
-
-
-            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY),
-            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_END),
-
-
+            MoveForwardCommand(fsm, 40),
+            
+            SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
+            # SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
+            # SetOuterServoAngleCommand(fsm, [40, 40, 40, 40]),
         ]
         
         self._Sprint4CansBlue: list[ICommand] = [
@@ -119,11 +108,17 @@ class SequenceCreator():
 
         self._frontPlantTest: list[ICommand] = [
             InitFrontPlateCommand(fsm),
-            MoveFrontPlateCommand(fsm, 10),
-            SetAllServoAnglesCommand(fsm, [100, 0, 100, 0]),
-            SetAllServoAnglesCommand(fsm, [150, 0, 150, 0]),
-            MoveFrontPlateCommand(fsm, 0),
+
+
         ]
+
+        self._frontPlantUp : list[ICommand] = [
+            MoveBackwardCommand(fsm, 20),
+            RaiseFrontPlateCommand(fsm),
+            MoveForwardCommand(fsm, 25),
+            SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
+        ]
+
 
         self._wheeltest: list[ICommand] = [
             RotateLeftCommand(fsm, 10),
@@ -212,3 +207,17 @@ class SequenceCreator():
     @reedswitchTest.setter
     def reedswitchTest(self, sequence: list[ICommand]):
         self._reedswitchTest = sequence
+    
+    @property
+    def frontPlantTest(self) -> list[ICommand]:
+        return self._frontPlantTest
+    @frontPlantTest.setter
+    def frontPlantTest(self, sequence: list[ICommand]):
+        self._frontPlantTest = sequence
+
+    @property
+    def frontPlantUp(self) -> list[ICommand]:
+        return self._frontPlantUp
+    @frontPlantUp.setter
+    def frontPlantUp(self, sequence: list[ICommand]):
+        self._frontPlantUp = sequence

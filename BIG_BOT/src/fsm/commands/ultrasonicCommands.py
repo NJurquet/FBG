@@ -14,6 +14,8 @@ class ToggleUltrasonicSensorsCommand(ICommand):
     def execute(self):
         for i in range(len(self.positions)):
             self.fsm.robot.ultrasonicController.toggle_sensor(self.positions[i])
+        self.time_needed = 2.0
+
 
     def pause(self):
         pass  # No action needed for pause
@@ -44,6 +46,9 @@ class  DisableUltrasonicSensorsCommand(ICommand):
     def execute(self):
         for position in self.positions:
             self.fsm.robot.ultrasonicController.disable_sensor(position)
+        print("Sensors have been disabled")
+        self.time_needed = 2.0
+
 
 
 
@@ -51,9 +56,7 @@ class  DisableUltrasonicSensorsCommand(ICommand):
         pass  # No action needed for pause
 
     def resume(self):
-        for position in self.positions:
-            self.fsm.robot.ultrasonicController.disable_sensor(position)
-
+        pass
 
     def stop(self):
         pass  # No action needed for stop
@@ -69,6 +72,8 @@ class EnableUltrasonicSensorsCommand(ICommand):
     def execute(self):
         for position in self.positions:
             self.fsm.robot.ultrasonicController.enable_sensor(position)
+        self.time_needed = 2.0
+
 
 
 

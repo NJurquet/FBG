@@ -41,7 +41,7 @@ class Robot:
 
         self.stepper = StepperMotor(step=STEPPER_STEP_PIN, dir=STEPPER_DIR_PIN,
                                     ms1=STEPPER_MS1_PIN, ms2=STEPPER_MS2_PIN, ms3=STEPPER_MS3_PIN,
-                                    step_delay=0.005, microstep=1,
+                                    step_delay=0.003, microstep=2,
                                     top_limit_pin=STEPPER_TOP_LIMIT_PIN, bottom_limit_pin=STEPPER_BOTTOM_LIMIT_PIN)
         self.lcd = LCD()
         self.camera = None

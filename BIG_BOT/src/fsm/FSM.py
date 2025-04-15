@@ -42,7 +42,7 @@ class RobotFSM:
         
         self.us_event: USEvent = USEvent.NO_EVENT
 
-        self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
+        #self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
         # self.current_state.enter()
         # self.paused_state: StateEnum | None = None
 
@@ -74,8 +74,9 @@ class RobotFSM:
         """
 
         if self.start_match and (time.time() - self.start_time >= MAX_TIME):
-            self.set_state(StateEnum.STOP)
-            self.end_of_match = True
+            #self.set_state(StateEnum.STOP)
+            #self.end_of_match = True
+            pass
 
         if not self.end_of_match:
             if self.start_match:
