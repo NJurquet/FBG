@@ -5,7 +5,7 @@ from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
 from ...constants import USPosition
-from ...config import OUTER_RIGHT_CLAW_NAME
+from ...config import OUTER_RIGHT_CLAW_NAME, ALL_CLOSED, ALL_OPEN, OUTER_OPEN, PLANK_PUSHER_INIT, PLANK_PUSHER_PUSH
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -61,11 +61,14 @@ class SequenceCreator():
         ]
 
         self._clawtest: list[ICommand] = [
-            SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
-            SetAllServoAnglesCommand(fsm, [80, 80, 80, 80]),
-            SetOuterServoAngleCommand(fsm, [100, 100]), 
-            setPlankPusherServoAnglesCommand(fsm, [90, 90]),
-            setPlankPusherServoAnglesCommand(fsm, [40, 40])
+            # SetAllServoAnglesCommand(fsm, ALL_OPEN ),
+
+            # SetAllServoAnglesCommand(fsm, ALL_CLOSED),
+            # SetAllServoAnglesCommand(fsm, ALL_OPEN),
+
+            #SetOuterServoAngleCommand(fsm, [100, 100]), 
+            setPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
+            setPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT)
 
 
         ]
