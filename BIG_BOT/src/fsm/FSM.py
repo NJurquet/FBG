@@ -42,7 +42,7 @@ class RobotFSM:
         
         self.us_event: USEvent = USEvent.NO_EVENT
 
-        #self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
+        self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
         # self.current_state.enter()
         # self.paused_state: StateEnum | None = None
 
@@ -84,12 +84,15 @@ class RobotFSM:
                 self.robot.ultrasonicController.measure_distances()
                 self.us_event = self.robot.ultrasonicController.check_obstacles()
                 if self.us_event == USEvent.OBSTACLE_DETECTED:
+                    print("Obastacle")
                     self.sequenceManager.pause()
                     return
                 elif self.us_event == USEvent.OBSTACLE_PRESENT:
+                    print("Obstacle present")
                     
                     return
                 elif self.us_event == USEvent.OBSTACLE_CLEARED:
+                    print("Obstacle cleared")
                     self.sequenceManager.resume()
 
             if self.us_event == USEvent.NO_EVENT:

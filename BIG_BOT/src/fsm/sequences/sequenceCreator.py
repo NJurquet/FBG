@@ -35,11 +35,10 @@ class SequenceCreator():
         
         self._FirstCanBuildMove: list[ICommand] = [
             EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT, USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),  # Enable front sensors
-            MoveBackwardCommand(fsm, 30),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 15),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 40)
+            MoveBackwardCommand(fsm, 50),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT, USPosition.BACK_LEFT, USPosition.BACK_RIGHT] ),
+            MoveForwardCommand(fsm, 50)  # Disable front sensors
+
         ]
         
         self._Sprint4Yellow: list[ICommand] = [
@@ -90,17 +89,16 @@ class SequenceCreator():
         ]
 
         self._Sprint4CansYellows: list[ICommand] = [
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
+            #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             RotateLeftCommand(fsm, rotation),
+            EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 55),
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             RotateLeftCommand(fsm, rotation),
             MoveForwardCommand(fsm, 60),
             MoveBackwardCommand(fsm, 60),
             RotateRightCommand(fsm, rotation),
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             MoveForwardCommand(fsm, 40),
             RotateRightCommand(fsm, 110),
             MoveForwardCommand(fsm, 140),
