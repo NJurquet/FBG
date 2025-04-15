@@ -1,6 +1,6 @@
 from ..commands.command import ICommand
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
-from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand
+from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand, setPlankPusherServoAnglesCommand
 from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
@@ -62,7 +62,11 @@ class SequenceCreator():
 
         self._clawtest: list[ICommand] = [
             SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
-            SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
+            SetAllServoAnglesCommand(fsm, [80, 80, 80, 80]),
+            SetOuterServoAngleCommand(fsm, [100, 100]), 
+            setPlankPusherServoAnglesCommand(fsm, [90, 90]),
+            setPlankPusherServoAnglesCommand(fsm, [40, 40])
+
 
         ]
         
