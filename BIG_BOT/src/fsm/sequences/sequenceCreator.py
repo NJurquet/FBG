@@ -63,8 +63,7 @@ class SequenceCreator():
         self._clawtest: list[ICommand] = [
             SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
             SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
-            SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
-            SetOuterServoAngleCommand(fsm, [40, 40, 40, 40]),
+
         ]
         
         self._Sprint4CansBlue: list[ICommand] = [
