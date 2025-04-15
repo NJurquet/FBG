@@ -1,11 +1,11 @@
 from ..commands.command import ICommand
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
-from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand
+from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand, SetPlankPusherServoAnglesCommand, SetBannerDeployerServoAngleCommand
 from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
 from ...constants import USPosition
-from ...config import OUTER_RIGHT_CLAW_NAME
+from ...config import OUTER_RIGHT_CLAW_NAME, ALL_CLOSED, ALL_OPEN, OUTER_OPEN, PLANK_PUSHER_INIT, PLANK_PUSHER_PUSH, BANNER_DEPLOYER_DEPLOY, BANNER_DEPLOYER_INIT, BANNER_DEPLOYER_END
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -61,10 +61,25 @@ class SequenceCreator():
         ]
 
         self._clawtest: list[ICommand] = [
-            SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
-            SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
-            SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
-            SetOuterServoAngleCommand(fsm, [40, 40, 40, 40]),
+            SetAllServoAnglesCommand(fsm, ALL_OPEN ),
+
+            SetAllServoAnglesCommand(fsm, ALL_CLOSED),
+            # SetAllServoAnglesCommand(fsm, ALL_OPEN),
+
+            SetOuterServoAngleCommand(fsm, [100, 100]), 
+            SetOuterServoAngleCommand(fsm, [150, 150]), 
+
+            SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
+            SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
+            SetBannerDeployerServoAngleCommand(fsm, 10),
+            SetBannerDeployerServoAngleCommand(fsm, 120),
+            SetBannerDeployerServoAngleCommand(fsm, 179)
+
+
+            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY),
+            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_END),
+
+
         ]
         
         self._Sprint4CansBlue: list[ICommand] = [

@@ -53,3 +53,55 @@ class SetAllServoAnglesCommand(ICommand):
     def finished(self):
         self.stop()
         self._is_finished = True
+
+class SetPlankPusherServoAnglesCommand(ICommand):
+
+    """Command to set the outer servo angles."""
+    def __init__(self, fsm: 'RobotFSM', angles: List[float]):
+        self._is_finished = False
+        self.fsm = fsm
+        self.angles = angles
+
+    def execute(self):
+        self.fsm.robot.servoControl.setPlankPusherAngles(self.angles)
+        self.time_needed = 2.0  
+
+    def pause(self):
+        pass
+
+    def resume(self):
+       pass
+
+    def stop(self):
+        pass
+
+    def finished(self):
+        self.stop()
+        self._is_finished = True
+
+class SetBannerDeployerServoAngleCommand(ICommand):
+
+    """Command to set the outer servo angles."""
+    def __init__(self, fsm: 'RobotFSM', angle: int):
+        self._is_finished = False
+        self.fsm = fsm
+        self.angle = angle
+
+    def execute(self):
+
+        self.fsm.robot.servoControl.setBannerDeployerAngle(self.angle)
+        self.time_needed = 2.0  
+
+    def pause(self):
+        pass
+
+    def resume(self):
+        pass
+
+
+    def stop(self):
+        pass
+
+    def finished(self):
+        self.stop()
+        self._is_finished = True
