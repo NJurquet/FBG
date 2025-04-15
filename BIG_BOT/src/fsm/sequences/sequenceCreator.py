@@ -52,23 +52,29 @@ class SequenceCreator():
         ]
 
         self._Sprint4Blue: list[ICommand] = [
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            MoveForwardCommand(fsm, 50),
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 95),
-            RotateLeftCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 130),
+            SetBannerDeployerServoAngleCommand(fsm,170),
+
         ]
 
         self._clawtest: list[ICommand] = [
-            SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
-
-            MoveForwardCommand(fsm, 40),
+            # SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
+            # MoveFrontPlateCommand(fsm, 200),
+            # MoveForwardCommand(fsm, 40),
             
-            SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
+            # SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
             # SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
             # SetOuterServoAngleCommand(fsm, [40, 40, 40, 40]),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT, USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
+            SetBannerDeployerServoAngleCommand(fsm,170),
+            SetBannerDeployerServoAngleCommand(fsm, 130),
+            MoveBackwardCommand(fsm, 15),
+            SetBannerDeployerServoAngleCommand(fsm, 10),
+            MoveForwardCommand(fsm, 10)
+
+
+            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY),
+            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_END)
+
         ]
         
         self._Sprint4CansBlue: list[ICommand] = [
@@ -105,16 +111,19 @@ class SequenceCreator():
         ]
 
         self._frontPlantTest: list[ICommand] = [
+            SetAllServoAnglesCommand(fsm, ALL_OPEN),
+
             InitFrontPlateCommand(fsm),
 
 
         ]
 
         self._frontPlantUp : list[ICommand] = [
-            MoveBackwardCommand(fsm, 20),
+            SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
+
+
             RaiseFrontPlateCommand(fsm),
             MoveForwardCommand(fsm, 25),
-            SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
         ]
 
 

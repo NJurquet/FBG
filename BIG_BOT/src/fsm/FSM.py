@@ -36,7 +36,7 @@ class RobotFSM:
         else:
 
             self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.clawtest])  
+                        [ self.sequenceCreator.Sprint4Blue])  
 
                                  
         
