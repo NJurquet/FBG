@@ -1,11 +1,11 @@
 from ..commands.command import ICommand
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
-from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand, setPlankPusherServoAnglesCommand
+from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand, SetPlankPusherServoAnglesCommand, SetBannerDeployerServoAngleCommand
 from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
 from ...constants import USPosition
-from ...config import OUTER_RIGHT_CLAW_NAME, ALL_CLOSED, ALL_OPEN, OUTER_OPEN, PLANK_PUSHER_INIT, PLANK_PUSHER_PUSH
+from ...config import OUTER_RIGHT_CLAW_NAME, ALL_CLOSED, ALL_OPEN, OUTER_OPEN, PLANK_PUSHER_INIT, PLANK_PUSHER_PUSH, BANNER_DEPLOYER_DEPLOY, BANNER_DEPLOYER_INIT, BANNER_DEPLOYER_END
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -66,9 +66,12 @@ class SequenceCreator():
             # SetAllServoAnglesCommand(fsm, ALL_CLOSED),
             # SetAllServoAnglesCommand(fsm, ALL_OPEN),
 
-            #SetOuterServoAngleCommand(fsm, [100, 100]), 
-            setPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
-            setPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT)
+            # SetOuterServoAngleCommand(fsm, [100, 100]), 
+            # SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
+            # SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT)
+            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_INIT),
+            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY),
+            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_END),
 
 
         ]

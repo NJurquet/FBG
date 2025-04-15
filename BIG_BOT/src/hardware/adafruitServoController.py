@@ -58,13 +58,12 @@ class AdafruitServoControl:
             angle (float): The goal angle in degrees.
         """
         self.kit.servo[6].angle = angle
-    def setBannerDeployerAngle(self, angle: float):
-        """
-        Sets the goal angle of the banner deployer servo motor.
-        Parameters:
-            angle (float): The goal angle in degrees.
-        """
-        self.kit.servo[7].angle = angle
+
+        
+    def setBannerDeployerAngle(self, angles: list):
+            for i in range(7, 8):
+                self.kit.servo[i].angle = angles[i]
+
 
     def stopServo(self, channel: int):
         """
