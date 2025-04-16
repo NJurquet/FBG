@@ -37,6 +37,8 @@ class SequenceManager():
             if self._current_sequence_idx >= len(self._sequences):
                 print("All sequences completed")
                 self._all_sequences_completed = True
+
+                self.fsm.robot.stepper.cleanup()
                 return
                 
             self._current_sequence = self._sequences[self._current_sequence_idx]

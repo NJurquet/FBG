@@ -6,21 +6,21 @@ if TYPE_CHECKING:
 
 class SetOuterServoAngleCommand(ICommand):
     """Command to set the outer servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[float]):
+    def __init__(self, fsm: 'RobotFSM', angles: List[int]):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
 
     def execute(self):
         self.fsm.robot.servoControl.setOuterAngles(self.angles)
-        self.time_needed = 2.0  
+        self.time_needed = 1.0  
 
     def pause(self):
         self.fsm.robot.servoControl.stopOuterServos()
 
     def resume(self):
         self.fsm.robot.servoControl.setOuterAngles(self.angles)
-        self.time_needed = 2.0
+        self.time_needed = 1.0
 
     def stop(self):
         self.fsm.robot.servoControl.stopOuterServos()
@@ -31,21 +31,21 @@ class SetOuterServoAngleCommand(ICommand):
 
 class SetAllServoAnglesCommand(ICommand):
     """Command to set the all servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[float]):
+    def __init__(self, fsm: 'RobotFSM', angles: List[int]):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
 
     def execute(self):
         self.fsm.robot.servoControl.setAngles(self.angles)
-        self.time_needed = 2.0
+        self.time_needed = 1.0
 
     def pause(self):
         self.fsm.robot.servoControl.stopServos()
 
     def resume(self):
         self.fsm.robot.servoControl.setAngles(self.angles)
-        self.time_needed = 2.0
+        self.time_needed = 1.0
 
     def stop(self):
         self.fsm.robot.servoControl.stopServos()
@@ -57,14 +57,14 @@ class SetAllServoAnglesCommand(ICommand):
 class SetPlankPusherServoAnglesCommand(ICommand):
 
     """Command to set the outer servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[float]):
+    def __init__(self, fsm: 'RobotFSM', angles: List[int]):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
 
     def execute(self):
         self.fsm.robot.servoControl.setPlankPusherAngles(self.angles)
-        self.time_needed = 2.0  
+        self.time_needed = 1.0  
 
     def pause(self):
         pass
@@ -90,7 +90,7 @@ class SetBannerDeployerServoAngleCommand(ICommand):
     def execute(self):
 
         self.fsm.robot.servoControl.setBannerDeployerAngle(self.angle)
-        self.time_needed = 2.0  
+        self.time_needed = 1.0  
 
     def pause(self):
         pass

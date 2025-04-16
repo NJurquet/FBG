@@ -25,20 +25,17 @@ class RobotFSM:
         self.robot = robot
         self.state_factory = StateFactory(self)
 
-        self.sequenceCreator = SequenceCreator(self)
+        self.sequenceCreator = SequenceCreator(self, self.robot.color)
 
         print(f"Robot color: {self.robot.color}")  # Debugging line
 
-        if self.robot.color == "yellow": 
-
-            self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.clawtest])  
-        else:
-
-            self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.Sprint4Blue])  
-
-                                 
+        self.sequenceManager = SequenceManager(self, [ 
+                            #self.sequenceCreator._bannerTest
+                            self.sequenceCreator.IdleState, 
+                            # self.sequenceCreator.DeployBanner,
+                            #self.sequenceCreator.CollectCans,
+                            #self.sequenceCreator.Build2StoryBleachers,
+                        ])
         
         self.us_event: USEvent = USEvent.NO_EVENT
 
