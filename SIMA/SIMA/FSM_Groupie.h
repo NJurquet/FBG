@@ -62,9 +62,9 @@ private:
         CELEBRATE
     } currentState;
     State previousState;
-    const unsigned long startDelayBottom = 5000; // 85 seconds in milliseconds / 5 seconds for testing
-    const unsigned long startDelayTop = 7000;    // 87 seconds in milliseconds / 7 seconds for testing
-    const unsigned long stopTime = 20000;        // 100 seconds in milliseconds / 15 seconds for testing
+    const unsigned long startDelayBottom = 85000; // 85 seconds in milliseconds / 5 seconds for testing
+    const unsigned long startDelayTop = 87000;    // 87 seconds in milliseconds / 7 seconds for testing
+    const unsigned long stopTime = 100000;        // 100 seconds in milliseconds / 15 seconds for testing
     unsigned long currentTime;                   // Time from the start of the program in milliseconds
     unsigned long obstacleStartTime = 0;         // Time when a new obstacle is detected in milliseconds
     unsigned long totalObstacleTime = 0;         // Total time spent avoiding obstacles in milliseconds
