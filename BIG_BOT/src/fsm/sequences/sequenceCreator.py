@@ -23,10 +23,14 @@ class SequenceCreator():
             raise ValueError("Invalid color. Please choose 'yellow' or 'blue'.")
 
         self._IdleState: list[ICommand] = [
-            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT, USPosition.BACK_LEFT, USPosition.BACK_RIGHT, USPosition.CENTER_LEFT, USPosition.CENTER_RIGHT]),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.CENTER_LEFT, USPosition.CENTER_RIGHT]),
             #InitFrontPlateCommand(fsm),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_BLOCKING),
+            StopCommand(fsm),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_IDLE),
+            StopCommand(fsm),
             SetAllServoAnglesCommand(fsm, SERVO_IDLE),
         ]
 
@@ -37,17 +41,19 @@ class SequenceCreator():
             SetOuterServoAngleCommand(fsm, OUTER_INIT, time_needed=1.0),
             StopCommand(fsm),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
+            StopCommand(fsm),
+            SetAllServoAnglesCommand(fsm, ALL_OPEN),
         ]
 
         self._DeployBanner: list[ICommand] = [
-            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
-            MoveForwardCommand(fsm, 15),
-            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1),
-            MoveBackwardCommand(fsm, 10),
-            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2),
-            MoveForwardCommand(fsm, 15),
-            EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
+            MoveForwardCommand(fsm, 15, enable_us_sensors=False),
+            StopCommand(fsm),
+            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1, time_needed=1.0),
+            MoveBackwardCommand(fsm, 10, enable_us_sensors=False),           
+            StopCommand(fsm),
+            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2, time_needed=1.0),
+            MoveForwardCommand(fsm, 15, enable_us_sensors=False),
+            #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
         ]
 
         self._CollectCans: list[ICommand] = [
@@ -272,7 +278,12 @@ class SequenceCreator():
         ]
 
         self._bannerTest: list[ICommand] = [
-            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_IDLE),
+            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_IDLE, time_needed=1.0),
+            StopCommand(fsm),
+            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1, time_needed=1.0),
+            StopCommand(fsm),
+            SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2, time_needed=1.0),
+            StopCommand(fsm),
         ]
 
     @property
@@ -392,25 +403,30 @@ class SequenceCreator():
     @property
     def MainSequence(self) -> list[list[ICommand]]:
         return [
-            self.IdleState,
-            self.Init,
-            self.DeployBanner,
+            #self.IdleState,
+            #self.Init,
+            #self.DeployBanner,
             self.FirstCansCollectMove,
-            self.CollectCans,
+            # self.CollectCans,
             self.FirstCansBuildMove,
-            self.Build1StoryBleachers,
-            self.SecondCansCollectMove,
+            # self.Build1StoryBleachers,
+            self.SecondCansPushMove,
+            self.ThirdCansCollectMove,
+            #self.CollectCans,
+            self.ThirdCansBuildMove,
+            #self.Build1StoryBleachers,
+            self.GoToEndMove
         ]
-    @MainSequence.setter
-    def MainSequence(self, sequence_list: list[list[ICommand]]):
-        self.IdleState = sequence_list[0]
-        self.Init = sequence_list[1]
-        self.DeployBanner = sequence_list[2]
-        self.FirstCansCollectMove = sequence_list[3]
-        self.CollectCans = sequence_list[4]
-        self.FirstCansBuildMove = sequence_list[5]
-        self.Build1StoryBleachers = sequence_list[6]
-        self.SecondCansCollectMove = sequence_list[7]
+    # @MainSequence.setter
+    # def MainSequence(self, sequence_list: list[list[ICommand]]):
+    #     self.IdleState = sequence_list[0]
+    #     self.Init = sequence_list[1]
+    #     self.DeployBanner = sequence_list[2]
+    #     self.FirstCansCollectMove = sequence_list[3]
+    #     self.CollectCans = sequence_list[4]
+    #     self.FirstCansBuildMove = sequence_list[5]
+    #     self.Build1StoryBleachers = sequence_list[6]
+    #     self.SecondCansPushMove = sequence_list[7]
     
     @property
     def Sprint4Yellow(self) -> list[ICommand]:

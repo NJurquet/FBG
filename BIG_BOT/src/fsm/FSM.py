@@ -30,12 +30,12 @@ class RobotFSM:
 
         self.sequenceManager = SequenceManager(self, 
                         # [ 
-                        #     #self.sequenceCreator._bannerTest
-                        #     self.sequenceCreator.IdleState, 
-                        #     self.sequenceCreator.Init,
-                        #     # self.sequenceCreator.DeployBanner,
-                        #     #self.sequenceCreator.CollectCans,
-                        #     #self.sequenceCreator.Build2StoryBleachers,
+                            #self.sequenceCreator._bannerTest
+                            #  self.sequenceCreator.IdleState, 
+                            #  self.sequenceCreator.Init,
+                            #  self.sequenceCreator.DeployBanner,
+                            #self.sequenceCreator.CollectCans,
+                            #self.sequenceCreator.Build2StoryBleachers,
                         # ])
 
                         self.sequenceCreator.MainSequence)
@@ -82,7 +82,6 @@ class RobotFSM:
                     self.sequenceManager.pause()
                     return
                 elif self.us_event == USEvent.OBSTACLE_PRESENT:
-                    print("Obstacle present")
                     return
                 elif self.us_event == USEvent.OBSTACLE_CLEARED:
                     print("Obstacle cleared")

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 class MoveForwardCommand(ICommand):
     """Command to move the robot forward a certain distance at a certain speed."""
-    def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, time_target = None):
+    def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, time_target = None, enable_us_sensors = True):
         self._is_finished = False
 
         self.fsm = fsm
@@ -16,8 +16,10 @@ class MoveForwardCommand(ICommand):
         self.speed = speed
 
         self.time_target = time_target
+        self.enable_us_sensors = enable_us_sensors
 
     def execute(self):
+        print(f"Moving forward")
         # Disable US sensors in other directions
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
@@ -43,31 +45,36 @@ class MoveForwardCommand(ICommand):
     def finished(self):
         self.stop()
         
-        # Re-enable US sensors in other directions
-        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
-        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
-        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
-        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+        if self.enable_us_sensors:
+            # Re-enable US sensors in other directions
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
 
         self._is_finished = True
         
 class MoveBackwardCommand(ICommand):
     """Command to move the robot backward a certain distance at a certain speed."""
-    def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5):
+    def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, enable_us_sensors = True):
         self._is_finished = False
 
         self.fsm = fsm
         self.distance = distance
         self.speed = speed
+        
+        self.enable_us_sensors = enable_us_sensors
+        self.time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="backward",distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
+        print(f"Moving backward")
         # Disable US sensors in other directions
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_RIGHT)
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_LEFT)
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
 
-        self.time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
+        self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
     
     def pause(self):
         self.fsm.robot.motor.stop()
@@ -81,11 +88,12 @@ class MoveBackwardCommand(ICommand):
     def finished(self):
         self.stop()
         
-        # Disable US sensors in other directions
-        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
-        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
-        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
-        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+        if self.enable_us_sensors:
+            # Disable US sensors in other directions
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
 
         self._is_finished = True
 

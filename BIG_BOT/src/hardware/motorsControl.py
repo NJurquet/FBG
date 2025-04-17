@@ -79,6 +79,33 @@ class MotorsControl:
 
     # Additional methods for control in distance and not speed
 
+    def computeTimeNeeded(self, direction, distance_cm, speed = 0.5):
+        if direction == "forward":
+            self.speed = speed
+            coeff = self.distance_per_second/self.speed
+
+            time_needed = distance_cm / (self.speed * coeff)
+        
+        elif direction == "backward":
+            self.speed = speed
+            coeff = self.distance_per_second/self.speed
+
+            time_needed = distance_cm / (self.speed * coeff)
+        
+        elif direction == "rotateLeft":
+            self.speed = speed
+            coeff = self.degrees_per_second_left/self.speed
+
+            time_needed = distance_cm / (self.speed * coeff)
+
+        elif direction == "rotateRight":
+            self.speed = speed
+            coeff = self.degrees_per_second_right/self.speed
+
+            time_needed = distance_cm / (self.speed * coeff)
+
+        return time_needed
+
     def moveForward(self, distance_cm, speed = 0.5):
         if distance_cm <= 0:
             return 0
