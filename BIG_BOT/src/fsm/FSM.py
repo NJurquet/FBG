@@ -1,5 +1,4 @@
 from .state_factory import StateFactory
-from .myTimer import MyTimer
 from ..constants import StateEnum, USEvent, MAX_TIME
 import time
 from .sequences.sequenceManager import SequenceManager
@@ -8,8 +7,8 @@ from .sequences.sequenceCreator import SequenceCreator
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .states.State import State
     from ..robot import Robot
+
 
 class RobotFSM:
     """
@@ -43,13 +42,13 @@ class RobotFSM:
         # self.current_state.enter()
         # self.paused_state: StateEnum | None = None
 
+        self.us_event: USEvent = USEvent.NO_EVENT
         self.start_match: bool = False
         self.start_time: float = 0.0
         self.end_of_match: bool = False
 
-        # self.timer: MyTimer | None = None
-        self.step = 0
-        self.maxStep = 15
+        # self.step = 0
+        # self.maxStep = 15
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """
@@ -71,13 +70,11 @@ class RobotFSM:
         """
 
         if self.start_match and (time.time() - self.start_time >= MAX_TIME):
-            #self.set_state(StateEnum.STOP)
-            #self.end_of_match = True
-            pass
+            self.sequenceManager.pause()
+            self.end_of_match = True
 
         if not self.end_of_match:
             if self.start_match:
-                
                 self.robot.ultrasonicController.measure_distances()
                 self.us_event = self.robot.ultrasonicController.check_obstacles()
                 if self.us_event == USEvent.OBSTACLE_DETECTED:
@@ -86,7 +83,6 @@ class RobotFSM:
                     return
                 elif self.us_event == USEvent.OBSTACLE_PRESENT:
                     print("Obstacle present")
-                    
                     return
                 elif self.us_event == USEvent.OBSTACLE_CLEARED:
                     print("Obstacle cleared")
