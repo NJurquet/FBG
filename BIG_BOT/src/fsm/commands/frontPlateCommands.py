@@ -21,10 +21,9 @@ class InitFrontPlateCommand(ICommand):
         pass
 
     def stop(self):
-        pass
+        self.fsm.robot.stepper.stop()
 
     def finished(self):
-        self.stop()
         self._is_finished = True
 
 
@@ -44,10 +43,9 @@ class RaiseFrontPlateCommand(ICommand):
         pass
 
     def stop(self):
-        pass
+        self.fsm.robot.stepper.stop()
 
     def finished(self):
-        self.stop()
         self._is_finished = True
 
 
@@ -67,10 +65,9 @@ class LowerFrontPlateCommand(ICommand):
         pass
 
     def stop(self):
-        pass
+        self.fsm.robot.stepper.stop()
 
     def finished(self):
-        self.stop()
         self._is_finished = True
 
 
@@ -99,5 +96,4 @@ class MoveFrontPlateCommand(ICommand):
         pass
 
     def finished(self):
-        self.stop()
         self._is_finished = True

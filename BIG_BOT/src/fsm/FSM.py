@@ -28,27 +28,23 @@ class RobotFSM:
 
         print(f"Robot color: {self.robot.color}")  # Debugging line
 
-        self.sequenceManager = SequenceManager(self, [ 
-                            #self.sequenceCreator._bannerTest
-                            self.sequenceCreator.IdleState, 
-                            # self.sequenceCreator.DeployBanner,
-                            #self.sequenceCreator.CollectCans,
-                            #self.sequenceCreator.Build2StoryBleachers,
-                        ])
-        
-        self.us_event: USEvent = USEvent.NO_EVENT
+        self.sequenceManager = SequenceManager(self, 
+                        # [ 
+                        #     #self.sequenceCreator._bannerTest
+                        #     self.sequenceCreator.IdleState, 
+                        #     self.sequenceCreator.Init,
+                        #     # self.sequenceCreator.DeployBanner,
+                        #     #self.sequenceCreator.CollectCans,
+                        #     #self.sequenceCreator.Build2StoryBleachers,
+                        # ])
 
-        self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
-        # self.current_state.enter()
-        # self.paused_state: StateEnum | None = None
+                        self.sequenceCreator.MainSequence)
 
         self.us_event: USEvent = USEvent.NO_EVENT
+        self.match_time = 0.0
         self.start_match: bool = False
         self.start_time: float = 0.0
         self.end_of_match: bool = False
-
-        # self.step = 0
-        # self.maxStep = 15
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """
@@ -69,8 +65,12 @@ class RobotFSM:
         Execute the current state of the FSM.
         """
 
-        if self.start_match and (time.time() - self.start_time >= MAX_TIME):
+        self.match_time = time.time() - self.start_time
+
+        if self.start_match and (self.match_time >= MAX_TIME) and not self.end_of_match:
             self.sequenceManager.pause()
+            self.robot.motor.stop()
+            self.robot.stepper.stop()
             self.end_of_match = True
 
         if not self.end_of_match:

@@ -26,7 +26,10 @@ class SequenceManager():
 
         # Don't do anything if we're already executing a command
         if self._execution_in_progress:
-            return
+            if self._command and self._command._is_finished == True:
+                self._on_step_complete()
+            else: 
+                return
 
         # Check if we've finished the current sequence
         if self._current_command_idx >= len(self._current_sequence):

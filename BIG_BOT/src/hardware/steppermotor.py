@@ -80,6 +80,8 @@ class StepperMotor:
 
         self.current_position: int | None = None  # Vertical position in steps (None until homed).
 
+        self.stop_flag = False  # Call this Flag to stop the motor.
+
     def set_microstepping(self, resolution: int) -> None:
         """
         Set the microstepping resolution to apply on MS1, MS2, MS3 pins.
@@ -120,6 +122,10 @@ class StepperMotor:
         """
         self._dir_device.value = clockwise  # Set direction.
         for _ in range(abs(steps)):
+            if self.stop_flag:
+                print("Stepper Motor stopped.")
+                break
+
             self._step_device.on()
             precise_sleep(self._step_delay)  # Precise sleep to avoid timing issues.
             self._step_device.off()
@@ -150,6 +156,10 @@ class StepperMotor:
         if self._bottom_switch is None:
             raise Exception("Bottom limit switch not configured.")
         while not self._bottom_switch.is_active:
+            if self.stop_flag:
+                print("Stepper Motor stopped.")
+                break
+
             self.step(1, clockwise=False, update_position=False)
         self.current_position = 0
         print("Homed: bottom limit reached. Current position set to 0.")
@@ -165,6 +175,10 @@ class StepperMotor:
         if self._top_switch is None:
             raise Exception("Top limit switch not configured.")
         while not self._top_switch.is_active:
+            if self.stop_flag:
+                print("Stepper Motor stopped.")
+                break
+
             self.step(1, clockwise=True, update_position=True)
         print("Reached top limit.")
 
@@ -179,6 +193,10 @@ class StepperMotor:
         if self._bottom_switch is None:
             raise Exception("Bottom limit switch not configured.")
         while not self._bottom_switch.is_active:
+            if self.stop_flag:
+                print("Stepper Motor stopped.")
+                break
+
             self.step(1, clockwise=False, update_position=True)
         print("Reached bottom limit.")
         self.current_position = 0
@@ -200,6 +218,10 @@ class StepperMotor:
 
         print(f"Moving from position {self.current_position} to target {target_position}.")
         while abs(self.current_position - target_position) > 0:
+            if self.stop_flag:
+                print("Stepper Motor stopped.")
+                break
+
             # If going upward, check if top limit is reached.
             if self.current_position < target_position:
                 if self._top_switch is not None and self._top_switch.is_active:
@@ -227,6 +249,13 @@ class StepperMotor:
             self._top_switch.close()
         if self._bottom_switch:
             self._bottom_switch.close()
+
+    def stop(self) -> None:
+        """
+        Stop the motor immediately by setting the stop flag.
+        """
+        self.stop_flag = True
+        print("Stepper Motor stop flag set.")
 
 
 if __name__ == '__main__':

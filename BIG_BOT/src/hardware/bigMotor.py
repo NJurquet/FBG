@@ -34,6 +34,10 @@ class BigMotor:
         """ Stop the motor """
         self.motor.stop()
 
+    def cleanup(self):
+        """ Release GPIO resources """
+        self.motor.close()
+
     
     
 

@@ -41,6 +41,8 @@ class USPosition(Enum):
     FRONT_LEFT = 1
     BACK_RIGHT = 2
     BACK_LEFT = 3
+    CENTER_RIGHT = 4
+    CENTER_LEFT = 5
 
 
 class USEvent(Enum):

@@ -1,4 +1,5 @@
 from .command import ICommand
+from ...constants import USPosition
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -7,17 +8,28 @@ if TYPE_CHECKING:
 
 class MoveForwardCommand(ICommand):
     """Command to move the robot forward a certain distance at a certain speed."""
-    def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5):
+    def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, time_target = None):
         self._is_finished = False
 
         self.fsm = fsm
         self.distance = distance
         self.speed = speed
 
+        self.time_target = time_target
+
     def execute(self):
-        # Get the time needed directly from the motor controller
-        self.fsm.start_match = True
-        self.time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
+        # Disable US sensors in other directions
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_RIGHT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_LEFT)
+        
+        if self.time_target:
+            if self.fsm.match_time >= self.time_target:
+                self.time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
+        else:   
+            # Get the time needed directly from the motor controller
+            self.time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
     
     def pause(self):
         self.fsm.robot.motor.stop()
@@ -30,7 +42,15 @@ class MoveForwardCommand(ICommand):
 
     def finished(self):
         self.stop()
+        
+        # Re-enable US sensors in other directions
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+
         self._is_finished = True
+        
 class MoveBackwardCommand(ICommand):
     """Command to move the robot backward a certain distance at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5):
@@ -41,6 +61,12 @@ class MoveBackwardCommand(ICommand):
         self.speed = speed
 
     def execute(self):
+        # Disable US sensors in other directions
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_RIGHT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_LEFT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
+
         self.time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
     
     def pause(self):
@@ -54,6 +80,13 @@ class MoveBackwardCommand(ICommand):
 
     def finished(self):
         self.stop()
+        
+        # Disable US sensors in other directions
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
         self._is_finished = True
 
 class RotateLeftCommand(ICommand):

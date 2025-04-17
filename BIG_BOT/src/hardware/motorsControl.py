@@ -164,3 +164,13 @@ class MotorsControl:
         self.movement_timer.start()
 
         return time_needed
+
+    def cleanup(self):
+        """Clean up all motor resources"""
+        if self.leftMotor:
+            self.leftMotor.cleanup()
+        if self.rightMotor:
+            self.rightMotor.cleanup()
+        if self.movement_timer:
+            self.movement_timer.cancel()
+            self.movement_timer = None
