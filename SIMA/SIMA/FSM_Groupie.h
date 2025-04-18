@@ -73,7 +73,7 @@ private:
     long magneticStartTime = 0;                     // Time when the magnetic start was detected in milliseconds
 
     const int turnZoneDelay = 4600;               // Time after start at which it can start detecting a zone turn in milliseconds
-    const int firstZoneTurnTime = 1500;            // Time needed to turn to the first zone in milliseconds
+    const int firstZoneTurnTime = 1400;           // Time needed to turn to the first zone in milliseconds
     const int secondZoneTurnTime = 2700;          // Time needed to turn to the second zone in milliseconds
     unsigned long enterZoneTime;                  // Time when the robot starts turning to the zone in milliseconds
     bool enteringZone = false;                    // Flag to know if the robot is turning to the zone

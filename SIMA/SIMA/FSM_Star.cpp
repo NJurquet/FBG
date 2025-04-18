@@ -11,6 +11,8 @@ FSM_star::FSM_star(UltrasonicSensor us1, UltrasonicSensor us2, IRSensor leftIR, 
     currentState = INIT;
     previousState = INIT;
     motorControl.setSpeed(66);
+    motorControl.setRightOffset(-1);
+    motorControl.setLeftOffset(-2);
     motorControl.setRotationSpeed(rotationSpeedRatio);
     servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
@@ -73,10 +75,10 @@ void FSM_star::checkObstacle()
     long distanceL = leftUltrasonicSensor.readDistance();
     long distanceR = rightUltrasonicSensor.readDistance();
 
-    // Serial.print("distL : ");
-    // Serial.println(distanceL);
-    // Serial.print("distR : ");
-    // Serial.println(distanceR);
+    Serial.print("distL : ");
+    Serial.println(distanceL);
+    Serial.print("distR : ");
+    Serial.println(distanceR);
 
     // Checks if obstacle is closer than 10 cm
     if (distanceL < obstacleDistance || distanceR < obstacleDistance)
