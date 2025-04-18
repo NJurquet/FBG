@@ -38,11 +38,12 @@ class USPosition(Enum):
     Enumeration of all possible positions of the ultrasonic sensors.
     """
     FRONT_RIGHT = 0
-    FRONT_LEFT = 1
-    BACK_RIGHT = 2
-    BACK_LEFT = 3
-    CENTER_RIGHT = 4
-    CENTER_LEFT = 5
+    FRONT_MIDDLE = 1
+    FRONT_LEFT = 2
+    BACK_RIGHT = 3
+    BACK_LEFT = 4
+    CENTER_RIGHT = 5
+    CENTER_LEFT = 6
 
 
 class USEvent(Enum):

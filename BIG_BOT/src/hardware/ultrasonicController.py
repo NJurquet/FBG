@@ -90,9 +90,29 @@ class UltrasonicController:
         # If no sensors provided or no distances measured
         if len(self._sensors) == 0 or len(self._distances) == 0:
             return USEvent.NO_EVENT
-
-        # If any enabled sensor detects an obstacle within range
-        if any(distance < 10 for pos, distance in self._distances.items() if self._enabled_sensors[pos]):
+        
+        # Define which positions are considered "front" sensors
+        front_positions = [USPosition.FRONT_LEFT, USPosition.FRONT_MIDDLE, USPosition.FRONT_RIGHT]
+    
+        # Check if any enabled front sensor detects an obstacle within 25cm
+        front_obstacle_detected = any(
+            self._distances.get(pos, float('inf')) < 25
+            for pos in front_positions
+            if pos in self._enabled_sensors and self._enabled_sensors[pos]
+        )
+        
+        # Check if any other enabled sensor detects an obstacle within 10cm
+        other_positions = [pos for pos in self._enabled_sensors.keys() 
+                          if pos not in front_positions and self._enabled_sensors[pos]]
+        other_obstacle_detected = any(
+            self._distances.get(pos, float('inf')) < 10
+            for pos in other_positions
+        )
+        
+        # An obstacle is detected if either front or other sensors detect an obstacle
+        obstacle_detected = front_obstacle_detected or other_obstacle_detected
+        
+        if obstacle_detected:
             # If the obstacle was not detected before
             if not self._last_obstacle:
                 self._last_obstacle = True
@@ -103,7 +123,7 @@ class UltrasonicController:
             if self._last_obstacle:
                 self._last_obstacle = False
                 return USEvent.OBSTACLE_CLEARED
-
+    
         # If no obstacle detected
         return USEvent.NO_EVENT
     

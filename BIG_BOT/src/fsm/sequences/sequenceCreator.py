@@ -5,6 +5,7 @@ from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand, Disabl
 from ..commands.reedswitchCommands import ReedSwitchCommand
 from ..commands.frontPlateCommands import RaiseFrontPlateCommand, LowerFrontPlateCommand, InitFrontPlateCommand, MoveFrontPlateCommand
 from ..commands.timeCommands import WaitCommand, WaitForTargetTimeCommand
+from ..commands.initCommands import InitLCDCommand
 from ...constants import USPosition
 from ...config import OUTER_RIGHT_CLAW_NAME, ALL_CLOSED, ALL_OPEN, SERVO_IDLE, SERVO_INIT, OUTER_OPEN, OUTER_INIT, PLANK_PUSHER_BLOCKING, PLANK_PUSHER_MIDDLE, PLANK_PUSHER_INIT, PLANK_PUSHER_PUSH, BANNER_DEPLOYER_DEPLOY_STAGE_1, BANNER_DEPLOYER_IDLE, BANNER_DEPLOYER_DEPLOY_STAGE_2
 from ...config import STEPPER_MIDDLE_POINT
@@ -29,48 +30,78 @@ class SequenceCreator():
             #InitFrontPlateCommand(fsm),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_BLOCKING),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_IDLE),
-            SetAllServoAnglesCommand(fsm, SERVO_IDLE),
+            WaitCommand(fsm, 1.0),
+            SetAllServoAnglesCommand(fsm, SERVO_IDLE),            
+            WaitCommand(fsm, 1.0)
         ]
 
         self._Init: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             ReedSwitchCommand(fsm),
+            WaitCommand(fsm, 1.0),
+            InitLCDCommand(fsm),
+            WaitCommand(fsm, 0.5),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_MIDDLE),
-            
+            WaitCommand(fsm, 0.5),
             SetOuterServoAngleCommand(fsm, OUTER_INIT, time_needed=1.0),
+            WaitCommand(fsm, 0.5),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
+            WaitCommand(fsm, 0.5),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
         ]
 
         self._DeployBanner: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            WaitCommand(fsm, 1.0),
             MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
             WaitCommand(fsm, 0.5),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1, time_needed=1.0),
-            MoveBackwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=False),           
             WaitCommand(fsm, 0.5),
+            MoveBackwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=False),           
+            WaitCommand(fsm, 1.0),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2, time_needed=1.0),
-            MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
-            #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
+            # MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 30, re_enable_us_sensors=False, enable_direction_sensors=False),
+        ]
+
+        self._MoveToSecondCans_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            WaitCommand(fsm, 1.0),
+            RotateLeftCommand(fsm, 90, ),
+            WaitCommand(fsm, 1.0),
+            MoveForwardCommand(fsm, 40, ),
+            WaitCommand(fsm, 1.0),
+            RotateLeftCommand(fsm, 90, ),
+            WaitCommand(fsm, 1.0),
+            MoveForwardCommand(fsm, 20, ),
+        ]
+
+        self._MoveToSecondCans_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            WaitCommand(fsm, 1.0),
+            RotateRightCommand(fsm, 90, ),
+            WaitCommand(fsm, 1.0),
+            MoveForwardCommand(fsm, 40, ),
+            WaitCommand(fsm, 1.0),
+            RotateRightCommand(fsm, 90, ),
+            WaitCommand(fsm, 1.0),
+            MoveForwardCommand(fsm, 20, ),
         ]
 
         self._CollectCans: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
-            LowerFrontPlateCommand(fsm),
+            # LowerFrontPlateCommand(fsm),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
-            MoveForwardCommand(fsm, 20),
+            MoveForwardCommand(fsm, 20, re_enable_us_sensors=False, enable_direction_sensors=False),
             SetAllServoAnglesCommand(fsm, ALL_CLOSED),
             #MoveFrontPlateCommand(fsm, STEPPER_MIDDLE_POINT),
-            #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             MoveBackwardCommand(fsm, 20),
         ]
 
         self._Build1StoryBleachers: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            MoveForwardCommand(fsm, 20),
+            MoveForwardCommand(fsm, 20, re_enable_us_sensors=False, enable_direction_sensors=False),
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
-            LowerFrontPlateCommand(fsm),
+            # LowerFrontPlateCommand(fsm),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
-            MoveBackwardCommand(fsm, 20),
-            RaiseFrontPlateCommand(fsm),
-            #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
+            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=False),
+            # RaiseFrontPlateCommand(fsm),
         ]
 
         self._Build2StoryBleachers: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -81,52 +112,50 @@ class SequenceCreator():
             MoveBackwardCommand(fsm, 15),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_PUSH),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
-            RaiseFrontPlateCommand(fsm),
+            # RaiseFrontPlateCommand(fsm),
             MoveForwardCommand(fsm, 15),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
-            MoveFrontPlateCommand(fsm, 600),
+            # MoveFrontPlateCommand(fsm, 600),
             MoveBackwardCommand(fsm, 20),
-            RaiseFrontPlateCommand(fsm),
+            # RaiseFrontPlateCommand(fsm),
             #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
         ]
         
         # Steps 3 to 7 on graph : Center cans => most accessible ones
         self._FirstCansCollectMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Disable front sensors
-            MoveForwardCommand(fsm, 50),
-            RotateLeftCommand(fsm, rotation),
-            #DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Enable front sensors
-            MoveForwardCommand(fsm, 5),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 30),
+            RotateLeftCommand(fsm, 90),
+            MoveForwardCommand(fsm, 10),
+            RotateRightCommand(fsm, 90),
+            MoveForwardCommand(fsm, 10),
         ]
 
         self._FirstCansCollectMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Disable front sensors
-            MoveForwardCommand(fsm, 50),
-            RotateRightCommand(fsm, rotation),
-            # DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Enable front sensors
-            MoveForwardCommand(fsm, 5),
-            RotateLeftCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 30),
+            MoveForwardCommand(fsm, 20),
+            StopCommand(fsm),
+            RotateRightCommand(fsm, 90),
+            MoveForwardCommand(fsm, 10),
+            StopCommand(fsm),
+            RotateLeftCommand(fsm, 90),
+            MoveForwardCommand(fsm, 10),
         ]
         
         # Steps 8 to 11 on graph
         self._FirstCansBuildMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT, USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),  # Enable front sensors
             MoveBackwardCommand(fsm, 30),
+            StopCommand(fsm),
             RotateRightCommand(fsm, rotation),
             MoveBackwardCommand(fsm, 5),
+            StopCommand(fsm),
             RotateRightCommand(fsm, rotation),
             MoveForwardCommand(fsm, 50),
-            # DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT, USPosition.BACK_LEFT, USPosition.BACK_RIGHT] ),
         ]
 
         self._FirstCansBuildMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 90),
-            MoveForwardCommand(fsm, 5),
+            MoveForwardCommand(fsm, 10),
             RotateLeftCommand(fsm, 90),
-            MoveForwardCommand(fsm, 100),
+            MoveForwardCommand(fsm, 30),
         ]
 
         # Steps 12 to 17 on graph : Cans to the left (yellow) or right (blue) => just need to push
@@ -179,95 +208,13 @@ class SequenceCreator():
             RotateLeftCommand(fsm, 180),
             RotateRightCommand(fsm, 180),
         ]
-        
-        self._Sprint4Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),  # Disable back sensors
-            MoveForwardCommand(fsm, 50),
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            RotateLeftCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 95),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 130),
-        ]
-
-        self._Sprint4Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            SetBannerDeployerServoAngleCommand(fsm,170),
-
-        ]
-
-        self._clawtest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            # SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
-            # MoveFrontPlateCommand(fsm, 200),
-            # MoveForwardCommand(fsm, 40),
-            
-            # SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
-            # SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
-            # SetOuterServoAngleCommand(fsm, [40, 40, 40, 40]),
-            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT, USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
-            SetBannerDeployerServoAngleCommand(fsm,170),
-            SetBannerDeployerServoAngleCommand(fsm, 130),
-            MoveBackwardCommand(fsm, 15),
-            SetBannerDeployerServoAngleCommand(fsm, 10),
-            MoveForwardCommand(fsm, 10)
-
-
-            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY),
-            # SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_END)
-
-        ]
-        
-        self._Sprint4CansBlue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            MoveForwardCommand(fsm, 50),
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 55),
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 60),
-            MoveBackwardCommand(fsm, 60),
-            RotateLeftCommand(fsm, rotation),
-            ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
-            MoveForwardCommand(fsm, 40),
-            RotateLeftCommand(fsm, 110),
-            MoveForwardCommand(fsm, 140),
-        ]
-
-        self._Sprint4CansYellows: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            MoveForwardCommand(fsm, 50),
-            #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            RotateLeftCommand(fsm, rotation),
-            EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            MoveForwardCommand(fsm, 55),
-            RotateLeftCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 60),
-            MoveBackwardCommand(fsm, 60),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 40),
-            RotateRightCommand(fsm, 110),
-            MoveForwardCommand(fsm, 140),
-        ]
-
-        self._frontPlateTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            SetAllServoAnglesCommand(fsm, ALL_OPEN),
-
-            InitFrontPlateCommand(fsm),
-
-
-        ]
-
-        self._frontPlantUp : list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
-
-
-            RaiseFrontPlateCommand(fsm),
-            MoveForwardCommand(fsm, 25),
-        ]
-
 
         self._wheeltest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            RotateLeftCommand(fsm, 10),
+            #MoveForwardCommand(fsm, 70, re_enable_us_sensors=False),
+            WaitCommand(fsm, 1.0),
+            RotateLeftCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
+            WaitCommand(fsm, 1.0),
+            RotateRightCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
         ]
 
         self._reedswitchTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -303,6 +250,19 @@ class SequenceCreator():
     @DeployBanner.setter
     def DeployBanner(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._DeployBanner = sequence
+
+    @property
+    def MoveToSecondCans(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
+        if self.color == "yellow":
+            return self._MoveToSecondCans_Yellow
+        else:
+            return self._MoveToSecondCans_Blue
+    @MoveToSecondCans.setter
+    def MoveToSecondCans(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
+        if self.color == "yellow":
+            self._MoveToSecondCans_Yellow = sequence
+        else:
+            self._MoveToSecondCans_Blue = sequence
 
     @property
     def CollectCans(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
@@ -400,19 +360,20 @@ class SequenceCreator():
     @property
     def MainSequence(self) -> list[list[ICommand | ITimeBasedCommand | IMoveCommand]]:
         return [
-            #self.IdleState,
-            #self.Init,
-            #self.DeployBanner,
-            self.FirstCansCollectMove,
+            self.IdleState,
+            self.Init,
+            self.DeployBanner,
+            self.MoveToSecondCans,
+            # self.FirstCansCollectMove,
             # self.CollectCans,
-            self.FirstCansBuildMove,
+            # self.FirstCansBuildMove,
             # self.Build1StoryBleachers,
-            self.SecondCansPushMove,
-            self.ThirdCansCollectMove,
+            #self.SecondCansPushMove,
+            #self.ThirdCansCollectMove,
             #self.CollectCans,
-            self.ThirdCansBuildMove,
+            #self.ThirdCansBuildMove,
             #self.Build1StoryBleachers,
-            self.GoToEndMove
+            #self.GoToEndMove
         ]
     # @MainSequence.setter
     # def MainSequence(self, sequence_list: list[list[ICommand | ITimeBasedCommand | IMoveCommand]]):

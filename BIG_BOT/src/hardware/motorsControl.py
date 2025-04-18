@@ -1,5 +1,5 @@
 from .bigMotor import BigMotor
-from threading import Timer
+from ..fsm.myTimer import MyTimer
 import time
 
 class MotorsControl:
@@ -30,12 +30,12 @@ class MotorsControl:
         self.speed = 0
         self.leftStraightOffset = - 0.025
         self.rightStraightOffset = 0
-        self.leftRotateOffset = 0.0
+        self.leftRotateOffset = -0.025
         self.rightRotateOffset = 0.0
-        self.movement_timer = None
-        self.distance_per_second = 11.8 # cm/s
-        self.degrees_per_second_left = 48.45 # degrees/s
-        self.degrees_per_second_right = 47.4 # degrees/s
+        self.movement_timer: MyTimer | None = None
+        self.distance_per_second = 10.4 # cm/s
+        self.degrees_per_second_left = 48.3 # degrees/s
+        self.degrees_per_second_right = 39.7 # degrees/s
         self._is_moving = False
 
     def forward(self, speed):
@@ -80,26 +80,24 @@ class MotorsControl:
     # Additional methods for control in distance and not speed
 
     def computeTimeNeeded(self, direction, distance_cm = 0.0, degrees = 0.0, speed = 0.5):
+        self.speed = speed
+
         if direction == "forward":
-            self.speed = speed
             coeff = self.distance_per_second/self.speed
 
             time_needed = distance_cm / (self.speed * coeff)
         
         elif direction == "backward":
-            self.speed = speed
             coeff = self.distance_per_second/self.speed
 
             time_needed = distance_cm / (self.speed * coeff)
         
         elif direction == "rotateLeft":
-            self.speed = speed
             coeff = self.degrees_per_second_left/self.speed 
 
             time_needed = degrees / (self.speed * coeff)
 
         elif direction == "rotateRight":
-            self.speed = speed
             coeff = self.degrees_per_second_left/self.speed 
 
             time_needed = degrees / (self.speed * coeff)
@@ -122,8 +120,7 @@ class MotorsControl:
         if self.movement_timer:
             self.movement_timer.cancel()
 
-        self.movement_timer = Timer(time_needed, lambda : self.stop())
-        self.movement_timer.start()
+        self.movement_timer = MyTimer(time_needed, lambda : self.stop())
 
         return time_needed
 
@@ -143,8 +140,7 @@ class MotorsControl:
         if self.movement_timer:
             self.movement_timer.cancel()
 
-        self.movement_timer = Timer(time_needed, lambda : self.stop())
-        self.movement_timer.start()
+        self.movement_timer = MyTimer(time_needed, lambda : self.stop())
 
         return time_needed
 
@@ -166,8 +162,7 @@ class MotorsControl:
         if self.movement_timer:
             self.movement_timer.cancel()
 
-        self.movement_timer = Timer(time_needed, lambda : self.stop())
-        self.movement_timer.start()
+        self.movement_timer = MyTimer(time_needed, lambda : self.stop())
 
         return time_needed
 
@@ -187,8 +182,7 @@ class MotorsControl:
         if self.movement_timer:
             self.movement_timer.cancel()
 
-        self.movement_timer = Timer(time_needed, lambda : self.stop())
-        self.movement_timer.start()
+        self.movement_timer = MyTimer(time_needed, lambda : self.stop())
 
         return time_needed
 

@@ -16,7 +16,8 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.speed = speed
         self.enable_direction_sensors = enable_direction_sensors
         self.re_enable_us_sensors = re_enable_us_sensors
-        self.time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="forward", distance_cm=self.distance, speed=self.speed)
+        time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="forward", distance_cm=self.distance, speed=self.speed)
+        self.time_needed = time_needed + 0.1
 
     def execute(self):
         print(f"Moving forward")
@@ -24,10 +25,12 @@ class MoveForwardCommand(ITimeBasedCommand):
         # Enable US sensors in the direction of movement
         if self.enable_direction_sensors:
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
         else:
             # Disable US sensors in the direction of movement
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_RIGHT)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_MIDDLE)
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_LEFT)
 
         # Disable US sensors in other directions
@@ -69,7 +72,8 @@ class MoveBackwardCommand(ITimeBasedCommand):
         self.speed = speed
         self.enable_direction_sensors = enable_direction_sensors
         self.enable_us_sensors = re_enable_us_sensors
-        self.time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="backward", distance_cm=self.distance, speed=self.speed)
+        time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="backward", distance_cm=self.distance, speed=self.speed)
+        self.time_needed = time_needed + 0.1
 
     def execute(self):
         print(f"Moving backward")
@@ -114,17 +118,43 @@ class MoveBackwardCommand(ITimeBasedCommand):
 
 class RotateLeftCommand(ITimeBasedCommand):
     """Command to rotate the robot to the left a certain number of degrees at a certain speed."""
-    def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5):
-        self.timer = None
+    def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5, enable_front_sensors = True, enable_back_sensors = True, enable_side_sensors = True):
         self._is_finished = False
 
         self.fsm = fsm
         self.degrees = degrees
         self.speed = speed
+        self.enable_front_sensors = enable_front_sensors
+        self.enable_back_sensors = enable_back_sensors
+        self.enable_side_sensors = enable_side_sensors
 
-        self.time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="rotateLeft", degrees=self.degrees, speed=self.speed)
+        time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="rotateLeft", degrees=self.degrees, speed=self.speed)
+        self.time_needed = time_needed + 0.1
 
     def execute(self):
+        print(f"Rotating left")
+
+        if self.enable_front_sensors:
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+        else:
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_RIGHT)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_MIDDLE)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_LEFT)
+        if self.enable_back_sensors:
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+        else:
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_RIGHT)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_LEFT)
+        if self.enable_side_sensors:    
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+        else:
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
+
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
+        
         self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
     
     def pause(self):
@@ -137,21 +167,59 @@ class RotateLeftCommand(ITimeBasedCommand):
         self.fsm.robot.motor.stop()
 
     def finished(self):
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
         self.stop()
         self._is_finished = True
 
 class RotateRightCommand(ITimeBasedCommand):
     """Command to rotate the robot to the right a certain number of degrees at a certain speed."""
-    def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5):
+    def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5, enable_front_sensors = True, enable_back_sensors = True, enable_side_sensors = True):
         self._is_finished = False
 
         self.fsm = fsm
         self.degrees = degrees
         self.speed = speed
 
-        self.time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="rotateRight", degrees=self.degrees, speed=self.speed)
+        self.enable_front_sensors = enable_front_sensors
+        self.enable_back_sensors = enable_back_sensors
+        self.enable_side_sensors = enable_side_sensors
+
+        time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="rotateRight", degrees=self.degrees, speed=self.speed)
+        self.time_needed = time_needed + 0.1
 
     def execute(self):
+        print(f"Rotating right")
+
+        if self.enable_front_sensors:
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+        else:
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_RIGHT)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_MIDDLE)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_LEFT)
+        if self.enable_back_sensors:
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+        else:
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_RIGHT)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_LEFT)
+        if self.enable_side_sensors:    
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
+        else:
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
+        
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
+
         self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
     
     def pause(self):
@@ -164,16 +232,26 @@ class RotateRightCommand(ITimeBasedCommand):
         self.fsm.robot.motor.stop()
 
     def finished(self):
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
         self.stop()
         self._is_finished = True
 
 class StopCommand(ITimeBasedCommand):
     """Command to stop the motors and wait a time 0.1 to be sure of the complete stop of movement (can be tuned up if needed)."""
-    def __init__(self, fsm: 'RobotFSM'):
+    def __init__(self, fsm: 'RobotFSM', time_needed: float = 0.2):
         self._is_finished = False
 
         self.fsm = fsm
-        self.time_needed = 0.1
+        self.time_needed = time_needed
 
     def execute(self):
         # 0.1 seconds is the minimum of a stop in our logic

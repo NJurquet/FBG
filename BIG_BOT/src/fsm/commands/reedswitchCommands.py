@@ -16,6 +16,7 @@ class ReedSwitchCommand(ICommand):
         #Stays stucked in a loop if the reedswitch value doesn't change
         value = self.fsm.robot.reedSwitch.read()
         new_value = value
+        print("ReedSwitch waiting...")
         while value == new_value:
             time.sleep(0.01)
             new_value = self.fsm.robot.reedSwitch.read()

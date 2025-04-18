@@ -25,7 +25,7 @@ def main():
         # Clean up resources in the finally block to ensure it always runs
         if robot and hasattr(robot, 'stepper'):
             try:
-                robot.stepper.cleanup()
+                # robot.stepper.cleanup()
                 robot.motor.cleanup()
                 print("Stepper motor cleaned up successfully")
             except Exception as cleanup_error:

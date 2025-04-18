@@ -12,9 +12,9 @@ class SequenceManager():
         self.fsm = fsm
         self._sequences = sequences
         self._current_sequence: list[ICommand | ITimeBasedCommand | IMoveCommand] = self._sequences[0]
-        self._current_sequence_idx: int = 0
+        self._current_sequence_idx: int = -1
         self._current_command_idx: int = 0
-        self._command: ICommand | ITimeBasedCommand | IMoveCommand | None = None
+        self._command: ICommand | ITimeBasedCommand | IMoveCommand | None = self.get_next_command()
         self._timer: MyTimer | None = None
         self._execution_in_progress: bool = False
         self._all_sequences_completed: bool = False
@@ -23,15 +23,25 @@ class SequenceManager():
         """Get the next sequence to execute"""
         if self._current_sequence_idx < len(self._sequences):
             return self._sequences[self._current_sequence_idx]
+        print("All sequences completed")
         return None
 
     def get_next_command(self) -> ICommand | ITimeBasedCommand | IMoveCommand | None:
         """Get the next command to execute"""
+        
+        self._current_command_idx += 1
+
         if self._current_command_idx >= len(self._current_sequence):
             # Move to the next sequence if available
+            if self._current_sequence_idx >= len(self._sequences) - 1:
+                # If there are no more sequences, mark all as completed
+                self._all_sequences_completed = True
+                return None
+            
             self._current_sequence_idx += 1
             self._current_command_idx = 0
             next_sequence = self.get_next_sequence()
+            print(f"Moving to Sequence {self._current_sequence_idx + 1}")
 
             # If there is a next sequence, set it as the current sequence
             if next_sequence is not None:
@@ -49,19 +59,16 @@ class SequenceManager():
         # First check if all sequences are completed
         if self._all_sequences_completed:
             return
-
-        if self._command is None:
-            # Get the next command to execute
-            self._command = self.get_next_command()
         
         if self._command is not None:
             if self._execution_in_progress:
                 # If a command is finished, we can execute the next command
-                if self._command._is_finished == True:
-                    self._on_step_complete()
-                else: 
-                    # Don't do anything if we're already executing a command
-                    return
+                # if self._command._is_finished == True:
+                #     self._on_step_complete()
+                # else: 
+                #     # Don't do anything if we're already executing a command
+                #     return
+                return
 
             # Set the execution flag to prevent duplicate calls
             self._execution_in_progress = True
@@ -69,10 +76,13 @@ class SequenceManager():
             if isinstance(self._command, ICommand):
                 # If the command is a regular command, execute it
                 self._timer = None  # No timer needed for non-time-based commands
+                self.fsm.robot.motor.movement_timer = None
                 self._command.execute()
+                self._on_step_complete()
 
             elif isinstance(self._command, ITimeBasedCommand):
                 # If the command is time-based, execute it & Get a new timer
+                self.fsm.robot.motor.movement_timer = None
                 self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
                 self._command.execute()
 
@@ -83,7 +93,6 @@ class SequenceManager():
         if self._timer:
             self._timer.cancel()
             self._timer = None
-        self._current_command_idx += 1
 
         self._execution_in_progress = False        
         # Only print "Moving to Step X" if there are more steps in this sequence
