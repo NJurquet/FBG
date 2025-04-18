@@ -1,10 +1,10 @@
-from ..commands.command import ICommand
+from ..commands.command import ICommand, ITimeBasedCommand, IMoveCommand
 from ..commands.moveCommands import MoveForwardCommand, MoveBackwardCommand, RotateLeftCommand, RotateRightCommand, StopCommand
 from ..commands.servoCommands import SetOuterServoAngleCommand, SetAllServoAnglesCommand, SetPlankPusherServoAnglesCommand, SetBannerDeployerServoAngleCommand
-from ..commands.startCommands import InitCommand
 from ..commands.ultrasonicCommands import ToggleUltrasonicSensorsCommand, DisableUltrasonicSensorsCommand, EnableUltrasonicSensorsCommand
 from ..commands.reedswitchCommands import ReedSwitchCommand
 from ..commands.frontPlateCommands import RaiseFrontPlateCommand, LowerFrontPlateCommand, InitFrontPlateCommand, MoveFrontPlateCommand
+from ..commands.timeCommands import WaitCommand, WaitForTargetTimeCommand
 from ...constants import USPosition
 from ...config import OUTER_RIGHT_CLAW_NAME, ALL_CLOSED, ALL_OPEN, SERVO_IDLE, SERVO_INIT, OUTER_OPEN, OUTER_INIT, PLANK_PUSHER_BLOCKING, PLANK_PUSHER_MIDDLE, PLANK_PUSHER_INIT, PLANK_PUSHER_PUSH, BANNER_DEPLOYER_DEPLOY_STAGE_1, BANNER_DEPLOYER_IDLE, BANNER_DEPLOYER_DEPLOY_STAGE_2
 from ...config import STEPPER_MIDDLE_POINT
@@ -22,41 +22,37 @@ class SequenceCreator():
         else:
             raise ValueError("Invalid color. Please choose 'yellow' or 'blue'.")
 
-        self._IdleState: list[ICommand] = [
+        self._IdleState: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.CENTER_LEFT, USPosition.CENTER_RIGHT]),
             #InitFrontPlateCommand(fsm),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_BLOCKING),
-            StopCommand(fsm),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_IDLE),
-            StopCommand(fsm),
             SetAllServoAnglesCommand(fsm, SERVO_IDLE),
         ]
 
-        self._Init: list[ICommand] = [
+        self._Init: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             ReedSwitchCommand(fsm),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_MIDDLE),
-            StopCommand(fsm),
+            
             SetOuterServoAngleCommand(fsm, OUTER_INIT, time_needed=1.0),
-            StopCommand(fsm),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_INIT),
-            StopCommand(fsm),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
         ]
 
-        self._DeployBanner: list[ICommand] = [
-            MoveForwardCommand(fsm, 15, enable_us_sensors=False),
-            StopCommand(fsm),
+        self._DeployBanner: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
+            WaitCommand(fsm, 0.5),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1, time_needed=1.0),
-            MoveBackwardCommand(fsm, 10, enable_us_sensors=False),           
-            StopCommand(fsm),
+            MoveBackwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=False),           
+            WaitCommand(fsm, 0.5),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2, time_needed=1.0),
-            MoveForwardCommand(fsm, 15, enable_us_sensors=False),
+            MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
             #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
         ]
 
-        self._CollectCans: list[ICommand] = [
+        self._CollectCans: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             LowerFrontPlateCommand(fsm),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
@@ -67,7 +63,7 @@ class SequenceCreator():
             MoveBackwardCommand(fsm, 20),
         ]
 
-        self._Build1StoryBleachers: list[ICommand] = [
+        self._Build1StoryBleachers: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             MoveForwardCommand(fsm, 20),
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             LowerFrontPlateCommand(fsm),
@@ -77,7 +73,7 @@ class SequenceCreator():
             #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
         ]
 
-        self._Build2StoryBleachers: list[ICommand] = [
+        self._Build2StoryBleachers: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             MoveForwardCommand(fsm, 20),
             #LowerFrontPlateCommand(fsm),
@@ -95,7 +91,7 @@ class SequenceCreator():
         ]
         
         # Steps 3 to 7 on graph : Center cans => most accessible ones
-        self._FirstCansCollectMove_Yellow: list[ICommand] = [
+        self._FirstCansCollectMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Disable front sensors
             MoveForwardCommand(fsm, 50),
             RotateLeftCommand(fsm, rotation),
@@ -105,7 +101,7 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 30),
         ]
 
-        self._FirstCansCollectMove_Blue: list[ICommand] = [
+        self._FirstCansCollectMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Disable front sensors
             MoveForwardCommand(fsm, 50),
             RotateRightCommand(fsm, rotation),
@@ -116,7 +112,7 @@ class SequenceCreator():
         ]
         
         # Steps 8 to 11 on graph
-        self._FirstCansBuildMove_Yellow: list[ICommand] = [
+        self._FirstCansBuildMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT, USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),  # Enable front sensors
             MoveBackwardCommand(fsm, 30),
             RotateRightCommand(fsm, rotation),
@@ -126,7 +122,7 @@ class SequenceCreator():
             # DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT, USPosition.BACK_LEFT, USPosition.BACK_RIGHT] ),
         ]
 
-        self._FirstCansBuildMove_Blue: list[ICommand] = [
+        self._FirstCansBuildMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 90),
             MoveForwardCommand(fsm, 5),
             RotateLeftCommand(fsm, 90),
@@ -134,12 +130,12 @@ class SequenceCreator():
         ]
 
         # Steps 12 to 17 on graph : Cans to the left (yellow) or right (blue) => just need to push
-        self._SecondCansPushMove_Yellow: list[ICommand] = [
+        self._SecondCansPushMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             MoveBackwardCommand(fsm, 30),
             RotateRightCommand(fsm, rotation),
         ]
 
-        self._SecondCansPushMove_Blue: list[ICommand] = [
+        self._SecondCansPushMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 180),
             MoveForwardCommand(fsm, 50),
             RotateRightCommand(fsm, 90),
@@ -149,7 +145,7 @@ class SequenceCreator():
         ]
 
         # Steps 18 to 21 on graph : Cans on the edge => bring back to spawn
-        self._ThirdCansCollectMove_Blue: list[ICommand] = [
+        self._ThirdCansCollectMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 180),
             MoveForwardCommand(fsm, 80),
             RotateRightCommand(fsm, 90),
@@ -157,7 +153,7 @@ class SequenceCreator():
         ]
 
         # Steps 22 to 25 on graph : Cans on the edge => bring back to spawn
-        self._ThirdCansBuildMove_Blue: list[ICommand] = [
+        self._ThirdCansBuildMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 180),
             MoveForwardCommand(fsm, 150),
             RotateLeftCommand(fsm, 90),
@@ -165,7 +161,7 @@ class SequenceCreator():
         ]
 
         # Step 26 to 31 : Go to the end & wait for a certain moment
-        self._GoToEndMove: list[ICommand] = [
+        self._GoToEndMove: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateRightCommand(fsm, 180),
             MoveForwardCommand(fsm, 50),
             RotateRightCommand(fsm, 90),
@@ -173,17 +169,18 @@ class SequenceCreator():
             RotateLeftCommand(fsm, 90),
             MoveForwardCommand(fsm, 100),
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
-            MoveForwardCommand(fsm, 50, time_target=95.0),
+            WaitForTargetTimeCommand(fsm, time_target=95.0),
+            MoveForwardCommand(fsm, 50),
         ]
 
-        self._HomologationMove: list[ICommand] = [
+        self._HomologationMove: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             MoveForwardCommand(fsm, 100),
             MoveBackwardCommand(fsm, 80),
             RotateLeftCommand(fsm, 180),
             RotateRightCommand(fsm, 180),
         ]
         
-        self._Sprint4Yellow: list[ICommand] = [
+        self._Sprint4Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),  # Disable back sensors
             MoveForwardCommand(fsm, 50),
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
@@ -193,12 +190,12 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 130),
         ]
 
-        self._Sprint4Blue: list[ICommand] = [
+        self._Sprint4Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             SetBannerDeployerServoAngleCommand(fsm,170),
 
         ]
 
-        self._clawtest: list[ICommand] = [
+        self._clawtest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             # SetAllServoAnglesCommand(fsm, [150, 150, 150, 150]),
             # MoveFrontPlateCommand(fsm, 200),
             # MoveForwardCommand(fsm, 40),
@@ -219,7 +216,7 @@ class SequenceCreator():
 
         ]
         
-        self._Sprint4CansBlue: list[ICommand] = [
+        self._Sprint4CansBlue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
             ToggleUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
@@ -236,7 +233,7 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 140),
         ]
 
-        self._Sprint4CansYellows: list[ICommand] = [
+        self._Sprint4CansYellows: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
             MoveForwardCommand(fsm, 50),
             #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
@@ -252,7 +249,7 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 140),
         ]
 
-        self._frontPlateTest: list[ICommand] = [
+        self._frontPlateTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
 
             InitFrontPlateCommand(fsm),
@@ -260,7 +257,7 @@ class SequenceCreator():
 
         ]
 
-        self._frontPlantUp : list[ICommand] = [
+        self._frontPlantUp : list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             SetAllServoAnglesCommand(fsm, [90, 90, 90, 90]),
 
 
@@ -269,139 +266,139 @@ class SequenceCreator():
         ]
 
 
-        self._wheeltest: list[ICommand] = [
+        self._wheeltest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 10),
         ]
 
-        self._reedswitchTest: list[ICommand] = [
+        self._reedswitchTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             ReedSwitchCommand(fsm)
         ]
 
-        self._bannerTest: list[ICommand] = [
+        self._bannerTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.CENTER_LEFT, USPosition.CENTER_RIGHT]),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_IDLE, time_needed=1.0),
-            StopCommand(fsm),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1, time_needed=1.0),
-            StopCommand(fsm),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2, time_needed=1.0),
-            StopCommand(fsm),
         ]
 
     @property
-    def IdleState(self) -> list[ICommand]:
+    def IdleState(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._IdleState
     @IdleState.setter
-    def IdleState(self, sequence: list[ICommand]):
+    def IdleState(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._IdleState = sequence
 
     @property
-    def Init(self) -> list[ICommand]:
+    def Init(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._Init
     @Init.setter
-    def Init(self, sequence: list[ICommand]):
+    def Init(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._Init = sequence
 
     @property
-    def DeployBanner(self) -> list[ICommand]:
+    def DeployBanner(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._DeployBanner
     @DeployBanner.setter
-    def DeployBanner(self, sequence: list[ICommand]):
+    def DeployBanner(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._DeployBanner = sequence
 
     @property
-    def CollectCans(self) -> list[ICommand]:
+    def CollectCans(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._CollectCans
     @CollectCans.setter
-    def CollectCans(self, sequence: list[ICommand]):
+    def CollectCans(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._CollectCans = sequence
 
     @property
-    def Build1StoryBleachers(self) -> list[ICommand]:
+    def Build1StoryBleachers(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._Build1StoryBleachers
     @Build1StoryBleachers.setter
-    def Build1StoryBleachers(self, sequence: list[ICommand]):
+    def Build1StoryBleachers(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._Build1StoryBleachers = sequence
 
     @property
-    def Build2StoryBleachers(self) -> list[ICommand]:
+    def Build2StoryBleachers(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._Build2StoryBleachers
     @Build2StoryBleachers.setter
-    def Build2StoryBleachers(self, sequence: list[ICommand]):
+    def Build2StoryBleachers(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._Build2StoryBleachers = sequence
 
     @property
-    def FirstCansCollectMove(self) -> list[ICommand]:
+    def FirstCansCollectMove(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         if self.color == "yellow":
             return self._FirstCansCollectMove_Yellow
         else:
             return self._FirstCansCollectMove_Blue
     @FirstCansCollectMove.setter
-    def FirstCansCollectMove(self, sequence: list[ICommand]):
+    def FirstCansCollectMove(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         if self.color == "yellow":
             self._FirstCansCollectMove_Yellow = sequence
         else:
             self._FirstCansCollectMove_Blue = sequence
     
     @property
-    def FirstCansBuildMove(self) -> list[ICommand]:
+    def FirstCansBuildMove(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         if self.color == "yellow":
             return self._FirstCansBuildMove_Yellow
         else:
             return self._FirstCansBuildMove_Blue
     @FirstCansBuildMove.setter
-    def FirstCansBuildMove(self, sequence: list[ICommand]):
+    def FirstCansBuildMove(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         if self.color == "yellow":
             self._FirstCansBuildMove_Yellow = sequence
         else:
             self._FirstCansBuildMove_Blue = sequence
 
     @property
-    def SecondCansPushMove(self) -> list[ICommand]:
+    def SecondCansPushMove(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         if self.color == "yellow":
             return self._SecondCansPushMove_Yellow
         else:
             return self._SecondCansPushMove_Blue
     @SecondCansPushMove.setter
-    def SecondCansPushMove(self, sequence: list[ICommand]):
+    def SecondCansPushMove(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         if self.color == "yellow":
             self._SecondCansPushMove_Yellow = sequence
         else:
             self._SecondCansPushMove_Blue = sequence
 
     @property
-    def ThirdCansCollectMove(self) -> list[ICommand]:
+    def ThirdCansCollectMove(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         if self.color == "yellow":
             return self._ThirdCansCollectMove_Blue
         else:
             return self._ThirdCansCollectMove_Blue
     @ThirdCansCollectMove.setter
-    def ThirdCansCollectMove(self, sequence: list[ICommand]):
+    def ThirdCansCollectMove(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         if self.color == "yellow":
             self._ThirdCansCollectMove_Blue = sequence
         else:
             self._ThirdCansCollectMove_Blue = sequence
 
     @property
-    def ThirdCansBuildMove(self) -> list[ICommand]:
+    def ThirdCansBuildMove(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         if self.color == "yellow":
             return self._ThirdCansBuildMove_Blue
         else:
             return self._ThirdCansBuildMove_Blue
     @ThirdCansBuildMove.setter
-    def ThirdCansBuildMove(self, sequence: list[ICommand]):
+    def ThirdCansBuildMove(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         if self.color == "yellow":
             self._ThirdCansBuildMove_Blue = sequence
         else:
             self._ThirdCansBuildMove_Blue = sequence
 
     @property
-    def GoToEndMove(self) -> list[ICommand]:
+    def GoToEndMove(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._GoToEndMove
     @GoToEndMove.setter
-    def GoToEndMove(self, sequence: list[ICommand]):
+    def GoToEndMove(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
             self._GoToEndMove = sequence
 
     @property
-    def MainSequence(self) -> list[list[ICommand]]:
+    def MainSequence(self) -> list[list[ICommand | ITimeBasedCommand | IMoveCommand]]:
         return [
             #self.IdleState,
             #self.Init,
@@ -418,7 +415,7 @@ class SequenceCreator():
             self.GoToEndMove
         ]
     # @MainSequence.setter
-    # def MainSequence(self, sequence_list: list[list[ICommand]]):
+    # def MainSequence(self, sequence_list: list[list[ICommand | ITimeBasedCommand | IMoveCommand]]):
     #     self.IdleState = sequence_list[0]
     #     self.Init = sequence_list[1]
     #     self.DeployBanner = sequence_list[2]
@@ -429,65 +426,65 @@ class SequenceCreator():
     #     self.SecondCansPushMove = sequence_list[7]
     
     @property
-    def Sprint4Yellow(self) -> list[ICommand]:
+    def Sprint4Yellow(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._Sprint4Yellow
 
     @Sprint4Yellow.setter
-    def Sprint4Yellow(self, sequence: list[ICommand]):
+    def Sprint4Yellow(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._Sprint4Yellow = sequence
     
     @property
-    def Sprint4Blue(self) -> list[ICommand]:
+    def Sprint4Blue(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._Sprint4Blue
     @Sprint4Blue.setter
-    def Sprint4Blue(self, sequence: list[ICommand]):
+    def Sprint4Blue(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._Sprint4Blue = sequence
     
     @property
-    def clawtest(self) -> list[ICommand]:
+    def clawtest(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._clawtest
     @clawtest.setter
-    def clawtest(self, sequence: list[ICommand]):
+    def clawtest(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._clawtest = sequence
     
     @property
-    def Sprint4CansBlue(self) -> list[ICommand]:
+    def Sprint4CansBlue(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._Sprint4CansBlue
     @Sprint4CansBlue.setter
-    def Sprint4CansBlue(self, sequence: list[ICommand]):
+    def Sprint4CansBlue(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._Sprint4CansBlue = sequence
     
     @property
-    def Sprint4CansYellows(self) -> list[ICommand]:
+    def Sprint4CansYellows(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._Sprint4CansYellows
     @Sprint4CansYellows.setter
-    def Sprint4CansYellows(self, sequence: list[ICommand]):
+    def Sprint4CansYellows(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._Sprint4CansYellows = sequence
     
     @property
-    def wheeltest(self) -> list[ICommand]:
+    def wheeltest(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._wheeltest
     @wheeltest.setter
-    def wheeltest(self, sequence: list[ICommand]):
+    def wheeltest(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._wheeltest = sequence
     
     @property
-    def reedswitchTest(self) -> list[ICommand]:
+    def reedswitchTest(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._reedswitchTest
     @reedswitchTest.setter
-    def reedswitchTest(self, sequence: list[ICommand]):
+    def reedswitchTest(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._reedswitchTest = sequence
     
     @property
-    def frontPlateTest(self) -> list[ICommand]:
+    def frontPlateTest(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._frontPlateTest
     @frontPlateTest.setter
-    def frontPlateTest(self, sequence: list[ICommand]):
+    def frontPlateTest(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._frontPlateTest = sequence
 
     @property
-    def frontPlantUp(self) -> list[ICommand]:
+    def frontPlantUp(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         return self._frontPlantUp
     @frontPlantUp.setter
-    def frontPlantUp(self, sequence: list[ICommand]):
+    def frontPlantUp(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._frontPlantUp = sequence

@@ -24,27 +24,27 @@ class RobotFSM:
         self.robot = robot
         self.state_factory = StateFactory(self)
 
-        self.sequenceCreator = SequenceCreator(self, self.robot.color)
-
         print(f"Robot color: {self.robot.color}")  # Debugging line
-
-        self.sequenceManager = SequenceManager(self, 
-                        # [ 
-                            #self.sequenceCreator._bannerTest
-                            #  self.sequenceCreator.IdleState, 
-                            #  self.sequenceCreator.Init,
-                            #  self.sequenceCreator.DeployBanner,
-                            #self.sequenceCreator.CollectCans,
-                            #self.sequenceCreator.Build2StoryBleachers,
-                        # ])
-
-                        self.sequenceCreator.MainSequence)
 
         self.us_event: USEvent = USEvent.NO_EVENT
         self.match_time = 0.0
         self.start_match: bool = False
         self.start_time: float = 0.0
         self.end_of_match: bool = False
+
+        self.sequenceCreator = SequenceCreator(self, self.robot.color)
+        
+        self.sequenceManager = SequenceManager(self, 
+                        [ 
+                            # self.sequenceCreator._bannerTest
+                            self.sequenceCreator.IdleState, 
+                            self.sequenceCreator.Init,
+                            self.sequenceCreator.DeployBanner,
+                            # self.sequenceCreator.CollectCans,
+                            # self.sequenceCreator.Build2StoryBleachers,
+                        ])
+
+                        # self.sequenceCreator.MainSequence)
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """
@@ -78,7 +78,7 @@ class RobotFSM:
                 self.robot.ultrasonicController.measure_distances()
                 self.us_event = self.robot.ultrasonicController.check_obstacles()
                 if self.us_event == USEvent.OBSTACLE_DETECTED:
-                    print("Obastacle")
+                    print("Obstacle detected")
                     self.sequenceManager.pause()
                     return
                 elif self.us_event == USEvent.OBSTACLE_PRESENT:

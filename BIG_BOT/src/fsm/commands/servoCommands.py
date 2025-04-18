@@ -1,17 +1,17 @@
-from .command import ICommand
+from .command import ITimeBasedCommand
 from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
-class SetOuterServoAngleCommand(ICommand):
+class SetOuterServoAngleCommand(ITimeBasedCommand):
     """Command to set the outer servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 0.4):
+    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 1.0):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
 
-        self.time_needed = time_needed
+        self.time_needed = self.fsm.robot.servoControl.computeTimeNeeded(servos="outer", angles=self.angles)
 
     def execute(self):
         self.fsm.robot.servoControl.setOuterAngles(self.angles)
@@ -29,14 +29,14 @@ class SetOuterServoAngleCommand(ICommand):
         self.stop()
         self._is_finished = True
 
-class SetAllServoAnglesCommand(ICommand):
+class SetAllServoAnglesCommand(ITimeBasedCommand):
     """Command to set the all servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 0.4):
+    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 1.0):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
 
-        self.time_needed = time_needed
+        self.time_needed = self.fsm.robot.servoControl.computeTimeNeeded(servos="all", angles=self.angles)
 
     def execute(self):
         self.fsm.robot.servoControl.setAngles(self.angles)
@@ -54,15 +54,14 @@ class SetAllServoAnglesCommand(ICommand):
         self.stop()
         self._is_finished = True
 
-class SetPlankPusherServoAnglesCommand(ICommand):
-
-    """Command to set the outer servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 0.4):
+class SetPlankPusherServoAnglesCommand(ITimeBasedCommand):
+    """Command to set the plank pushers angles."""
+    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 1.0):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
 
-        self.time_needed = time_needed
+        self.time_needed = self.fsm.robot.servoControl.computeTimeNeeded(servos="plankPushers", angles=self.angles)
 
     def execute(self):
         self.fsm.robot.servoControl.setPlankPusherAngles(self.angles)
@@ -71,7 +70,7 @@ class SetPlankPusherServoAnglesCommand(ICommand):
         pass
 
     def resume(self):
-       pass
+        pass
 
     def stop(self):
         pass
@@ -80,15 +79,14 @@ class SetPlankPusherServoAnglesCommand(ICommand):
         self.stop()
         self._is_finished = True
 
-class SetBannerDeployerServoAngleCommand(ICommand):
-
-    """Command to set the outer servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angle: int, time_needed: float = 0.4):
+class SetBannerDeployerServoAngleCommand(ITimeBasedCommand):
+    """Command to set the banner deployer angle."""
+    def __init__(self, fsm: 'RobotFSM', angle: int, time_needed: float = 1.0):
         self._is_finished = False
         self.fsm = fsm
         self.angle = angle
 
-        self.time_needed = time_needed
+        self.time_needed = self.fsm.robot.servoControl.computeTimeNeeded(servos="bannerDeployer", angles=[self.angle])
 
     def execute(self):
         self.fsm.robot.servoControl.setBannerDeployerAngle(self.angle)
@@ -98,7 +96,6 @@ class SetBannerDeployerServoAngleCommand(ICommand):
 
     def resume(self):
         pass
-
 
     def stop(self):
         pass
