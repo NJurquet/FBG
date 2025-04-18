@@ -32,3 +32,6 @@ class MyTimer:
         if self._timer:
             self._timer.cancel()
             self._timer = None
+
+    def target(self):
+        return self._delete

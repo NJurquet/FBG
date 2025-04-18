@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
 
-class MoveForwardCommand(ITimeBasedCommand):
+class MoveForwardCommand(IMoveCommand):
     """Command to move the robot forward a certain distance at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, enable_direction_sensors = True, re_enable_us_sensors = True):
         self._is_finished = False
@@ -16,8 +16,7 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.speed = speed
         self.enable_direction_sensors = enable_direction_sensors
         self.re_enable_us_sensors = re_enable_us_sensors
-        time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="forward", distance_cm=self.distance, speed=self.speed)
-        self.time_needed = time_needed + 0.1
+        self.time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
         print(f"Moving forward")
@@ -39,13 +38,13 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_RIGHT)
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_LEFT)
         
-        self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
+        self.fsm.robot.motor.forward(speed=self.speed)
     
     def pause(self):
         self.fsm.robot.motor.stop()
 
     def resume(self):
-        self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
+        self.fsm.robot.motor.forward(speed=self.speed)
 
     def stop(self):
         self.fsm.robot.motor.stop()
@@ -62,7 +61,7 @@ class MoveForwardCommand(ITimeBasedCommand):
 
         self._is_finished = True
         
-class MoveBackwardCommand(ITimeBasedCommand):
+class MoveBackwardCommand(IMoveCommand):
     """Command to move the robot backward a certain distance at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, enable_direction_sensors = True, re_enable_us_sensors = True):
         self._is_finished = False
@@ -72,8 +71,7 @@ class MoveBackwardCommand(ITimeBasedCommand):
         self.speed = speed
         self.enable_direction_sensors = enable_direction_sensors
         self.enable_us_sensors = re_enable_us_sensors
-        time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="backward", distance_cm=self.distance, speed=self.speed)
-        self.time_needed = time_needed + 0.1
+        self.time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
         print(f"Moving backward")
@@ -93,13 +91,13 @@ class MoveBackwardCommand(ITimeBasedCommand):
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
 
-        self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
+        self.fsm.robot.motor.backward(speed=self.speed)
     
     def pause(self):
         self.fsm.robot.motor.stop()
 
     def resume(self):
-        self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
+        self.fsm.robot.motor.backward(speed=self.speed)
 
     def stop(self):
         self.fsm.robot.motor.stop()
@@ -116,7 +114,7 @@ class MoveBackwardCommand(ITimeBasedCommand):
 
         self._is_finished = True
 
-class RotateLeftCommand(ITimeBasedCommand):
+class RotateLeftCommand(IMoveCommand):
     """Command to rotate the robot to the left a certain number of degrees at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5, enable_front_sensors = True, enable_back_sensors = True, enable_side_sensors = True):
         self._is_finished = False
@@ -128,8 +126,7 @@ class RotateLeftCommand(ITimeBasedCommand):
         self.enable_back_sensors = enable_back_sensors
         self.enable_side_sensors = enable_side_sensors
 
-        time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="rotateLeft", degrees=self.degrees, speed=self.speed)
-        self.time_needed = time_needed + 0.1
+        self.time_needed = self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
         print(f"Rotating left")
@@ -155,13 +152,13 @@ class RotateLeftCommand(ITimeBasedCommand):
 
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
         
-        self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
+        self.fsm.robot.motor.rotateLeft(speed=self.speed)
     
     def pause(self):
         self.fsm.robot.motor.stop()
 
     def resume(self):
-        self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
+        self.fsm.robot.motor.rotateLeft(speed=self.speed)
 
     def stop(self):
         self.fsm.robot.motor.stop()
@@ -180,7 +177,7 @@ class RotateLeftCommand(ITimeBasedCommand):
         self.stop()
         self._is_finished = True
 
-class RotateRightCommand(ITimeBasedCommand):
+class RotateRightCommand(IMoveCommand):
     """Command to rotate the robot to the right a certain number of degrees at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5, enable_front_sensors = True, enable_back_sensors = True, enable_side_sensors = True):
         self._is_finished = False
@@ -193,8 +190,7 @@ class RotateRightCommand(ITimeBasedCommand):
         self.enable_back_sensors = enable_back_sensors
         self.enable_side_sensors = enable_side_sensors
 
-        time_needed = self.fsm.robot.motor.computeTimeNeeded(direction="rotateRight", degrees=self.degrees, speed=self.speed)
-        self.time_needed = time_needed + 0.1
+        self.time_needed = self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
         print(f"Rotating right")
@@ -220,13 +216,13 @@ class RotateRightCommand(ITimeBasedCommand):
         
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
 
-        self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
+        self.fsm.robot.motor.rotateRight(speed=self.speed)
     
     def pause(self):
         self.fsm.robot.motor.stop()
 
     def resume(self):
-        self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
+        self.fsm.robot.motor.rotateRight(speed=self.speed)
 
     def stop(self):
         self.fsm.robot.motor.stop()
@@ -245,7 +241,7 @@ class RotateRightCommand(ITimeBasedCommand):
         self.stop()
         self._is_finished = True
 
-class StopCommand(ITimeBasedCommand):
+class StopCommand(IMoveCommand):
     """Command to stop the motors and wait a time 0.1 to be sure of the complete stop of movement (can be tuned up if needed)."""
     def __init__(self, fsm: 'RobotFSM', time_needed: float = 0.2):
         self._is_finished = False

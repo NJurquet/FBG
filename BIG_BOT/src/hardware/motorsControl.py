@@ -114,13 +114,13 @@ class MotorsControl:
         # Calculate the time needed to cover the distance in cm
         time_needed = distance_cm / (self.speed * coeff)
 
-        self.leftMotor.forward(self.speed + self.leftStraightOffset)
-        self.rightMotor.forward(self.speed + self.rightStraightOffset)
+        # self.leftMotor.forward(self.speed + self.leftStraightOffset)
+        # self.rightMotor.forward(self.speed + self.rightStraightOffset)
 
-        if self.movement_timer:
-            self.movement_timer.cancel()
+        # if self.movement_timer:
+        #     self.movement_timer.cancel()
 
-        self.movement_timer = MyTimer(time_needed, lambda : self.stop())
+        # self.movement_timer = MyTimer(time_needed, lambda : self.stop())
 
         return time_needed
 
@@ -134,13 +134,13 @@ class MotorsControl:
         # Calculate the time needed to cover the distance in cm
         time_needed = distance_cm / (self.speed * coeff)
 
-        self.leftMotor.backward(self.speed + self.leftStraightOffset)
-        self.rightMotor.backward(self.speed + self.rightStraightOffset)
+        # self.leftMotor.backward(self.speed + self.leftStraightOffset)
+        # self.rightMotor.backward(self.speed + self.rightStraightOffset)
 
-        if self.movement_timer:
-            self.movement_timer.cancel()
+        # if self.movement_timer:
+        #     self.movement_timer.cancel()
 
-        self.movement_timer = MyTimer(time_needed, lambda : self.stop())
+        # self.movement_timer = MyTimer(time_needed, lambda : self.stop())
 
         return time_needed
 
@@ -156,13 +156,13 @@ class MotorsControl:
         # Calculate the time needed to cover the distance in cm
         time_needed = degrees / (self.speed * coeff)
 
-        self.leftMotor.backward(self.speed + self.leftRotateOffset)
-        self.rightMotor.forward(self.speed + self.rightRotateOffset)
+        # self.leftMotor.backward(self.speed + self.leftRotateOffset)
+        # self.rightMotor.forward(self.speed + self.rightRotateOffset)
 
-        if self.movement_timer:
-            self.movement_timer.cancel()
+        # if self.movement_timer:
+        #     self.movement_timer.cancel()
 
-        self.movement_timer = MyTimer(time_needed, lambda : self.stop())
+        # self.movement_timer = MyTimer(time_needed, lambda : self.stop())
 
         return time_needed
 
@@ -176,13 +176,13 @@ class MotorsControl:
         # Calculate the time needed to cover the distance in cm
         time_needed = degrees / (self.speed * coeff)
 
-        self.leftMotor.forward(self.speed + self.leftStraightOffset)
-        self.rightMotor.backward(self.speed + self.rightStraightOffset)
+        # self.leftMotor.forward(self.speed + self.leftStraightOffset)
+        # self.rightMotor.backward(self.speed + self.rightStraightOffset)
 
-        if self.movement_timer:
-            self.movement_timer.cancel()
+        # if self.movement_timer:
+        #     self.movement_timer.cancel()
 
-        self.movement_timer = MyTimer(time_needed, lambda : self.stop())
+        # self.movement_timer = MyTimer(time_needed, lambda : self.stop())
 
         return time_needed
 

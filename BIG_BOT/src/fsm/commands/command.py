@@ -77,7 +77,7 @@ class ITimeBasedCommand(ABC):
 class IMoveCommand(ABC):
     """Abstract base class for all movement commands."""
 
-    timer : MyTimer | None = None
+    time_needed: float | None = None
     _is_finished: bool = False
 
     def is_finished(self, finished) -> bool:

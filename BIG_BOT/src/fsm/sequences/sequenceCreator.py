@@ -25,7 +25,7 @@ class SequenceCreator():
 
         self._IdleState: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.BACK_LEFT, USPosition.BACK_RIGHT]),
-            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
+            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_MIDDLE, USPosition.FRONT_RIGHT]),
             DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.CENTER_LEFT, USPosition.CENTER_RIGHT]),
             #InitFrontPlateCommand(fsm),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_BLOCKING),
@@ -52,14 +52,14 @@ class SequenceCreator():
         self._DeployBanner: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             WaitCommand(fsm, 1.0),
             MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
-            WaitCommand(fsm, 0.5),
+            WaitCommand(fsm, 1.0),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1, time_needed=1.0),
-            WaitCommand(fsm, 0.5),
+            WaitCommand(fsm, 1.0),
             MoveBackwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=False),           
             WaitCommand(fsm, 1.0),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2, time_needed=1.0),
             # MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
-            WaitCommand(fsm, 0.5),
+            WaitCommand(fsm, 1.0),
             MoveForwardCommand(fsm, 30, re_enable_us_sensors=False, enable_direction_sensors=False),
         ]
 
@@ -72,17 +72,19 @@ class SequenceCreator():
             RotateLeftCommand(fsm, 90, ),
             WaitCommand(fsm, 1.0),
             MoveForwardCommand(fsm, 20, ),
+            StopCommand(fsm),
         ]
 
         self._MoveToSecondCans_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             WaitCommand(fsm, 1.0),
-            RotateRightCommand(fsm, 90, ),
+            RotateRightCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
             WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 40, ),
+            MoveForwardCommand(fsm, 40, re_enable_us_sensors=False, enable_direction_sensors=False),
             WaitCommand(fsm, 1.0),
-            RotateRightCommand(fsm, 90, ),
+            RotateRightCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
             WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 20, ),
+            MoveForwardCommand(fsm, 20, re_enable_us_sensors=False, enable_direction_sensors=False),
+            StopCommand(fsm),
         ]
 
         self._CollectCans: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -210,11 +212,13 @@ class SequenceCreator():
         ]
 
         self._wheeltest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            #MoveForwardCommand(fsm, 70, re_enable_us_sensors=False),
+            MoveForwardCommand(fsm, 20),
+            MoveBackwardCommand(fsm, 20),
             WaitCommand(fsm, 1.0),
-            RotateLeftCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
-            WaitCommand(fsm, 1.0),
-            RotateRightCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
+            # WaitCommand(fsm, 1.0),
+            # RotateLeftCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
+            # WaitCommand(fsm, 1.0),
+            # RotateRightCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
         ]
 
         self._reedswitchTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -364,7 +368,7 @@ class SequenceCreator():
             self.Init,
             self.DeployBanner,
             self.MoveToSecondCans,
-            # self.FirstCansCollectMove,
+            # self.FirstCansCollectMov-
             # self.CollectCans,
             # self.FirstCansBuildMove,
             # self.Build1StoryBleachers,

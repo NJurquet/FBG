@@ -36,23 +36,23 @@ class RobotFSM:
         self.sequenceCreator = SequenceCreator(self, self.robot.color)
         
         self.sequenceManager = SequenceManager(self, 
-                        # [ 
-                        #     # self.sequenceCreator._bannerTest
-                        #     # self.sequenceCreator.IdleState, 
-                        #     # self.sequenceCreator.Init,
-                        #     # self.sequenceCreator.DeployBanner,
-                        #     # self.sequenceCreator.CollectCans,
-                        #     # self.sequenceCreator.Build2StoryBleachers,
-                        #     self.sequenceCreator._wheeltest
-                        # ])
+                        [ 
+                            # self.sequenceCreator._bannerTest
+                            # self.sequenceCreator.IdleState, 
+                            # self.sequenceCreator.Init,
+                            # self.sequenceCreator.DeployBanner,
+                            # self.sequenceCreator.CollectCans,
+                            # self.sequenceCreator.Build2StoryBleachers,
+                            self.sequenceCreator._wheeltest
+                        ])
 
-                        self.sequenceCreator.MainSequence)
+                        # self.sequenceCreator.MainSequence)
         
         
         
-        # self.start_match = True
+        self.start_match = True
 
-        # self.start_time = time.time()
+        self.start_time = time.time()
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """
