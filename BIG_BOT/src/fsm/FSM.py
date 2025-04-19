@@ -48,11 +48,9 @@ class RobotFSM:
 
                         self.sequenceCreator.MainSequence)
         
-        
-        
-        self.start_match = True
+        # self.start_match = True
 
-        self.start_time = time.time()
+        # self.start_time = time.time()
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """

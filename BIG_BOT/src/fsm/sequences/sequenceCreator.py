@@ -165,7 +165,7 @@ class SequenceCreator():
             WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 30),
+            MoveForwardCommand(fsm, 40),
             StopCommand(fsm),
         ]
 
@@ -176,7 +176,7 @@ class SequenceCreator():
             WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 30),
+            MoveForwardCommand(fsm, 40),
             StopCommand(fsm),
         ]
 
@@ -184,35 +184,68 @@ class SequenceCreator():
         self._SecondCansPushMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateRightCommand(fsm, 180),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 50),
+            MoveForwardCommand(fsm, 20),
             WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 80),
+            MoveForwardCommand(fsm, 55),
             WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 80),
+            MoveForwardCommand(fsm, 55, re_enable_us_sensors=True, enable_direction_sensors=False),
             WaitCommand(fsm, 0.5),
         ]
 
         self._SecondCansPushMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 180),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 50),
+            MoveForwardCommand(fsm, 20),
             WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 80),
+            MoveForwardCommand(fsm, 55),
             WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 80),
+            MoveForwardCommand(fsm, 55, re_enable_us_sensors=True, enable_direction_sensors=False),
             WaitCommand(fsm, 0.5),
         ]
 
         self._RushToEndFromSecondCans_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            
+            MoveBackwardCommand(fsm, 20),
+            WaitCommand(fsm, 0.5),
+            RotateRightCommand(fsm, 180),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 100),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 40),
+            WaitCommand(fsm, 0.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            WaitForTargetTimeCommand(fsm, time_target=95.0),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 45),
+        ]
+
+        self._RushToEndFromSecondCans_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            MoveBackwardCommand(fsm, 20),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 180),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 100),
+            WaitCommand(fsm, 0.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 40),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            WaitForTargetTimeCommand(fsm, time_target=95.0),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 45),
+        ]
 
         # Steps 18 to 21 on graph : Cans on the edge => bring back to spawn
         self._ThirdCansCollectMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -372,6 +405,19 @@ class SequenceCreator():
             self._SecondCansPushMove_Blue = sequence
 
     @property
+    def RushToEndFromSecondCans(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
+        if self.color == "yellow":
+            return self._RushToEndFromSecondCans_Yellow
+        else:
+            return self._RushToEndFromSecondCans_Blue
+    @RushToEndFromSecondCans.setter
+    def RushToEndFromSecondCans(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
+        if self.color == "yellow":
+            self._RushToEndFromSecondCans_Yellow = sequence
+        else:
+            self._RushToEndFromSecondCans_Blue = sequence
+
+    @property
     def ThirdCansCollectMove(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
         if self.color == "yellow":
             return self._ThirdCansCollectMove_Blue
@@ -407,15 +453,16 @@ class SequenceCreator():
     @property
     def MainSequence(self) -> list[list[ICommand | ITimeBasedCommand | IMoveCommand]]:
         return [
-            # self.IdleState,
-            # self.Init,
-            # self.DeployBanner,
+            self.IdleState,
+            self.Init,
+            self.DeployBanner,
             self.MoveToSecondCans,
-            # self.FirstCansCollectMov-
-            # self.CollectCans,
-            # self.FirstCansBuildMove,
-            # self.Build1StoryBleachers,
-            #self.SecondCansPushMove,
+            self.FirstCansCollectMove,
+            self.CollectCans,
+            self.FirstCansBuildMove,
+            self.Build1StoryBleachers,
+            self.SecondCansPushMove,
+            self.RushToEndFromSecondCans,
             #self.ThirdCansCollectMove,
             #self.CollectCans,
             #self.ThirdCansBuildMove,
