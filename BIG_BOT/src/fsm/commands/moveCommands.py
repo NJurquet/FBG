@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
 
-class MoveForwardCommand(IMoveCommand):
+class MoveForwardCommand(ITimeBasedCommand):
     """Command to move the robot forward a certain distance at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, enable_direction_sensors = True, re_enable_us_sensors = True):
         self._is_finished = False
@@ -61,7 +61,7 @@ class MoveForwardCommand(IMoveCommand):
 
         self._is_finished = True
         
-class MoveBackwardCommand(IMoveCommand):
+class MoveBackwardCommand(ITimeBasedCommand):
     """Command to move the robot backward a certain distance at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, enable_direction_sensors = True, re_enable_us_sensors = True):
         self._is_finished = False
@@ -114,7 +114,7 @@ class MoveBackwardCommand(IMoveCommand):
 
         self._is_finished = True
 
-class RotateLeftCommand(IMoveCommand):
+class RotateLeftCommand(ITimeBasedCommand):
     """Command to rotate the robot to the left a certain number of degrees at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5, enable_front_sensors = True, enable_back_sensors = True, enable_side_sensors = True):
         self._is_finished = False
@@ -177,7 +177,7 @@ class RotateLeftCommand(IMoveCommand):
         self.stop()
         self._is_finished = True
 
-class RotateRightCommand(IMoveCommand):
+class RotateRightCommand(ITimeBasedCommand):
     """Command to rotate the robot to the right a certain number of degrees at a certain speed."""
     def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5, enable_front_sensors = True, enable_back_sensors = True, enable_side_sensors = True):
         self._is_finished = False
@@ -241,7 +241,7 @@ class RotateRightCommand(IMoveCommand):
         self.stop()
         self._is_finished = True
 
-class StopCommand(IMoveCommand):
+class StopCommand(ITimeBasedCommand):
     """Command to stop the motors and wait a time 0.1 to be sure of the complete stop of movement (can be tuned up if needed)."""
     def __init__(self, fsm: 'RobotFSM', time_needed: float = 0.2):
         self._is_finished = False

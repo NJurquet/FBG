@@ -64,45 +64,52 @@ class SequenceCreator():
         ]
 
         self._MoveToSecondCans_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            WaitCommand(fsm, 1.0),
-            RotateLeftCommand(fsm, 90, ),
-            WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 40, ),
-            WaitCommand(fsm, 1.0),
-            RotateLeftCommand(fsm, 90, ),
-            WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 20, ),
+            MoveForwardCommand(fsm, 20),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 45),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 35, re_enable_us_sensors=True, enable_direction_sensors=False),
+            WaitCommand(fsm, 0.5),
+            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=False),
             StopCommand(fsm),
         ]
 
         self._MoveToSecondCans_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            WaitCommand(fsm, 1.0),
-            RotateRightCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
-            WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 40, re_enable_us_sensors=False, enable_direction_sensors=False),
-            WaitCommand(fsm, 1.0),
-            RotateRightCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
-            WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 20, re_enable_us_sensors=False, enable_direction_sensors=False),
+            MoveForwardCommand(fsm, 20),
+            WaitCommand(fsm, 0.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 45),
+            WaitCommand(fsm, 0.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 35, re_enable_us_sensors=True, enable_direction_sensors=False),
+            WaitCommand(fsm, 0.5),
+            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=False),
             StopCommand(fsm),
         ]
 
         self._CollectCans: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             # LowerFrontPlateCommand(fsm),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
-            MoveForwardCommand(fsm, 20, re_enable_us_sensors=False, enable_direction_sensors=False),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=False),
+            WaitCommand(fsm, 0.5),
             SetAllServoAnglesCommand(fsm, ALL_CLOSED),
+            WaitCommand(fsm, 0.5),
             #MoveFrontPlateCommand(fsm, STEPPER_MIDDLE_POINT),
             MoveBackwardCommand(fsm, 20),
         ]
 
         self._Build1StoryBleachers: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             MoveForwardCommand(fsm, 20, re_enable_us_sensors=False, enable_direction_sensors=False),
-            DisableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
             # LowerFrontPlateCommand(fsm),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
-            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=False),
+            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=True),
             # RaiseFrontPlateCommand(fsm),
         ]
 
@@ -124,56 +131,88 @@ class SequenceCreator():
         ]
         
         # Steps 3 to 7 on graph : Center cans => most accessible ones
-        self._FirstCansCollectMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),  # Disable front sensors
+        self._FirstCansCollectMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [            
+            MoveForwardCommand(fsm, 20),
+            WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
             MoveForwardCommand(fsm, 10),
+            WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
-            MoveForwardCommand(fsm, 10),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 20),
+            StopCommand(fsm),
         ]
 
         self._FirstCansCollectMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             MoveForwardCommand(fsm, 20),
-            StopCommand(fsm),
+            WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
             MoveForwardCommand(fsm, 10),
-            StopCommand(fsm),
+            WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
-            MoveForwardCommand(fsm, 10),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 20),
+            StopCommand(fsm),
         ]
         
         # Steps 8 to 11 on graph
         self._FirstCansBuildMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            MoveBackwardCommand(fsm, 30),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 10),
+            WaitCommand(fsm, 0.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 30),
             StopCommand(fsm),
-            RotateRightCommand(fsm, rotation),
-            MoveBackwardCommand(fsm, 5),
-            StopCommand(fsm),
-            RotateRightCommand(fsm, rotation),
-            MoveForwardCommand(fsm, 50),
         ]
 
         self._FirstCansBuildMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
             MoveForwardCommand(fsm, 10),
+            WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
             MoveForwardCommand(fsm, 30),
+            StopCommand(fsm),
         ]
 
         # Steps 12 to 17 on graph : Cans to the left (yellow) or right (blue) => just need to push
         self._SecondCansPushMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            MoveBackwardCommand(fsm, 30),
-            RotateRightCommand(fsm, rotation),
+            RotateRightCommand(fsm, 180),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 50),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 80),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 80),
+            WaitCommand(fsm, 0.5),
         ]
 
         self._SecondCansPushMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             RotateLeftCommand(fsm, 180),
+            WaitCommand(fsm, 0.5),
             MoveForwardCommand(fsm, 50),
+            WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
             MoveForwardCommand(fsm, 80),
+            WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
             MoveForwardCommand(fsm, 80),
+            WaitCommand(fsm, 0.5),
         ]
+
+        self._RushToEndFromSecondCans_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            
 
         # Steps 18 to 21 on graph : Cans on the edge => bring back to spawn
         self._ThirdCansCollectMove_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -215,6 +254,10 @@ class SequenceCreator():
             MoveForwardCommand(fsm, 20),
             MoveBackwardCommand(fsm, 20),
             WaitCommand(fsm, 1.0),
+            MoveForwardCommand(fsm, 20),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 1.0),
+            RotateRightCommand(fsm, 90),
             # WaitCommand(fsm, 1.0),
             # RotateLeftCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
             # WaitCommand(fsm, 1.0),
@@ -364,9 +407,9 @@ class SequenceCreator():
     @property
     def MainSequence(self) -> list[list[ICommand | ITimeBasedCommand | IMoveCommand]]:
         return [
-            self.IdleState,
-            self.Init,
-            self.DeployBanner,
+            # self.IdleState,
+            # self.Init,
+            # self.DeployBanner,
             self.MoveToSecondCans,
             # self.FirstCansCollectMov-
             # self.CollectCans,

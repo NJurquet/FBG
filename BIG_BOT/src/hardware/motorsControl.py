@@ -28,7 +28,7 @@ class MotorsControl:
         self.leftMotor = BigMotor(forwardLeftPin, backwardLeftPin, enableLeftPin)
         self.rightMotor = BigMotor(forwardRightPin, backwardRightPin, enableRightPin)
         self.speed = 0
-        self.leftStraightOffset = - 0.025
+        self.leftStraightOffset = -0.025
         self.rightStraightOffset = 0
         self.leftRotateOffset = -0.025
         self.rightRotateOffset = 0.0

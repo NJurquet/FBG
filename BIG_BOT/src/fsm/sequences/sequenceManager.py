@@ -67,6 +67,14 @@ class SequenceManager():
                 # else: 
                 #     # Don't do anything if we're already executing a command
                 #     return
+                if isinstance(self._command, ITimeBasedCommand):
+                    if self._command.start_time and self._command.time_needed:
+                        # Recalculate the current time based on the pause and resume times
+                        shifted_time = self._command.resume_time - self._command.pause_time
+                        self._command.current_progress_time = time.time() - self._command.start_time - shifted_time
+                        
+                        if self._command.current_progress_time >= self._command.time_needed:
+                            self._on_step_complete()                    
                 return
 
             # Set the execution flag to prevent duplicate calls
@@ -81,22 +89,23 @@ class SequenceManager():
 
             elif self._command and isinstance(self._command, ITimeBasedCommand):
                 # If the command is time-based, execute it & Get a new timer
-                self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
+                # self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
                 self._command.execute()
+                self._command.start_time = time.time()
 
             elif self._command and isinstance(self._command, IMoveCommand):
                 # If the command is a movement command, execute it & Get a new timer
                 self._timer = None
                 self._command.execute()
-                self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
+                # self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
 
     def _on_step_complete(self):
         """Callback when a step completes"""
         if self._command:
             self._command.finished()
-        if self._timer:
-            self._timer.cancel()
-            self._timer = None
+        # if self._timer:
+        #     self._timer.cancel()
+        #     self._timer = None
 
         self._execution_in_progress = False        
         # Only print "Moving to Step X" if there are more steps in this sequence
@@ -110,9 +119,9 @@ class SequenceManager():
         self._current_sequence_idx = 0
         self._current_command_idx = 0
         self._command = None
-        if self._timer:
-            self._timer.cancel()
-            self._timer = None
+        # if self._timer:
+        #     self._timer.cancel()
+        #     self._timer = None
         self._execution_in_progress = False
         self._all_sequences_completed = False
         self._current_sequence = self._sequences[0]
@@ -120,17 +129,28 @@ class SequenceManager():
     def pause(self):
         if self._execution_in_progress:
             # Pause the current command
-            if self._timer:
-                self._timer.pause()
+            # if self._timer:
+            #     self._timer.pause()
 
             if self._command:
+                if isinstance(self._command, ITimeBasedCommand) and self._command.start_time:
+                    shifted_time = self._command.resume_time - self._command.pause_time
+                    self._command.current_progress_time = time.time() - self._command.start_time - shifted_time
+ 
+                    self._command.pause_time = time.time()
+
                 # Pause the command
                 self._command.pause()
 
     def resume(self):
         if self._execution_in_progress:
             # Resume the current command
-            if self._timer and self._command:
-                # Get the time needed for resuming
-                remaining_time = self._timer.resume(self._on_step_complete)
+            # if self._timer and self._command:
+            #     # Get the time needed for resuming
+            #     remaining_time = self._timer.resume(self._on_step_complete)
+            #     self._command.resume()
+            if self._command:
+                if isinstance(self._command, ITimeBasedCommand) and self._command.start_time:
+                    self._command.resume_time = time.time()
+                # Resume the command
                 self._command.resume()

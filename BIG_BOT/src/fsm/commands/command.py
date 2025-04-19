@@ -41,6 +41,10 @@ class ITimeBasedCommand(ABC):
     """Abstract base class for all time based commands."""
 
     time_needed: float | None = None
+    start_time: float | None = None
+    current_progress_time: float = 0.0
+    pause_time: float = 0.0
+    resume_time: float = 0.0
     _is_finished: bool = False
 
     def is_finished(self, finished) -> bool:
