@@ -75,10 +75,10 @@ void FSM_star::checkObstacle()
     long distanceL = leftUltrasonicSensor.readDistance();
     long distanceR = rightUltrasonicSensor.readDistance();
 
-    Serial.print("distL : ");
-    Serial.println(distanceL);
-    Serial.print("distR : ");
-    Serial.println(distanceR);
+    // Serial.print("distL : ");
+    // Serial.println(distanceL);
+    // Serial.print("distR : ");
+    // Serial.println(distanceR);
 
     // Checks if obstacle is closer than 10 cm
     if (distanceL < obstacleDistance || distanceR < obstacleDistance)
