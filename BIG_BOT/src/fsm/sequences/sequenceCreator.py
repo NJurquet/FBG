@@ -37,7 +37,7 @@ class SequenceCreator():
 
         self._Init: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             ReedSwitchCommand(fsm),
-            WaitCommand(fsm, 1.0),
+            WaitCommand(fsm, 0.5),
             InitLCDCommand(fsm),
             WaitCommand(fsm, 0.5),
             SetPlankPusherServoAnglesCommand(fsm, PLANK_PUSHER_MIDDLE),
@@ -50,17 +50,16 @@ class SequenceCreator():
         ]
 
         self._DeployBanner: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
-            WaitCommand(fsm, 1.0),
+            WaitCommand(fsm, 0.5,),
+            MoveForwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=False),
+            WaitCommand(fsm, 0.5),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1, time_needed=1.0),
-            WaitCommand(fsm, 1.0),
-            MoveBackwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=False),           
-            WaitCommand(fsm, 1.0),
+            WaitCommand(fsm, 0.5),
+            MoveBackwardCommand(fsm, 5, re_enable_us_sensors=False, enable_direction_sensors=False),           
+            WaitCommand(fsm, 0.5),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2, time_needed=1.0),
-            # MoveForwardCommand(fsm, 15, re_enable_us_sensors=False, enable_direction_sensors=False),
-            WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 30, re_enable_us_sensors=False, enable_direction_sensors=False),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=True),
         ]
 
         self._MoveToSecondCans_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -72,9 +71,9 @@ class SequenceCreator():
             WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 35, re_enable_us_sensors=True, enable_direction_sensors=False),
+            MoveForwardCommand(fsm, 35, re_enable_us_sensors=True, enable_direction_sensors=True),
             WaitCommand(fsm, 0.5),
-            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=False),
+            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=True),
             StopCommand(fsm),
         ]
 
@@ -87,9 +86,9 @@ class SequenceCreator():
             WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 35, re_enable_us_sensors=True, enable_direction_sensors=False),
+            MoveForwardCommand(fsm, 35, re_enable_us_sensors=True, enable_direction_sensors=True),
             WaitCommand(fsm, 0.5),
-            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=False),
+            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=True),
             StopCommand(fsm),
         ]
 
@@ -97,12 +96,12 @@ class SequenceCreator():
             # LowerFrontPlateCommand(fsm),
             SetAllServoAnglesCommand(fsm, ALL_OPEN),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=False),
+            MoveForwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=True),
             WaitCommand(fsm, 0.5),
             SetAllServoAnglesCommand(fsm, ALL_CLOSED),
             WaitCommand(fsm, 0.5),
             #MoveFrontPlateCommand(fsm, STEPPER_MIDDLE_POINT),
-            MoveBackwardCommand(fsm, 20),
+            MoveBackwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=True),
         ]
 
         self._Build1StoryBleachers: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -129,6 +128,36 @@ class SequenceCreator():
             # RaiseFrontPlateCommand(fsm),
             #EnableUltrasonicSensorsCommand(fsm, positions=[USPosition.FRONT_LEFT, USPosition.FRONT_RIGHT]),
         ]
+
+        self._RushFromStart_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            MoveForwardCommand(fsm, 35),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 70),
+            WaitCommand(fsm, 0.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 50),
+            WaitCommand(fsm, 0.5),
+            WaitForTargetTimeCommand(fsm, time_target=95.0),
+            MoveForwardCommand(fsm, 30),
+        ]
+
+        self._RushFromStart_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            MoveForwardCommand(fsm, 35),
+            WaitCommand(fsm, 0.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 70),
+            WaitCommand(fsm, 0.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 0.5),
+            MoveForwardCommand(fsm, 50),
+            WaitCommand(fsm, 0.5),
+            WaitForTargetTimeCommand(fsm, time_target=95.0),
+            MoveForwardCommand(fsm, 30),
+        ]
         
         # Steps 3 to 7 on graph : Center cans => most accessible ones
         self._FirstCansCollectMove_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [            
@@ -136,11 +165,11 @@ class SequenceCreator():
             WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 10),
+            MoveForwardCommand(fsm, 8),
             WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 20),
+            MoveForwardCommand(fsm, 20, re_enable_us_sensors=True, enable_direction_sensors=False),
             StopCommand(fsm),
         ]
 
@@ -149,7 +178,7 @@ class SequenceCreator():
             WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 10),
+            MoveForwardCommand(fsm, 8),
             WaitCommand(fsm, 0.5),
             RotateLeftCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
@@ -165,7 +194,7 @@ class SequenceCreator():
             WaitCommand(fsm, 0.5),
             RotateRightCommand(fsm, 90),
             WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 40),
+            MoveForwardCommand(fsm, 20),
             StopCommand(fsm),
         ]
 
@@ -284,17 +313,19 @@ class SequenceCreator():
         ]
 
         self._wheeltest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            MoveForwardCommand(fsm, 20),
-            MoveBackwardCommand(fsm, 20),
-            WaitCommand(fsm, 1.0),
-            MoveForwardCommand(fsm, 20),
+            
             RotateLeftCommand(fsm, 90),
-            WaitCommand(fsm, 1.0),
-            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 1.5),
+            RotateLeftCommand(fsm, 180),
             # WaitCommand(fsm, 1.0),
             # RotateLeftCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
             # WaitCommand(fsm, 1.0),
             # RotateRightCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
+        ]
+
+        self._timeMoveTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
+            WaitForTargetTimeCommand(fsm, time_target=5.0), 
+            MoveForwardCommand(fsm, 20),
         ]
 
         self._reedswitchTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
@@ -364,6 +395,19 @@ class SequenceCreator():
     @Build2StoryBleachers.setter
     def Build2StoryBleachers(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
         self._Build2StoryBleachers = sequence
+
+    @property
+    def RushFromStart(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
+        if self.color == "yellow":
+            return self._RushFromStart_Yellow
+        else:
+            return self._RushFromStart_Blue
+    @RushFromStart.setter
+    def RushFromStart(self, sequence: list[ICommand | ITimeBasedCommand | IMoveCommand]):
+        if self.color == "yellow":
+            self._RushFromStart_Yellow = sequence
+        else:
+            self._RushFromStart_Blue = sequence
 
     @property
     def FirstCansCollectMove(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand]:
@@ -456,13 +500,13 @@ class SequenceCreator():
             self.IdleState,
             self.Init,
             self.DeployBanner,
-            self.MoveToSecondCans,
-            self.FirstCansCollectMove,
-            self.CollectCans,
-            self.FirstCansBuildMove,
-            self.Build1StoryBleachers,
-            self.SecondCansPushMove,
-            self.RushToEndFromSecondCans,
+            self.RushFromStart,
+            # self.FirstCansCollectMove,
+            # self.CollectCans,
+            # self.FirstCansBuildMove,
+            # self.Build1StoryBleachers,
+            # self.SecondCansPushMove,
+            # self.RushToEndFromSecondCans,
             #self.ThirdCansCollectMove,
             #self.CollectCans,
             #self.ThirdCansBuildMove,

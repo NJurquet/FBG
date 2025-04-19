@@ -1,4 +1,5 @@
 from .command import ITimeBasedCommand
+from ...constants import USPosition
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -7,10 +8,22 @@ if TYPE_CHECKING:
 
 class WaitCommand(ITimeBasedCommand):
     """Command to wait for a certain amount of time."""
-    def __init__(self, fsm: 'RobotFSM', time_needed: float = 0.0):
+    def __init__(self, fsm: 'RobotFSM', time_needed: float = 0.0, enable_sensors: bool = False):
         self._is_finished = False
         self.fsm = fsm
         self.time_needed = time_needed
+        self.enable_sensors = enable_sensors
+
+        self.sensors_to_enable = self.fsm.robot.ultrasonicController.get_enabled_sensors()
+        print(f"Enabled sensors: {self.sensors_to_enable}")
+
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_RIGHT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_MIDDLE)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_LEFT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_RIGHT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_LEFT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
+        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
 
     def execute(self):
         pass
@@ -22,7 +35,18 @@ class WaitCommand(ITimeBasedCommand):
         pass
 
     def stop(self):
-        pass
+        for pos, en in self.sensors_to_enable.items():
+            if en:
+                self.fsm.robot.ultrasonicController.enable_sensor(pos)
+
+        if self.enable_sensors:
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
 
     def finished(self):
         self.stop()

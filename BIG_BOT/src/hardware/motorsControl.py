@@ -34,8 +34,8 @@ class MotorsControl:
         self.rightRotateOffset = 0.0
         self.movement_timer: MyTimer | None = None
         self.distance_per_second = 10.4 # cm/s
-        self.degrees_per_second_left = 48.3 # degrees/s
-        self.degrees_per_second_right = 39.7 # degrees/s
+        self.degrees_per_second_left = 52.8 # degrees/s
+        self.degrees_per_second_right = 45.2 # degrees/s
         self._is_moving = False
 
     def forward(self, speed):

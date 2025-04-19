@@ -1,4 +1,14 @@
 from gpiozero import Motor
+import os
+import platform
+if os.getenv("GITHUB_ACTIONS") == "true" or platform.system() == "Windows":
+    factory = None
+else:
+    try:
+        from gpiozero.pins.pigpio import PiGPIOFactory
+        factory = PiGPIOFactory()
+    except OSError:
+        factory = None
 
 class BigMotor:
     """ 
@@ -17,7 +27,7 @@ class BigMotor:
         """
     
     def __init__(self, forwardPin, backwardPin, enablePin):
-        self.motor = Motor(forwardPin, backwardPin, enable=enablePin)
+        self.motor = Motor(forwardPin, backwardPin, enable=enablePin, pin_factory=factory)
         self.speed = 0
 
     def forward(self, speed):

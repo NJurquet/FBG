@@ -1,7 +1,6 @@
 from gpiozero import DistanceSensor, Pin
 from ..constants import USPosition
 
-
 class UltrasonicSensor:
     """
     Class representing an ultrasonic sensor.

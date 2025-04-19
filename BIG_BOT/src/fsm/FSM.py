@@ -43,14 +43,15 @@ class RobotFSM:
                         #     # self.sequenceCreator.DeployBanner,
                         #     # self.sequenceCreator.CollectCans,
                         #     # self.sequenceCreator.Build2StoryBleachers,
-                        #     self.sequenceCreator._wheeltest
+                        #     # self.sequenceCreator._timeMoveTest,
+                        #     # self.sequenceCreator._wheeltest,
                         # ])
 
                         self.sequenceCreator.MainSequence)
         
         # self.start_match = True
 
-        # self.start_time = time.time()
+        self.start_time = time.time()
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """
@@ -79,7 +80,7 @@ class RobotFSM:
             self.end_of_match = True
 
         if not self.end_of_match:
-            if self.start_match:
+            if self.start_match and self.sequenceManager._execution_in_progress:
                 self.robot.ultrasonicController.measure_distances()
                 self.us_event = self.robot.ultrasonicController.check_obstacles()
                 if self.us_event == USEvent.OBSTACLE_DETECTED:

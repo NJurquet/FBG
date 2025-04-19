@@ -51,7 +51,11 @@ class MoveForwardCommand(ITimeBasedCommand):
 
     def finished(self):
         self.stop()
-        
+
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+    
         if self.re_enable_us_sensors:
             # Re-enable US sensors in other directions
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
@@ -139,6 +143,7 @@ class RotateLeftCommand(ITimeBasedCommand):
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_RIGHT)
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_MIDDLE)
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_LEFT)
+
         if self.enable_back_sensors:
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
@@ -147,11 +152,11 @@ class RotateLeftCommand(ITimeBasedCommand):
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_LEFT)
         if self.enable_side_sensors:    
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
         else:
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
 
-        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
-        
         self.fsm.robot.motor.rotateLeft(speed=self.speed)
     
     def pause(self):
@@ -211,10 +216,11 @@ class RotateRightCommand(ITimeBasedCommand):
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.BACK_LEFT)
         if self.enable_side_sensors:    
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
+            self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
         else:
             self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_RIGHT)
+            self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
         
-        self.fsm.robot.ultrasonicController.disable_sensor(USPosition.CENTER_LEFT)
 
         self.fsm.robot.motor.rotateRight(speed=self.speed)
     
@@ -228,6 +234,7 @@ class RotateRightCommand(ITimeBasedCommand):
         self.fsm.robot.motor.stop()
 
     def finished(self):
+        
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)

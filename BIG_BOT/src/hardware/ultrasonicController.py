@@ -93,24 +93,30 @@ class UltrasonicController:
         
         # Define which positions are considered "front" sensors
         front_positions = [USPosition.FRONT_LEFT, USPosition.FRONT_MIDDLE, USPosition.FRONT_RIGHT]
+        side_positions = [USPosition.CENTER_LEFT, USPosition.CENTER_RIGHT]
+        back_positions = [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]
     
         # Check if any enabled front sensor detects an obstacle within 25cm
         front_obstacle_detected = any(
-            self._distances.get(pos, float('inf')) < 25
+            self._distances.get(pos, float('inf')) < 35
             for pos in front_positions
             if pos in self._enabled_sensors and self._enabled_sensors[pos]
         )
-        
-        # Check if any other enabled sensor detects an obstacle within 10cm
-        other_positions = [pos for pos in self._enabled_sensors.keys() 
-                          if pos not in front_positions and self._enabled_sensors[pos]]
-        other_obstacle_detected = any(
+
+        side_obstacle_detected = any(
+            self._distances.get(pos, float('inf')) < 8
+            for pos in side_positions
+            if pos in self._enabled_sensors and self._enabled_sensors[pos]
+        )
+
+        back_obstacle_detected = any(
             self._distances.get(pos, float('inf')) < 10
-            for pos in other_positions
+            for pos in back_positions
+            if pos in self._enabled_sensors and self._enabled_sensors[pos]
         )
         
         # An obstacle is detected if either front or other sensors detect an obstacle
-        obstacle_detected = front_obstacle_detected or other_obstacle_detected
+        obstacle_detected = front_obstacle_detected or side_obstacle_detected or back_obstacle_detected
         
         if obstacle_detected:
             # If the obstacle was not detected before
