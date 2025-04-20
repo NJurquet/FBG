@@ -189,8 +189,10 @@ class MotorsControl:
     def cleanup(self):
         """Clean up all motor resources"""
         if self.leftMotor:
+            self.leftMotor.stop()
             self.leftMotor.cleanup()
         if self.rightMotor:
+            self.leftMotor.stop()
             self.rightMotor.cleanup()
         if self.movement_timer:
             self.movement_timer.cancel()

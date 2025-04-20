@@ -59,15 +59,15 @@ class WaitForTargetTimeCommand(ITimeBasedCommand):
         self._is_finished = False
         self.fsm = fsm
         self.time_target = time_target
-
+            
+    def execute(self):
         time_needed = self.time_target - self.fsm.match_time
-        if time_needed < 0:
+
+        if time_needed <= 0:
             self.time_needed = 0
         else:
             self.time_needed = time_needed
-            
-    def execute(self):
-        pass
+        print("Time needed before target:", self.time_needed)
 
     def pause(self):
         pass

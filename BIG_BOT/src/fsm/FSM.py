@@ -39,11 +39,11 @@ class RobotFSM:
                         # [ 
                         #     # self.sequenceCreator._bannerTest
                         #     # self.sequenceCreator.IdleState, 
-                        #     # self.sequenceCreator.Init,
+                        #     self.sequenceCreator.Init,
                         #     # self.sequenceCreator.DeployBanner,
                         #     # self.sequenceCreator.CollectCans,
                         #     # self.sequenceCreator.Build2StoryBleachers,
-                        #     # self.sequenceCreator._timeMoveTest,
+                        #     self.sequenceCreator._timeMoveTest,
                         #     # self.sequenceCreator._wheeltest,
                         # ])
 
@@ -51,7 +51,7 @@ class RobotFSM:
         
         # self.start_match = True
 
-        self.start_time = time.time()
+        # self.start_time = time.time()
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """

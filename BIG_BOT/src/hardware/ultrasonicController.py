@@ -98,7 +98,7 @@ class UltrasonicController:
     
         # Check if any enabled front sensor detects an obstacle within 25cm
         front_obstacle_detected = any(
-            self._distances.get(pos, float('inf')) < 35
+            self._distances.get(pos, float('inf')) < 32
             for pos in front_positions
             if pos in self._enabled_sensors and self._enabled_sensors[pos]
         )

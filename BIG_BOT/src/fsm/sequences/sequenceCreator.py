@@ -52,11 +52,11 @@ class SequenceCreator():
         self._DeployBanner: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
             WaitCommand(fsm, 0.5,),
             MoveForwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=False),
-            WaitCommand(fsm, 0.5),
+            WaitCommand(fsm, 1.5),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_1, time_needed=1.0),
             WaitCommand(fsm, 0.5),
-            MoveBackwardCommand(fsm, 5, re_enable_us_sensors=False, enable_direction_sensors=False),           
-            WaitCommand(fsm, 0.5),
+            MoveBackwardCommand(fsm, 6, re_enable_us_sensors=False, enable_direction_sensors=False),           
+            WaitCommand(fsm, 1.5),
             SetBannerDeployerServoAngleCommand(fsm, BANNER_DEPLOYER_DEPLOY_STAGE_2, time_needed=1.0),
             WaitCommand(fsm, 0.5),
             MoveForwardCommand(fsm, 10, re_enable_us_sensors=False, enable_direction_sensors=True),
@@ -130,33 +130,31 @@ class SequenceCreator():
         ]
 
         self._RushFromStart_Yellow: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            MoveForwardCommand(fsm, 35),
-            WaitCommand(fsm, 0.5),
-            RotateLeftCommand(fsm, 90),
-            WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 70),
-            WaitCommand(fsm, 0.5),
-            RotateRightCommand(fsm, 90),
-            WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 50),
-            WaitCommand(fsm, 0.5),
-            WaitForTargetTimeCommand(fsm, time_target=95.0),
             MoveForwardCommand(fsm, 30),
+            WaitCommand(fsm, 1.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 1.5),
+            MoveForwardCommand(fsm, 65),
+            WaitCommand(fsm, 1.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 1.5),
+            MoveForwardCommand(fsm, 50),
+            WaitForTargetTimeCommand(fsm, time_target=95.0),
+            MoveForwardCommand(fsm, 40),
         ]
 
         self._RushFromStart_Blue: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            MoveForwardCommand(fsm, 35),
-            WaitCommand(fsm, 0.5),
-            RotateRightCommand(fsm, 90),
-            WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 70),
-            WaitCommand(fsm, 0.5),
-            RotateLeftCommand(fsm, 90),
-            WaitCommand(fsm, 0.5),
-            MoveForwardCommand(fsm, 50),
-            WaitCommand(fsm, 0.5),
-            WaitForTargetTimeCommand(fsm, time_target=95.0),
             MoveForwardCommand(fsm, 30),
+            WaitCommand(fsm, 1.5),
+            RotateRightCommand(fsm, 90),
+            WaitCommand(fsm, 1.5),
+            MoveForwardCommand(fsm, 65),
+            WaitCommand(fsm, 1.5),
+            RotateLeftCommand(fsm, 90),
+            WaitCommand(fsm, 1.5),
+            MoveForwardCommand(fsm, 50),
+            WaitForTargetTimeCommand(fsm, time_target=95.0),
+            MoveForwardCommand(fsm, 40),
         ]
         
         # Steps 3 to 7 on graph : Center cans => most accessible ones
@@ -313,10 +311,13 @@ class SequenceCreator():
         ]
 
         self._wheeltest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            
-            RotateLeftCommand(fsm, 90),
-            WaitCommand(fsm, 1.5),
-            RotateLeftCommand(fsm, 180),
+            MoveForwardCommand(fsm, 20),
+            WaitCommand(fsm, 2.0),
+            MoveBackwardCommand(fsm, 20),
+
+            # RotateLeftCommand(fsm, 90),
+            # WaitCommand(fsm, 1.5),
+            # RotateLeftCommand(fsm, 180),
             # WaitCommand(fsm, 1.0),
             # RotateLeftCommand(fsm, 90, enable_back_sensors=False, enable_front_sensors=False, enable_side_sensors= False),
             # WaitCommand(fsm, 1.0),
@@ -324,7 +325,9 @@ class SequenceCreator():
         ]
 
         self._timeMoveTest: list[ICommand | ITimeBasedCommand | IMoveCommand] = [
-            WaitForTargetTimeCommand(fsm, time_target=5.0), 
+            WaitCommand(fsm, 2.0),
+            MoveForwardCommand(fsm, 20),
+            WaitForTargetTimeCommand(fsm, time_target=95.0), 
             MoveForwardCommand(fsm, 20),
         ]
 
