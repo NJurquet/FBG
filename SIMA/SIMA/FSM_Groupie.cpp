@@ -21,7 +21,6 @@ leftUltrasonicSensor(usl), rightUltrasonicSensor(usr), leftIRSensor(leftIR), rig
       leftStart ? motorControl.setLeftOffset(1) : motorControl.setLeftOffset(3);
       leftStart ? motorControl.setRotationSpeed(0.65) : motorControl.setRotationSpeed(0.7);
     }
-    // topStartLine ? motorControl.setRotationSpeed(topRotationSpeedRatio*1.1) : motorControl.setRotationSpeed(0.9);
     servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
 }
