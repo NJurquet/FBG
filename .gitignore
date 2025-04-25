@@ -50,4 +50,4 @@ env.bak/
 venv.bak/
 
 # Logging
-logs/debug.log
+BIG_BOT/logs/debug.log

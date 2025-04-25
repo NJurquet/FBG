@@ -54,6 +54,8 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+        
+        self.fsm.robot.logger.info(f"MoveForward Command : Enabling sensors in forward direction")
     
         if self.re_enable_us_sensors:
             # Re-enable US sensors in other directions
@@ -61,6 +63,9 @@ class MoveForwardCommand(ITimeBasedCommand):
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+
+            
+            self.fsm.robot.logger.info(f"MoveForward Command : Re-enabling sensors in other directions")
 
         self._is_finished = True
         
@@ -106,6 +111,11 @@ class MoveBackwardCommand(ITimeBasedCommand):
 
     def finished(self):
         self.stop()
+
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+        
+        self.fsm.robot.logger.info(f"MoveBackward Command : Enabling sensors in backward direction")
         
         if self.enable_us_sensors:
             # Disable US sensors in other directions
@@ -113,6 +123,8 @@ class MoveBackwardCommand(ITimeBasedCommand):
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
+            self.fsm.robot.logger.info(f"MoveBackward Command : Re-enabling sensors in other directions")
 
         self._is_finished = True
 
@@ -175,6 +187,8 @@ class RotateLeftCommand(ITimeBasedCommand):
 
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
+        self.fsm.robot.logger.info(f"RotateLeft Command : Re-Enabling all sensors")
 
         self.stop()
         self._is_finished = True
@@ -240,6 +254,8 @@ class RotateRightCommand(ITimeBasedCommand):
 
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
+        self.fsm.robot.logger.info(f"RotateRight Command : Re-Enabling all sensors")
 
         self.stop()
         self._is_finished = True

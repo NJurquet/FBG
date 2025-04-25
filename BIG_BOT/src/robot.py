@@ -17,7 +17,6 @@ from .hardware.adafruitServoController import AdafruitServoControl
 from .hardware.ultrasonicController import UltrasonicController
 from .hardware.reedSwitch import reedSwitch
 from .hardware.steppermotor import StepperMotor
-from .logger import logger
 
 
 class Robot:
@@ -26,7 +25,7 @@ class Robot:
 
     """
 
-    def __init__(self, color: str, score: int = DEFAULT_SCORE):
+    def __init__(self, logger, color: str, score: int = DEFAULT_SCORE):
         self.color = color
 
         self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, LEFT_MOTOR_EN_PIN,
