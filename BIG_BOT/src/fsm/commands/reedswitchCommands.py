@@ -17,10 +17,11 @@ class ReedSwitchCommand(ICommand):
         value = self.fsm.robot.reedSwitch.read()
         new_value = value
         print("ReedSwitch waiting...")
+        self.fsm.robot.logger.info("ReedSwitch Command : Waiting...")
         while value == new_value:
             time.sleep(0.01)
             new_value = self.fsm.robot.reedSwitch.read()
-        print(f"ReedSwitch value changed from {value} to {new_value}")
+        self.fsm.robot.logger.info(f"ReedSwitch value changed from {value} to {new_value}")
         self.finished()
     
     def stop(self):
@@ -39,4 +40,5 @@ class ReedSwitchCommand(ICommand):
         self._is_finished = True
 
         print("ReedSwitchCommand finished")
+        self.fsm.robot.logger.info("ReedSwitch Command : Finished...")
 

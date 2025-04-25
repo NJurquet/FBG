@@ -1,5 +1,6 @@
 import argparse
 from .robot import Robot
+from .logger import logger
 
 
 def main():
@@ -11,7 +12,7 @@ def main():
                         help="The color assigned to the robot for the game.")
     args = parser.parse_args()
 
-    robot: Robot = Robot(args.color, args.score)
+    robot: Robot = Robot(logger, args.color, args.score)
 
     try:
         while True:
@@ -19,8 +20,10 @@ def main():
 
     except KeyboardInterrupt:
         print("\nProgram interrupted by user. Cleaning up...")
+        logger.info("Program interrupted by user. Cleaning up...")
     except Exception as e:
         print(f"Error: {e}")
+        logger.error(f"Robot : An error occurred: {e}")
     finally:
         # Clean up resources in the finally block to ensure it always runs
         if robot and hasattr(robot, 'stepper'):

@@ -19,7 +19,6 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
-        print(f"Moving forward")
 
         # Enable US sensors in the direction of movement
         if self.enable_direction_sensors:
@@ -55,6 +54,8 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_MIDDLE)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
+        
+        self.fsm.robot.logger.info(f"MoveForward Command : Enabling sensors in forward direction")
     
         if self.re_enable_us_sensors:
             # Re-enable US sensors in other directions
@@ -62,6 +63,9 @@ class MoveForwardCommand(ITimeBasedCommand):
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+
+            
+            self.fsm.robot.logger.info(f"MoveForward Command : Re-enabling sensors in other directions")
 
         self._is_finished = True
         
@@ -78,7 +82,6 @@ class MoveBackwardCommand(ITimeBasedCommand):
         self.time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
-        print(f"Moving backward")
 
         # Enable US sensors in the direction of movement
         if self.enable_direction_sensors:
@@ -108,6 +111,11 @@ class MoveBackwardCommand(ITimeBasedCommand):
 
     def finished(self):
         self.stop()
+
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_RIGHT)
+        self.fsm.robot.ultrasonicController.enable_sensor(USPosition.BACK_LEFT)
+        
+        self.fsm.robot.logger.info(f"MoveBackward Command : Enabling sensors in backward direction")
         
         if self.enable_us_sensors:
             # Disable US sensors in other directions
@@ -115,6 +123,8 @@ class MoveBackwardCommand(ITimeBasedCommand):
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_LEFT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
+            self.fsm.robot.logger.info(f"MoveBackward Command : Re-enabling sensors in other directions")
 
         self._is_finished = True
 
@@ -133,7 +143,6 @@ class RotateLeftCommand(ITimeBasedCommand):
         self.time_needed = self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
-        print(f"Rotating left")
 
         if self.enable_front_sensors:
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
@@ -178,6 +187,8 @@ class RotateLeftCommand(ITimeBasedCommand):
 
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
+        self.fsm.robot.logger.info(f"RotateLeft Command : Re-Enabling all sensors")
 
         self.stop()
         self._is_finished = True
@@ -198,7 +209,6 @@ class RotateRightCommand(ITimeBasedCommand):
         self.time_needed = self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
-        print(f"Rotating right")
 
         if self.enable_front_sensors:
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
@@ -244,6 +254,8 @@ class RotateRightCommand(ITimeBasedCommand):
 
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_RIGHT)
         self.fsm.robot.ultrasonicController.enable_sensor(USPosition.CENTER_LEFT)
+
+        self.fsm.robot.logger.info(f"RotateRight Command : Re-Enabling all sensors")
 
         self.stop()
         self._is_finished = True

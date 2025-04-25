@@ -13,7 +13,7 @@ class InitLCDCommand(ICommand):
         self.fsm = fsm
 
     def execute(self):
-        print("Resetting LCD...")
+        self.fsm.robot.logger.info("InitLCDCommand : Initializing LCD...")
         self.fsm.robot.lcd.clear()
         self.fsm.robot.lcd.write_score(self.fsm.robot.score)
 

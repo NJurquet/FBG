@@ -25,7 +25,7 @@ class Robot:
 
     """
 
-    def __init__(self, color: str, score: int = DEFAULT_SCORE):
+    def __init__(self, logger, color: str, score: int = DEFAULT_SCORE):
         self.color = color
 
         self.motor = Motors(LEFT_MOTOR_FORWARD_PIN, LEFT_MOTOR_BACKWARD_PIN, LEFT_MOTOR_EN_PIN,
@@ -57,6 +57,12 @@ class Robot:
 
         self.score = score
         self.lcd.write_score(self.score)
+
+        self.logger = logger
+
+        self.logger.info(f"Robot color: {self.color}")
+        self.logger.info(f"Robot score: {self.score}")
+
         self.__position: tuple[int, int] = (0, 0)
         self.fsm = RobotFSM(self)
 

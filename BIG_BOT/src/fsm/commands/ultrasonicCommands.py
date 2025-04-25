@@ -47,7 +47,7 @@ class  DisableUltrasonicSensorsCommand(ICommand):
     def execute(self):
         for position in self.positions:
             self.fsm.robot.ultrasonicController.disable_sensor(position)
-        print(f"Sensors : {self.positions} have been disabled")
+        self.fsm.robot.logger.info(f"Sensors : {self.positions} have been disabled")
         self.finished()
 
     def pause(self):
@@ -71,7 +71,7 @@ class EnableUltrasonicSensorsCommand(ICommand):
     def execute(self):
         for position in self.positions:
             self.fsm.robot.ultrasonicController.enable_sensor(position)
-        print(f"Sensors : {self.positions} have been enabled")
+        self.fsm.robot.logger.info(f"Sensors : {self.positions} have been enabled")
         self.finished()
 
     def pause(self):

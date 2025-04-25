@@ -15,7 +15,6 @@ class WaitCommand(ITimeBasedCommand):
         self.enable_sensors = enable_sensors
 
         self.sensors_to_enable = self.fsm.robot.ultrasonicController.get_enabled_sensors()
-        print(f"Enabled sensors: {self.sensors_to_enable}")
 
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_RIGHT)
         self.fsm.robot.ultrasonicController.disable_sensor(USPosition.FRONT_MIDDLE)
@@ -68,6 +67,7 @@ class WaitForTargetTimeCommand(ITimeBasedCommand):
         else:
             self.time_needed = time_needed
         print("Time needed before target:", self.time_needed)
+        self.fsm.robot.logger.info(f"WaitForTargetTimeCommand : Time needed before target: {self.time_needed}")
 
     def pause(self):
         pass
