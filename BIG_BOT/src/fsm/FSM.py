@@ -25,8 +25,6 @@ class RobotFSM:
         self.robot = robot
         self.state_factory = StateFactory(self)
 
-        print(f"Robot color: {self.robot.color}")  # Debugging line
-
         self.us_event: USEvent = USEvent.NO_EVENT
         self.match_time = 0.0
         self.start_match: bool = False
@@ -85,12 +83,14 @@ class RobotFSM:
                 self.us_event = self.robot.ultrasonicController.check_obstacles()
                 if self.us_event == USEvent.OBSTACLE_DETECTED:
                     print("Obstacle detected")
+                    self.robot.logger.info("Obstacle detected")
                     self.sequenceManager.pause()
                     return
                 elif self.us_event == USEvent.OBSTACLE_PRESENT:
                     return
                 elif self.us_event == USEvent.OBSTACLE_CLEARED:
                     print("Obstacle cleared")
+                    self.robot.logger.info("Obstacle cleared")
                     self.sequenceManager.resume()
 
             if self.us_event == USEvent.NO_EVENT:

@@ -56,10 +56,14 @@ class Robot:
         
         self.reedSwitch = reedSwitch(REED_SWITCH_PIN)
 
-        self.logger = logger
-
         self.score = score
         self.lcd.write_score(self.score)
+
+        self.logger = logger
+
+        self.logger.info(f"Robot color: {self.color}")
+        self.logger.info(f"Robot score: {self.score}")
+
         self.__position: tuple[int, int] = (0, 0)
         self.fsm = RobotFSM(self)
 
