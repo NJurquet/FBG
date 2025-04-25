@@ -19,7 +19,6 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
-        print(f"Moving forward")
 
         # Enable US sensors in the direction of movement
         if self.enable_direction_sensors:
@@ -78,7 +77,6 @@ class MoveBackwardCommand(ITimeBasedCommand):
         self.time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
-        print(f"Moving backward")
 
         # Enable US sensors in the direction of movement
         if self.enable_direction_sensors:
@@ -133,7 +131,6 @@ class RotateLeftCommand(ITimeBasedCommand):
         self.time_needed = self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
-        print(f"Rotating left")
 
         if self.enable_front_sensors:
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)
@@ -198,7 +195,6 @@ class RotateRightCommand(ITimeBasedCommand):
         self.time_needed = self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
-        print(f"Rotating right")
 
         if self.enable_front_sensors:
             self.fsm.robot.ultrasonicController.enable_sensor(USPosition.FRONT_RIGHT)

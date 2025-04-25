@@ -43,7 +43,7 @@ class SequenceManager():
 
             self._current_command_idx = 0
             next_sequence = self.get_next_sequence()
-            print(f"Moving to Sequence {self._current_sequence_idx + 1}")
+            self.fsm.robot.logger.info(f"Moving to Sequence {self._current_sequence_idx + 1}")
 
             # Set the next sequence as the current sequence
             self._current_sequence = next_sequence
@@ -110,7 +110,7 @@ class SequenceManager():
         self._execution_in_progress = False        
         # Only print "Moving to Step X" if there are more steps in this sequence
         if self._current_command_idx < len(self._current_sequence):
-            print(f"Moving to Step {self._current_command_idx + 1}")
+            self.fsm.robot.logger.info(f"Moving to Step {self._current_command_idx + 1} in Sequence {self._current_sequence_idx + 1}")
 
         self._command = self.get_next_command()
         

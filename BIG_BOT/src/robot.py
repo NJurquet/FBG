@@ -17,6 +17,7 @@ from .hardware.adafruitServoController import AdafruitServoControl
 from .hardware.ultrasonicController import UltrasonicController
 from .hardware.reedSwitch import reedSwitch
 from .hardware.steppermotor import StepperMotor
+from .logger import logger
 
 
 class Robot:
@@ -54,6 +55,8 @@ class Robot:
         self.ultrasonicController.add_sensor(USPosition.CENTER_LEFT, US_CENTER_LEFT_ECHO_PIN, US_CENTER_LEFT_TRIG_PIN)
         
         self.reedSwitch = reedSwitch(REED_SWITCH_PIN)
+
+        self.logger = logger
 
         self.score = score
         self.lcd.write_score(self.score)
