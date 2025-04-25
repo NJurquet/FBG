@@ -62,9 +62,9 @@ private:
         CELEBRATE
     } currentState;
     State previousState;
-    const unsigned long startDelayBottom = 5000; // 85 seconds in milliseconds / 5 seconds for testing
-    const unsigned long startDelayTop = 7000;    // 87 seconds in milliseconds / 7 seconds for testing
-    const unsigned long stopTime = 15000;        // 100 seconds in milliseconds / 15 seconds for testing
+    const unsigned long startDelayBottom = 85000; // 85 seconds in milliseconds / 5 seconds for testing
+    const unsigned long startDelayTop = 87000;    // 87 seconds in milliseconds / 7 seconds for testing
+    const unsigned long stopTime = 100000;        // 100 seconds in milliseconds / 15 seconds for testing
     unsigned long currentTime;                   // Time from the start of the program in milliseconds
     unsigned long obstacleStartTime = 0;         // Time when a new obstacle is detected in milliseconds
     unsigned long totalObstacleTime = 0;         // Total time spent avoiding obstacles in milliseconds
@@ -72,13 +72,14 @@ private:
     bool magneticStartDetected = false;          // Flag to know if the magnetic start was detected
     long magneticStartTime = 0;                     // Time when the magnetic start was detected in milliseconds
 
-    const int turnZoneDelay = 4300;               // Time after start at which it can start detecting a zone turn in milliseconds
-    const int firstZoneTurnTime = 500;            // Time needed to turn to the first zone in milliseconds
-    const int secondZoneTurnTime = 1800;          // Time needed to turn to the second zone in milliseconds
+    const int turnZoneDelay = 4600;               // Time after start at which it can start detecting a zone turn in milliseconds
+    const int firstZoneTurnTime = 1400;           // Time needed to turn to the first zone in milliseconds
+    const int secondZoneTurnTime = 2700;          // Time needed to turn to the second zone in milliseconds
     unsigned long enterZoneTime;                  // Time when the robot starts turning to the zone in milliseconds
     bool enteringZone = false;                    // Flag to know if the robot is turning to the zone
     const double topRotationSpeedRatio = 0.6;     // Ratio of the main speed to apply when turning to the first zone
-    const double bottomRotationSpeedRatio = 0.9; // Ratio of the main speed to apply when turning to the second zone
+    const double bottomRotationSpeedRatio = 0.83; // Ratio of the main speed to apply when turning to the second zone
+    const int usEnableTime = 4000;                // Time to wait before enabling the ultrasonic sensor
 
     const int celebrationDelay = 1000;     // 1 seconds
     unsigned long lastCelebrationTime = 0; // Time when the last celebration happened in milliseconds

@@ -10,7 +10,7 @@ leftUltrasonicSensor(usl), rightUltrasonicSensor(usr), leftIRSensor(leftIR), rig
 {
     currentState = INIT;
     previousState = INIT;
-    motorControl.setSpeed(75);
+    motorControl.setSpeed(60);
     if (topStartLine)
     {
       motorControl.setRightOffset(5);
@@ -19,9 +19,8 @@ leftUltrasonicSensor(usl), rightUltrasonicSensor(usr), leftIRSensor(leftIR), rig
     else
     {
       leftStart ? motorControl.setLeftOffset(1) : motorControl.setLeftOffset(3);
-      leftStart ? motorControl.setRotationSpeed(0.7) : motorControl.setRotationSpeed(bottomRotationSpeedRatio*0.6);
+      leftStart ? motorControl.setRotationSpeed(0.65) : motorControl.setRotationSpeed(0.7);
     }
-    // topStartLine ? motorControl.setRotationSpeed(topRotationSpeedRatio*1.1) : motorControl.setRotationSpeed(0.9);
     servoCelebretion.setPosition(90);
     ledCelebretion.turnOff();
 }
@@ -41,7 +40,9 @@ void FSM_groupie::update()
         while (!magneticStartDetected)
         {
             magneticStartDetected = magneticStart.read();
+            digitalWrite(13,HIGH);
         }
+        digitalWrite(13,LOW);
         magneticStartTime = millis(); //Time when the rope is pulled
         currentState = WAIT;
         break;
@@ -84,12 +85,17 @@ void FSM_groupie::update()
 
 void FSM_groupie::checkObstacle()
 {
-    long distanceL = leftUltrasonicSensor.readDistance();
-    long distanceR = rightUltrasonicSensor.readDistance();
-    //Serial.print("distL: ");
-    //Serial.println(distanceL);
-    //Serial.print("distR: ");
-    //Serial.println(distanceR);
+
+    long distanceL = 100;
+    long distanceR = 100;
+
+    if (topStartLine && currentTime - startDelayTop - totalObstacleTime <= turnZoneDelay || !topStartLine && currentTime - startDelayBottom - totalObstacleTime <= turnZoneDelay){
+      leftStart ? distanceR = rightUltrasonicSensor.readDistance() : distanceL = leftUltrasonicSensor.readDistance();
+    } 
+    else {
+      distanceL = leftUltrasonicSensor.readDistance();
+      distanceR = rightUltrasonicSensor.readDistance();
+    }
 
     // Checks if obstacle is closer than 10 cm
     if (distanceL < obstacleDistance || distanceR < obstacleDistance)
@@ -124,8 +130,8 @@ void FSM_groupie::avoidObstacle()
 
 void FSM_groupie::followLine()
 {
-    bool leftIR = leftIRSensor.readAccurate();   // Is 1 if it detects black
-    bool rightIR = rightIRSensor.readAccurate(); // Is 1 if it detects black
+    bool leftIR = leftIRSensor.read();   // Is 1 if it detects black
+    bool rightIR = rightIRSensor.read(); // Is 1 if it detects black
 
     if (leftIR && rightIR) // If all sensors detect black
     {
@@ -160,6 +166,7 @@ void FSM_groupie::followLine()
             if (currentTime - startDelayBottom - totalObstacleTime >= turnZoneDelay)
             { // If at the minimum time for detecting a zone turn (considering time elapsed during obstacle avoidance), start turning
                 motorControl.setRotationSpeed(bottomRotationSpeedRatio);
+                motorControl.setLeftOffset(2);
                 enteringZone = true;
                 enterZoneTime = currentTime;
                 totalObstacleTime = 0;
