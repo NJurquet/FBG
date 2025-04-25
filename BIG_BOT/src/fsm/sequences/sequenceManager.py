@@ -1,4 +1,4 @@
-from ..commands.command import ICommand
+from ..commands.command import ICommand, ITimeBasedCommand, IMoveCommand
 from ...constants import StateEnum
 from ..myTimer import MyTimer
 import time
@@ -8,74 +8,120 @@ if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
 class SequenceManager():
-    def __init__(self, fsm: 'RobotFSM', sequences: list[list[ICommand]]) -> None:
+    def __init__(self, fsm: 'RobotFSM', sequences: list[list[ICommand | ITimeBasedCommand | IMoveCommand]]) -> None:
         self.fsm = fsm
         self._sequences = sequences
-        self._current_sequence: list[ICommand] = self._sequences[0]
+        self._current_sequence: list[ICommand | ITimeBasedCommand | IMoveCommand] = self._sequences[0]
         self._current_sequence_idx: int = 0
-        self._current_command_idx: int = 0
-        self._command: ICommand | None = None
+        self._current_command_idx: int = -1
+        self._command: ICommand | ITimeBasedCommand | IMoveCommand | None = self.get_next_command()
         self._timer: MyTimer | None = None
         self._execution_in_progress: bool = False
         self._all_sequences_completed: bool = False
+    
+    def get_next_sequence(self) -> list[ICommand | ITimeBasedCommand | IMoveCommand] | None:
+        """Get the next sequence to execute"""
+        if self._current_sequence_idx < len(self._sequences):
+            return self._sequences[self._current_sequence_idx]
+        return None
 
+    def get_next_command(self) -> ICommand | ITimeBasedCommand | IMoveCommand | None:
+        """Get the next command to execute"""
+
+        self._current_command_idx += 1
+
+        if self._current_command_idx >= len(self._current_sequence):
+            # Move to the next sequence if available
+            self._current_sequence_idx += 1
+
+            # Check if we've gone through all sequences
+            if self._current_sequence_idx >= len(self._sequences):
+                # If there are no more sequences, mark all as completed
+                self._all_sequences_completed = True
+                print("All sequences completed")
+                return None
+
+            self._current_command_idx = 0
+            next_sequence = self.get_next_sequence()
+            print(f"Moving to Sequence {self._current_sequence_idx + 1}")
+
+            # Set the next sequence as the current sequence
+            self._current_sequence = next_sequence
+
+        # Return the next command in the current sequence
+        return self._current_sequence[self._current_command_idx]
+    
     def execute_step(self):
         # First check if all sequences are completed
-        if self._all_sequences_completed:
+        if self._all_sequences_completed :
+            if self._timer:
+                self._timer.cancel()
+                self._timer = None
             return
-
-        # Don't do anything if we're already executing a command
-        if self._execution_in_progress:
-            return
-
-        # Check if we've finished the current sequence
-        if self._current_command_idx >= len(self._current_sequence):
-            self._current_sequence_idx += 1
-            self._current_command_idx = 0
-            
-            # Check if we've finished all sequences
-            if self._current_sequence_idx >= len(self._sequences):
-                print("All sequences completed")
-                self._all_sequences_completed = True
+        
+        if self._command is not None:
+            if self._execution_in_progress:
+                # If a command is finished, we can execute the next command
+                # if self._command._is_finished == True:
+                #     self._on_step_complete()
+                # else: 
+                #     # Don't do anything if we're already executing a command
+                #     return
+                if isinstance(self._command, ITimeBasedCommand):
+                    if self._command.start_time and self._command.time_needed:
+                        # Recalculate the current time based on the pause and resume times
+                        shifted_time = self._command.resume_time - self._command.pause_time
+                        self._command.current_progress_time = time.time() - self._command.start_time - shifted_time
+                        
+                        if self._command.current_progress_time >= self._command.time_needed:
+                            self._on_step_complete()                    
                 return
-                
-            self._current_sequence = self._sequences[self._current_sequence_idx]
 
-        # Start next command
-        self._command = self._current_sequence[self._current_command_idx]
-        
-        # Set the execution flag to prevent duplicate calls
-        self._execution_in_progress = True
-        
-        # Execute command and get timer
-        self._command.execute()
-        if self._command.time_needed > 0:
-            self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
-        else:
-            self._timer = None  # If time is at 0, we don't need a timer
+            # Set the execution flag to prevent duplicate calls
+            self._execution_in_progress = True
+
+            if self._command and isinstance(self._command, ICommand):
+                # If the command is a regular command, execute it
+                self._timer = None  # No timer needed for non-time-based commands
+                self.fsm.robot.motor.movement_timer = None
+                self._command.execute()
+                self._on_step_complete()
+
+            elif self._command and isinstance(self._command, ITimeBasedCommand):
+                # If the command is time-based, execute it & Get a new timer
+                # self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
+                self._command.execute()
+                self._command.start_time = time.time()
+
+            elif self._command and isinstance(self._command, IMoveCommand):
+                # If the command is a movement command, execute it & Get a new timer
+                self._timer = None
+                self._command.execute()
+                # self._timer = MyTimer(self._command.time_needed, self._on_step_complete)
 
     def _on_step_complete(self):
         """Callback when a step completes"""
         if self._command:
             self._command.finished()
-        if self._timer:
-            self._timer.cancel()
-            self._timer = None
-        self._current_command_idx += 1
-        
+        # if self._timer:
+        #     self._timer.cancel()
+        #     self._timer = None
+
+        self._execution_in_progress = False        
         # Only print "Moving to Step X" if there are more steps in this sequence
         if self._current_command_idx < len(self._current_sequence):
             print(f"Moving to Step {self._current_command_idx + 1}")
-        self._execution_in_progress = False
+
+        self._command = self.get_next_command()
         
     def reset(self):
         """Reset the sequence manager to start from the beginning"""
         self._current_sequence_idx = 0
         self._current_command_idx = 0
         self._command = None
-        if self._timer:
-            self._timer.cancel()
-            self._timer = None
+        # if self._timer:
+        #     self._timer.cancel()
+        #     self._timer = None
         self._execution_in_progress = False
         self._all_sequences_completed = False
         self._current_sequence = self._sequences[0]
@@ -83,17 +129,28 @@ class SequenceManager():
     def pause(self):
         if self._execution_in_progress:
             # Pause the current command
-            if self._timer:
-                self._timer.pause()
+            # if self._timer:
+            #     self._timer.pause()
 
             if self._command:
+                if isinstance(self._command, ITimeBasedCommand) and self._command.start_time:
+                    shifted_time = self._command.resume_time - self._command.pause_time
+                    self._command.current_progress_time = time.time() - self._command.start_time - shifted_time
+ 
+                    self._command.pause_time = time.time()
+
                 # Pause the command
                 self._command.pause()
 
     def resume(self):
         if self._execution_in_progress:
             # Resume the current command
-            if self._timer and self._command:
-                # Get the time needed for resuming
-                remaining_time = self._timer.resume(self._on_step_complete)
+            # if self._timer and self._command:
+            #     # Get the time needed for resuming
+            #     remaining_time = self._timer.resume(self._on_step_complete)
+            #     self._command.resume()
+            if self._command:
+                if isinstance(self._command, ITimeBasedCommand) and self._command.start_time:
+                    self._command.resume_time = time.time()
+                # Resume the command
                 self._command.resume()

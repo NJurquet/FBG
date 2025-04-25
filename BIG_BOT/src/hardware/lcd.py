@@ -64,10 +64,17 @@ class LCD:
             raise TypeError("LCD score must be an integer")
         if score < 0 or score > 120:
             raise ValueError("LCD score must be between 0 and 120")
+        self._lcd.cursor_pos = (0, 0)
         self._lcd.write_string("FatBOTtommed Girls")
         self._lcd.lf()
         self._lcd.cursor_pos = (2, 0)
         self._lcd.write_string(f"Score: {score} points")
+
+    def reset_cursor(self) -> None:
+        """
+        Reset the cursor position to the top left corner of the LCD display.
+        """
+        self._lcd.cursor_pos = (0, 0)
 
     def clear(self) -> None:
         """

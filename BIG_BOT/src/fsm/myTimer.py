@@ -6,7 +6,7 @@ class MyTimer:
         self._time_needed = time_needed
         self._delete = delete
         self._startTime = time.time()
-        self._elapsedTime = 0  
+        self._elapsedTime = 0
         self._timer = Timer(self._time_needed, self._delete)
         self._timer.start()
 
@@ -32,3 +32,6 @@ class MyTimer:
         if self._timer:
             self._timer.cancel()
             self._timer = None
+
+    def target(self):
+        return self._delete

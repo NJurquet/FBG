@@ -1,15 +1,15 @@
 from .state_factory import StateFactory
-from .myTimer import MyTimer
 from ..constants import StateEnum, USEvent, MAX_TIME
 import time
 from .sequences.sequenceManager import SequenceManager
 from .sequences.sequenceCreator import SequenceCreator
+from ..utils import precise_sleep
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .states.State import State
     from ..robot import Robot
+
 
 class RobotFSM:
     """
@@ -25,34 +25,33 @@ class RobotFSM:
         self.robot = robot
         self.state_factory = StateFactory(self)
 
-        self.sequenceCreator = SequenceCreator(self)
-
         print(f"Robot color: {self.robot.color}")  # Debugging line
 
-        if self.robot.color == "yellow": 
-
-            self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.clawtest])  
-        else:
-
-            self.sequenceManager = SequenceManager(self, 
-                        [ self.sequenceCreator.clawtest])  
-
-                                 
-        
         self.us_event: USEvent = USEvent.NO_EVENT
-
-        self.current_state: 'State' = self.state_factory.get_state(StateEnum.IDLE)
-        # self.current_state.enter()
-        # self.paused_state: StateEnum | None = None
-
+        self.match_time = 0.0
         self.start_match: bool = False
         self.start_time: float = 0.0
         self.end_of_match: bool = False
 
-        # self.timer: MyTimer | None = None
-        self.step = 0
-        self.maxStep = 15
+        self.sequenceCreator = SequenceCreator(self, self.robot.color)
+        
+        self.sequenceManager = SequenceManager(self, 
+                        # [ 
+                        #     # self.sequenceCreator._bannerTest
+                        #     # self.sequenceCreator.IdleState, 
+                        #     self.sequenceCreator.Init,
+                        #     # self.sequenceCreator.DeployBanner,
+                        #     # self.sequenceCreator.CollectCans,
+                        #     # self.sequenceCreator.Build2StoryBleachers,
+                        #     self.sequenceCreator._timeMoveTest,
+                        #     # self.sequenceCreator._wheeltest,
+                        # ])
+
+                        self.sequenceCreator.MainSequence)
+        
+        # self.start_match = True
+
+        # self.start_time = time.time()
 
     def set_state(self, new_state: StateEnum, **args) -> None:
         """
@@ -72,23 +71,26 @@ class RobotFSM:
         """
         Execute the current state of the FSM.
         """
+        self.match_time = time.time() - self.start_time
 
-        if self.start_match and (time.time() - self.start_time >= MAX_TIME):
-            self.set_state(StateEnum.STOP)
+        if self.start_match and (self.match_time >= MAX_TIME) and not self.end_of_match:
+            self.sequenceManager.pause()
+            self.robot.motor.stop()
+            #self.robot.stepper.stop()
             self.end_of_match = True
 
         if not self.end_of_match:
-            if self.start_match:
-                
+            if self.start_match and self.sequenceManager._execution_in_progress:
                 self.robot.ultrasonicController.measure_distances()
                 self.us_event = self.robot.ultrasonicController.check_obstacles()
                 if self.us_event == USEvent.OBSTACLE_DETECTED:
+                    print("Obstacle detected")
                     self.sequenceManager.pause()
                     return
                 elif self.us_event == USEvent.OBSTACLE_PRESENT:
-                    
                     return
                 elif self.us_event == USEvent.OBSTACLE_CLEARED:
+                    print("Obstacle cleared")
                     self.sequenceManager.resume()
 
             if self.us_event == USEvent.NO_EVENT:

@@ -90,9 +90,35 @@ class UltrasonicController:
         # If no sensors provided or no distances measured
         if len(self._sensors) == 0 or len(self._distances) == 0:
             return USEvent.NO_EVENT
+        
+        # Define which positions are considered "front" sensors
+        front_positions = [USPosition.FRONT_LEFT, USPosition.FRONT_MIDDLE, USPosition.FRONT_RIGHT]
+        side_positions = [USPosition.CENTER_LEFT, USPosition.CENTER_RIGHT]
+        back_positions = [USPosition.BACK_LEFT, USPosition.BACK_RIGHT]
+    
+        # Check if any enabled front sensor detects an obstacle within 25cm
+        front_obstacle_detected = any(
+            self._distances.get(pos, float('inf')) < 32
+            for pos in front_positions
+            if pos in self._enabled_sensors and self._enabled_sensors[pos]
+        )
 
-        # If any enabled sensor detects an obstacle within range
-        if any(distance < 10 for pos, distance in self._distances.items() if self._enabled_sensors[pos]):
+        side_obstacle_detected = any(
+            self._distances.get(pos, float('inf')) < 8
+            for pos in side_positions
+            if pos in self._enabled_sensors and self._enabled_sensors[pos]
+        )
+
+        back_obstacle_detected = any(
+            self._distances.get(pos, float('inf')) < 10
+            for pos in back_positions
+            if pos in self._enabled_sensors and self._enabled_sensors[pos]
+        )
+        
+        # An obstacle is detected if either front or other sensors detect an obstacle
+        obstacle_detected = front_obstacle_detected or side_obstacle_detected or back_obstacle_detected
+        
+        if obstacle_detected:
             # If the obstacle was not detected before
             if not self._last_obstacle:
                 self._last_obstacle = True
@@ -103,7 +129,7 @@ class UltrasonicController:
             if self._last_obstacle:
                 self._last_obstacle = False
                 return USEvent.OBSTACLE_CLEARED
-
+    
         # If no obstacle detected
         return USEvent.NO_EVENT
     

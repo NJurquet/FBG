@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 
 class ToggleUltrasonicSensorsCommand(ICommand):
     def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
+        self._is_finished = False
         self.fsm = fsm
         self.initialStates = fsm.robot.ultrasonicController.get_enabled_sensors()
         self.positions = positions
@@ -14,6 +15,7 @@ class ToggleUltrasonicSensorsCommand(ICommand):
     def execute(self):
         for i in range(len(self.positions)):
             self.fsm.robot.ultrasonicController.toggle_sensor(self.positions[i])
+
 
     def pause(self):
         pass  # No action needed for pause
@@ -34,55 +36,53 @@ class ToggleUltrasonicSensorsCommand(ICommand):
         pass  # No action needed for stop
 
     def finished(self):
-        pass  # No action needed for finished
+        self._is_finished = True
 
 class  DisableUltrasonicSensorsCommand(ICommand):
     def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
+        self._is_finished = False
         self.fsm = fsm
         self.positions = positions
 
     def execute(self):
         for position in self.positions:
             self.fsm.robot.ultrasonicController.disable_sensor(position)
-
-
+        print(f"Sensors : {self.positions} have been disabled")
+        self.finished()
 
     def pause(self):
         pass  # No action needed for pause
 
     def resume(self):
-        for position in self.positions:
-            self.fsm.robot.ultrasonicController.disable_sensor(position)
-
+        pass
 
     def stop(self):
         pass  # No action needed for stop
 
     def finished(self):
-        pass  # No action needed for finished
+        self._is_finished = True
 
 class EnableUltrasonicSensorsCommand(ICommand):
     def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
+        self._is_finished = False
         self.fsm = fsm
         self.positions = positions
 
     def execute(self):
         for position in self.positions:
             self.fsm.robot.ultrasonicController.enable_sensor(position)
-
-
+        print(f"Sensors : {self.positions} have been enabled")
+        self.finished()
 
     def pause(self):
         pass  # No action needed for pause
 
     def resume(self):
-        for position in self.positions:
-            self.fsm.robot.ultrasonicController.enable_sensor(position)
-
+        pass
 
     def stop(self):
         pass  # No action needed for stop
 
     def finished(self):
-        pass  # No action needed for finished
+        self._is_finished = True
 
