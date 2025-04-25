@@ -1,15 +1,12 @@
-from .state_factory import StateFactory
-from ..constants import StateEnum, USEvent, MAX_TIME
+from ..constants import USEvent, MAX_TIME
 import time
 from .sequences.sequenceManager import SequenceManager
 from .sequences.sequenceCreator import SequenceCreator
-from ..utils import precise_sleep
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..robot import Robot
-
 
 class RobotFSM:
     """
@@ -23,7 +20,6 @@ class RobotFSM:
 
     def __init__(self, robot: 'Robot'):
         self.robot = robot
-        self.state_factory = StateFactory(self)
 
         self.us_event: USEvent = USEvent.NO_EVENT
         self.match_time = 0.0
@@ -33,37 +29,23 @@ class RobotFSM:
 
         self.sequenceCreator = SequenceCreator(self, self.robot.color)
         
-        self.sequenceManager = SequenceManager(self, 
-                        # [ 
-                        #     # self.sequenceCreator._bannerTest
-                        #     # self.sequenceCreator.IdleState, 
-                        #     self.sequenceCreator.Init,
-                        #     # self.sequenceCreator.DeployBanner,
-                        #     # self.sequenceCreator.CollectCans,
-                        #     # self.sequenceCreator.Build2StoryBleachers,
-                        #     self.sequenceCreator._timeMoveTest,
-                        #     # self.sequenceCreator._wheeltest,
-                        # ])
 
+        # Main Sequence : Strategy :
+        #   - Deploy Banner 
+        #   - Move in front of the end zone -> Wait for the PAMIs to move
+        #   - Move into the end zone        
+
+        self.sequenceManager = SequenceManager(self, 
                         self.sequenceCreator.MainSequence)
         
-        # self.start_match = True
 
-        # self.start_time = time.time()
+        # Test sequences
 
-    def set_state(self, new_state: StateEnum, **args) -> None:
-        """
-        Set the current state of the FSM to the new specified state.
-
-        Parameters
-        ----------
-        new_state : StateEnum
-            The new state to switch to.
-        """
-        if self.current_state.enum != new_state:
-            self.current_state.exit()
-            self.current_state = self.state_factory.get_state(new_state)
-            self.current_state.enter(**args)
+        # self.sequenceManager = SequenceManager(self, 
+        #                 [ 
+        #                     self.sequenceCreator.Init,
+        #                     self.sequenceCreator._wheeltest,
+        #                 ])
 
     def update(self) -> None:
         """

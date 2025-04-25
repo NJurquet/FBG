@@ -1,4 +1,4 @@
-from .command import IMoveCommand, ITimeBasedCommand
+from .command import ITimeBasedCommand
 from ...constants import USPosition
 from typing import TYPE_CHECKING
 
@@ -16,7 +16,7 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.speed = speed
         self.enable_direction_sensors = enable_direction_sensors
         self.re_enable_us_sensors = re_enable_us_sensors
-        self.time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
+        self.time_needed = self.fsm.robot.motor.computeMoveForward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
 
@@ -79,7 +79,7 @@ class MoveBackwardCommand(ITimeBasedCommand):
         self.speed = speed
         self.enable_direction_sensors = enable_direction_sensors
         self.enable_us_sensors = re_enable_us_sensors
-        self.time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
+        self.time_needed = self.fsm.robot.motor.computeMoveBackward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
 
@@ -140,7 +140,7 @@ class RotateLeftCommand(ITimeBasedCommand):
         self.enable_back_sensors = enable_back_sensors
         self.enable_side_sensors = enable_side_sensors
 
-        self.time_needed = self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
+        self.time_needed = self.fsm.robot.motor.computeRotateLeftDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
 
@@ -206,7 +206,7 @@ class RotateRightCommand(ITimeBasedCommand):
         self.enable_back_sensors = enable_back_sensors
         self.enable_side_sensors = enable_side_sensors
 
-        self.time_needed = self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
+        self.time_needed = self.fsm.robot.motor.computeRotateRightDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
 

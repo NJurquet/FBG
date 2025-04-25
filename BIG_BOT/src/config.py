@@ -54,19 +54,6 @@ CENTER_LEFT_CLAW_ADAFRUIT_PIN = 1
 OUTER_RIGHT_CLAW_ADAFRUIT_PIN = 2
 OUTER_LEFT_CLAW_ADAFRUIT_PIN = 3
 
-## Servo Claws Angle list ##
-ALL_OPEN = [150, 150, 150, 150]
-SERVO_IDLE = [150, 150, 50, 60]
-SERVO_INIT = [150, 150, 60, 150]
-ALL_CLOSED = [90, 90, 70, 90]
-OUTER_OPEN = [150, 150]
-OUTER_INIT = [60, 150]
-
-PLANK_PUSHER_BLOCKING = [10, 70]
-PLANK_PUSHER_MIDDLE = [10, 150]
-PLANK_PUSHER_INIT = [180, 40]
-PLANK_PUSHER_PUSH = [30, 180]
-
 BANNER_DEPLOYER_IDLE = 30
 BANNER_DEPLOYER_DEPLOY_STAGE_1 = 80
 BANNER_DEPLOYER_DEPLOY_STAGE_2 = 150
@@ -110,11 +97,25 @@ US_CENTER_LEFT_ECHO_PIN = 15
 REED_SWITCH_PIN = 26
 
 # ===================================================================
+# Servo Configuration
+# ===================================================================
+
+## Servo Claws angles lists ##
+ALL_OPEN = [150, 150, 150, 150]
+SERVO_IDLE = [150, 150, 50, 60]
+SERVO_INIT = [150, 150, 60, 150]
+ALL_CLOSED = [90, 90, 70, 90]
+OUTER_OPEN = [150, 150]
+OUTER_INIT = [60, 150]
+
+PLANK_PUSHER_BLOCKING = [10, 70]
+PLANK_PUSHER_MIDDLE = [10, 150]
+PLANK_PUSHER_INIT = [180, 40]
+PLANK_PUSHER_PUSH = [30, 180]
+
+# ===================================================================
 # Robot Configuration
 # ===================================================================
 
-DEFAULT_SCORE = 73
+DEFAULT_SCORE = 30
 """Default score for the robot if nothing is passed as command line argument."""
-
-MAX_OBSTACLE_DURATION = 5.0  # seconds
-"""Maximum duration (in seconds) of obstacle detection, after which the robot should take action."""

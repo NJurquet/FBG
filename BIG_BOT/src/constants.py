@@ -8,31 +8,6 @@ THIS FILE SHOULD NOT BE MODIFIED EXCEPT FOR ADDING NEW CONSTANTS. ALL CONFIGURAT
 
 from enum import Enum
 
-
-class StateEnum(Enum):
-    """
-    Enumeration of all possible states of the robot.
-    """
-    IDLE = 0
-    MOVE_FORWARD = 1
-    MOVE_BACKWARD = 2
-    ROTATE_LEFT = 3
-    ROTATE_RIGHT = 4
-    AVOID_OBSTACLE = 5
-    STOP = 6
-    OPEN_CENTRAL_CLAWS = 7
-    CLOSE_CENTRAL_CLAWS = 8
-    OPEN_OUTER_CLAWS = 9
-    CLOSE_OUTER_CLAWS = 10
-    DEPLOY_PLANK_PUSHERS = 11
-    RETRACT_PLANK_PUSHERS = 12
-    DEPLOY_BANNER = 13
-    RETRACT_BANNER_PUSHER = 14
-    DEPLOY_CLAWS = 15
-    RETRACT_CLAWS = 16
-    FIRST_CAN_MOVE = 17
-
-
 class USPosition(Enum):
     """
     Enumeration of all possible positions of the ultrasonic sensors.

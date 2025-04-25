@@ -6,6 +6,7 @@ if TYPE_CHECKING:
 
 
 class InitFrontPlateCommand(ITimeBasedCommand):
+    """Command to initialize the front plate of the robot."""
     def __init__(self, fsm:'RobotFSM'):
         self._is_finished = False
         self.fsm = fsm
@@ -28,6 +29,7 @@ class InitFrontPlateCommand(ITimeBasedCommand):
 
 
 class RaiseFrontPlateCommand(ITimeBasedCommand):
+    """Raise the front plate to the upper limit switch."""
     def __init__(self, fsm:'RobotFSM'):
         self._is_finished = False
         self.fsm = fsm
@@ -50,6 +52,7 @@ class RaiseFrontPlateCommand(ITimeBasedCommand):
 
 
 class LowerFrontPlateCommand(ITimeBasedCommand):
+    """Lower the front plate to the lower limit switch."""
     def __init__(self, fsm:'RobotFSM'):
         self._is_finished = False
         self.fsm = fsm
@@ -72,6 +75,7 @@ class LowerFrontPlateCommand(ITimeBasedCommand):
 
 
 class MoveFrontPlateCommand(ITimeBasedCommand):
+    """Move the front plate to the given vertical position."""
     def __init__(self, fsm:'RobotFSM', position: int):
         self._is_finished = False
         self.fsm = fsm

@@ -68,7 +68,7 @@ class AdafruitServoControl:
         Sets the goal angle of the hinge servo motor.
 
         Parameters:
-            angle (float): The goal angle in degrees.
+            angle (int): The goal angle in degrees.
         """
         self.kit.servo[6].angle = angle
 
@@ -94,7 +94,7 @@ class AdafruitServoControl:
 
         Parameters:
             name (int): The channel number of the servo motor.
-            angle (float): The goal angle in degrees.
+            angle (int): The goal angle in degrees.
         """
         for i in range(len(self.names)):
             if self.names[i] == name:
