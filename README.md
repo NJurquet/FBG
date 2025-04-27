@@ -101,6 +101,148 @@ The repository contains the code used for the SIMAs (Superstar & Groupies) in th
 SIMAs were developed using simple `Arduino` components and coded in `C++`/`Arduino`.
 The main robot was developed using a Raspberry Pi 4 to control most of the tasks, hardware, and robotic logic in `Python`.
 
+## Installation
+
+### Big Bot
+
+> **Note**: It is assumed that you have a working Raspberry Pi with the OS already installed.
+
+#### Setup & Run
+
+1.  Clone the repository:
+
+    ```bash
+    git clone https://github.com/NJurquet/FBG.git
+    cd FBG
+    ```
+
+2.  Install the Python dependencies:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  Start the `pigpio` daemon:
+
+    ```bash
+    sudo pigpiod
+    ```
+
+4.  Run the main program:
+
+    > Make sure every component is connected to the Raspberry Pi GPIO pins before running the program.
+
+    ```bash
+    python -m BIG_BOT.src.main --score SOME_SCORE --color YELLOW_OR_BLUE
+    ```
+
+    Replace `SOME_SCORE` with the estimated score you want to display on the LCD screen and `YELLOW_OR_BLUE` with the starting color of your robot (either `yellow` or `blue`).
+
+    > The association between components and GPIO pins is defined in the `BIG_BOT/src/config.py` file, feel free to adapt the pins to your needs.
+
+#### Configure Raspberry Pi as hotspot
+
+If you want to use the Raspberry Pi as a hotspot, you will be able to access it remotely via SSH and VNC, and without the need to be connected to a Wi-Fi network (it will create its own access point).
+It was especially useful during the competition for running the code on the robot remotely.
+
+**Check [this video](https://youtu.be/TWvL2C95FEg?si=-2T3gCtMyU8DEhau) from Everyday Tech for the whole setup process and explanation.**
+
+> [!NOTE]
+> For simplicity and easy access, [RaspAP](https://raspap.com/) is used to configure the Raspberry Pi as a hotspot.
+> It provides a web interface for easy configuration. For more details, visit the [RaspAP GitHub repository](https://github.com/RaspAP/raspap-webgui).
+>
+> If you want more control over the configuration, use `hostapd` and `dnsmasq` to set up the hotspot manually.
+
+> [!IMPORTANT]  
+> **To be able to connect the hotspot to a Wi-Fi network, you will need to have a USB Wi-Fi dongle / adapter** so the Raspberry can use its built-in Wi-Fi interface `wlan0` as the one to connect to the network and the one provided by the USB dongle `wlan1` as the hotspot.
+
+Most of the steps are explained in the RaspAP documentation and GitHub.
+
+1.  First, update RPi OS to its latest version, including the kernel and firmware, followed by a reboot.
+
+    ```bash
+    sudo apt-get update
+    sudo apt-get full-upgrade
+    sudo reboot
+    ```
+
+2.  Set the WiFi country where you plan to use the Raspberry in raspi-config's `Localisation Options`.
+
+    ```bash
+    sudo raspi-config
+    ```
+
+    > You can also enable SSH and VNC in the `Interfacing Options` menu.
+
+3.  Install RaspAP:
+
+    ```bash
+    curl -sL https://install.raspap.com | bash
+    ```
+
+    > Note that several options to install with RaspAP will be proposed. We declined all of them as we did not need VPN, ad block or WireGuard, feel free to install them if you want.
+
+4.  Reboot the Raspberry Pi.
+
+    ```bash
+    sudo reboot
+    ```
+
+You should now see a new Wi-Fi network called `raspi-webgui` in your available networks with this configuration:
+
+-   **SSID**: raspi-webgui
+-   **Password**: ChangeMe
+-   **IP address**: 10.3.141.1
+-   **DHCP range**: 10.3.141.50 — 10.3.141.254
+
+Now you can plug the USB Wi-Fi dongle into the Raspberry Pi and check if it is recognized by the system:
+
+```bash
+lsusb
+```
+
+> [!NOTE]
+> You might need to install the driver for your USB Wi-Fi dongle if it is not recognized by the system.
+> Check the manufacturer's website for the driver and installation instructions.
+> The best is to use a Linux compatible USB Wi-Fi dongle so this process can be skipped.
+
+You should see the new WLAN interface `wlan1` not connected to anything and the `wlan0` used for the hotspot with:
+
+```bash
+ifconfig
+```
+
+The admin web interface can be accessed by entering the Raspberry IP address `10.3.141.1` or using its hostname `raspberrypi.local` in your web browser.
+The default credentials are:
+
+-   **Username**: admin
+-   **Password**: secret
+
+Make sure to change the default SSID and password in the `Basic` & `Security` tabs of the hotspot web interface, as well as the country code in the `Advanced` tab to the one set with `raspi-config`.
+
+Then, in the `RaspAP` web interface, go to the `Hotspot` tab and change the interface from `wlan0` to `wlan1`, then click on `Save`.
+
+In the Raspberry terminal, modify the `/etc/dhcpcd.conf` file by removing the the `wlan0` part so that it only uses the `wlan1` interface for the hotspot (the IP address assigned to the new `wlan1` is `10.9.141.1`):
+
+```bash
+sudo nano /etc/dhcpcd.conf
+```
+
+And remove the previous network preconfigurations with:
+
+```bash
+sudo rm /etc/NetworkManager/system-connections/preconfigured.nmconnection
+sudo reboot
+```
+
+Now connect to the new hotspot and you should be able to access the web interface with correct WLANs.
+Go to the `Wi-Fi client` tab to connect the `wlan0` interface to a Wi-Fi network.
+
+> [!TIP]
+> If you encounter connection or interface issues, try restarting the hotspot in the `Hotspot` tab.
+
+### SIMA
+
 ## License
 
 This project is licensed under the MIT License.
