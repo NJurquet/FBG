@@ -243,6 +243,24 @@ Go to the `Wi-Fi client` tab to connect the `wlan0` interface to a Wi-Fi network
 
 ### SIMA
 
+1.  Install the Arduino IDE from the official website: [Arduino IDE](https://www.arduino.cc/en/software).
+
+2.  Open the Arduino IDE and install the required libraries for the SIMA code:
+
+    -   `Servo`: [link](https://docs.arduino.cc/libraries/servo/)
+    -   `Adafruit Motor Shield V2 Library`: [link](https://github.com/adafruit/Adafruit_Motor_Shield_V2_Library)
+
+3.  Adapt the pins and `groupie` & `topStartLine` configuration constants in the `SIMA/SIMA/SIMA.ino` file to your SIMA, then upload the code to your Arduino board.
+
+    ```cpp
+    // CONFIGURATION CONSTANTS ///////////////////////
+    const bool groupie = true;
+    const bool leftStart = digitalRead(startLeftPin);
+    const bool topStartLine = false;
+    const int zoneNumber = topStartLine ? 1 : 2;
+    //////////////////////////////////////////////////
+    ```
+
 ## License
 
 This project is licensed under the MIT License.
