@@ -43,7 +43,8 @@ class SequenceManager():
             self.fsm.robot.logger.info(f"Moving to Sequence {self._current_sequence_idx + 1}")
 
             # Set the next sequence as the current sequence
-            self._current_sequence = next_sequence
+            if next_sequence is not None:
+                self._current_sequence = next_sequence
 
         # Return the next command in the current sequence
         return self._current_sequence[self._current_command_idx]

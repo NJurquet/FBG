@@ -18,7 +18,6 @@ class MotorsControl:
         self.rightStraightOffset = 0
         self.leftRotateOffset = -0.025
         self.rightRotateOffset = 0.0
-        self.movement_timer: MyTimer | None = None
         self.distance_per_second = 10.4 # cm/s
         self.degrees_per_second_left = 52.8 # degrees/s
         self.degrees_per_second_right = 45.2 # degrees/s
@@ -85,7 +84,7 @@ class MotorsControl:
         
         Parameters:
             distance_cm (float): The distance to move in centimeters.
-            speed (float): The speed at which to move the robot (value between 0 & 1), base value = 0.5.
+            speed (float): The speed at which to move the robot (value between 0 & 1). Default value = 0.5.
         """
         if distance_cm <= 0:
             return 0
@@ -104,7 +103,7 @@ class MotorsControl:
         
         Parameters:
             distance_cm (float): The distance to move in centimeters.
-            speed (float): The speed at which to move the robot (value between 0 & 1), base value = 0.5.
+            speed (float): The speed at which to move the robot (value between 0 & 1). Default value = 0.5.
         """
         if distance_cm <= 0:
             return 0
@@ -123,7 +122,7 @@ class MotorsControl:
         
         Parameters:
             degrees (float): The angle to rotate in degrees.
-            speed (float): The speed at which to rotate the robot (value between 0 & 1), base value = 0.5.
+            speed (float): The speed at which to rotate the robot (value between 0 & 1). Default value = 0.5.
         """
         if degrees <= 0:
             return 0
@@ -142,7 +141,7 @@ class MotorsControl:
         
         Parameters:
             degrees (int): The angle to rotate in degrees.
-            speed (float): The speed at which to rotate the robot (value between 0 & 1), base value = 0.5.
+            speed (float): The speed at which to rotate the robot (value between 0 & 1). Default value = 0.5.
         """
         if degrees <= 0:
             return 0
@@ -163,6 +162,3 @@ class MotorsControl:
         if self.rightMotor:
             self.leftMotor.stop()
             self.rightMotor.cleanup()
-        if self.movement_timer:
-            self.movement_timer.cancel()
-            self.movement_timer = None

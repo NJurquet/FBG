@@ -7,7 +7,12 @@ if TYPE_CHECKING:
 
 
 class InitLCDCommand(ICommand):
-    """Command to re-initialize the LCD screen of the robot after a power shutdown."""
+    """
+    Command to re-initialize the LCD screen of the robot after a power shutdown.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+    """
     def __init__(self, fsm: 'RobotFSM',):
         self._is_finished = False
         self.fsm = fsm

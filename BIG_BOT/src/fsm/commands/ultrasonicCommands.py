@@ -6,7 +6,13 @@ if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
 class  DisableUltrasonicSensorsCommand(ICommand):
-    """Command to disable specific ultrasonic sensors."""
+    """
+    Command to disable specific ultrasonic sensors.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        positions (list[USPosition]): List of ultrasonic sensor positions to disable.
+    """
     def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
         self._is_finished = False
         self.fsm = fsm
@@ -31,7 +37,13 @@ class  DisableUltrasonicSensorsCommand(ICommand):
         self._is_finished = True
 
 class EnableUltrasonicSensorsCommand(ICommand):
-    """Command to enable specific ultrasonic sensors."""
+    """
+    Command to enable specific ultrasonic sensors.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        positions (list[USPosition]): List of ultrasonic sensor positions to enable.
+    """
     def __init__(self, fsm: 'RobotFSM', positions: list[USPosition]):
         self._is_finished = False
         self.fsm = fsm

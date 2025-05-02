@@ -5,8 +5,14 @@ if TYPE_CHECKING:
     from ..FSM import RobotFSM
 
 class SetOuterServoAngleCommand(ITimeBasedCommand):
-    """Command to set the outer servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 1.0):
+    """
+    Command to set the outer servo angles.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        angles (List[int]): The angles to set for the outer servos (claws).
+    """
+    def __init__(self, fsm: 'RobotFSM', angles: List[int]):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
@@ -30,8 +36,14 @@ class SetOuterServoAngleCommand(ITimeBasedCommand):
         self._is_finished = True
 
 class SetAllServoAnglesCommand(ITimeBasedCommand):
-    """Command to set the all servo angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 1.0):
+    """
+    Command to set the all servo angles.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        angles (List[int]): The angles to set for all servos.
+    """
+    def __init__(self, fsm: 'RobotFSM', angles: List[int]):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
@@ -55,8 +67,14 @@ class SetAllServoAnglesCommand(ITimeBasedCommand):
         self._is_finished = True
 
 class SetPlankPusherServoAnglesCommand(ITimeBasedCommand):
-    """Command to set the plank pushers angles."""
-    def __init__(self, fsm: 'RobotFSM', angles: List[int], time_needed: float = 1.0):
+    """
+    Command to set the plank pushers angles.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        angles (List[int]): The angles to set for the plank pushers.
+    """
+    def __init__(self, fsm: 'RobotFSM', angles: List[int]):
         self._is_finished = False
         self.fsm = fsm
         self.angles = angles
@@ -80,8 +98,14 @@ class SetPlankPusherServoAnglesCommand(ITimeBasedCommand):
         self._is_finished = True
 
 class SetBannerDeployerServoAngleCommand(ITimeBasedCommand):
-    """Command to set the banner deployer angle."""
-    def __init__(self, fsm: 'RobotFSM', angle: int, time_needed: float = 1.0):
+    """
+    Command to set the banner deployer angle.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        angle (int): The angle to set for the banner deployer.
+    """
+    def __init__(self, fsm: 'RobotFSM', angle: int):
         self._is_finished = False
         self.fsm = fsm
         self.angle = angle
