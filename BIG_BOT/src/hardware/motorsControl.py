@@ -30,10 +30,22 @@ class MotorsControl:
         Parameters:
             speed (float): The speed at which to move the robot (value between 0 & 1).         
         """
-
+        
         self.speed = speed
-        self.leftMotor.forward(self.speed + self.leftStraightOffset)
-        self.rightMotor.forward(self.speed + self.rightStraightOffset)
+        leftSpeed = self.speed + self.leftStraightOffset
+        rightSpeed = self.speed + self.rightStraightOffset
+        
+        if leftSpeed < 0:
+            leftSpeed = 0
+        elif leftSpeed > 1:
+            leftSpeed = 1
+        if rightSpeed < 0:
+            rightSpeed = 0
+        elif rightSpeed > 1:
+            rightSpeed = 1
+            
+        self.leftMotor.forward(leftSpeed)
+        self.rightMotor.forward(rightSpeed)
 
     def backward(self, speed):
         """ 
@@ -44,8 +56,20 @@ class MotorsControl:
         """
 
         self.speed = speed
-        self.leftMotor.backward(self.speed + self.leftStraightOffset)
-        self.rightMotor.backward(self.speed + self.rightStraightOffset)
+        leftSpeed = self.speed + self.leftStraightOffset
+        rightSpeed = self.speed + self.rightStraightOffset
+        
+        if leftSpeed < 0:
+            leftSpeed = 0
+        elif leftSpeed > 1:
+            leftSpeed = 1
+        if rightSpeed < 0:
+            rightSpeed = 0
+        elif rightSpeed > 1:
+            rightSpeed = 1
+            
+        self.leftMotor.backward(leftSpeed)
+        self.rightMotor.backward(rightSpeed)
 
     def rotateLeft(self, speed):
         """ Rotate the robot to the left at the specified speed (left motor backward, right motor forward)
@@ -55,8 +79,20 @@ class MotorsControl:
         """
 
         self.speed = speed
-        self.leftMotor.backward(self.speed + self.leftRotateOffset)
-        self.rightMotor.forward(self.speed + self.rightRotateOffset)
+        leftSpeed = self.speed + self.leftRotateOffset
+        rightSpeed = self.speed + self.rightRotateOffset
+        
+        if leftSpeed < 0:
+            leftSpeed = 0
+        elif leftSpeed > 1:
+            leftSpeed = 1
+        if rightSpeed < 0:
+            rightSpeed = 0
+        elif rightSpeed > 1:
+            rightSpeed = 1
+            
+        self.leftMotor.backward(leftSpeed)
+        self.rightMotor.forward(rightSpeed)
 
     def rotateRight(self, speed):
         """ 
@@ -67,8 +103,20 @@ class MotorsControl:
         """
 
         self.speed = speed
-        self.leftMotor.forward(self.speed + self.leftStraightOffset)
-        self.rightMotor.backward(self.speed + self.rightStraightOffset)
+        leftSpeed = self.speed + self.leftRotateOffset
+        rightSpeed = self.speed + self.rightRotateOffset
+        
+        if leftSpeed < 0:
+            leftSpeed = 0
+        elif leftSpeed > 1:
+            leftSpeed = 1
+        if rightSpeed < 0:
+            rightSpeed = 0
+        elif rightSpeed > 1:
+            rightSpeed = 1
+            
+        self.leftMotor.forward(leftSpeed)
+        self.rightMotor.backward(rightSpeed)
 
     def stop(self):
         """ Stop the robot """
@@ -88,6 +136,11 @@ class MotorsControl:
         """
         if distance_cm <= 0:
             return 0
+        
+        if speed < 0:
+            speed = 0
+        elif speed > 1:
+            speed = 1
     
         self.speed = speed
         coeff = self.distance_per_second/self.speed 
@@ -108,6 +161,11 @@ class MotorsControl:
         if distance_cm <= 0:
             return 0
     
+        if speed < 0:
+            speed = 0
+        elif speed > 1:
+            speed = 1
+            
         self.speed = speed
         coeff = self.distance_per_second/self.speed 
 
@@ -127,6 +185,11 @@ class MotorsControl:
         if degrees <= 0:
             return 0
     
+        if speed < 0:
+            speed = 0
+        elif speed > 1:
+            speed = 1
+            
         self.speed = speed
         coeff = self.degrees_per_second_left/self.speed 
 
@@ -146,6 +209,11 @@ class MotorsControl:
         if degrees <= 0:
             return 0
     
+        if speed < 0:
+            speed = 0
+        elif speed > 1:
+            speed = 1
+            
         self.speed = speed
         coeff = self.degrees_per_second_left/self.speed 
 

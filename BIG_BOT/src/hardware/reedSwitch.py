@@ -15,9 +15,6 @@ class reedSwitch:
     -------
     `read()` : int
         Returns the state of the reed switch (0 for not pressed, 1 for pressed).
-
-    `long_read()` : int
-        Waits for the reed switch to be pressed for a certain duration (10 checks) and returns 1 if pressed, 0 otherwise.
     """
 
     def __init__(self, pin: int):
@@ -28,7 +25,3 @@ class reedSwitch:
         """Reads the state of the reed switch.
             True if the reed switch is pressed, False otherwise."""
         return self.reedSwitch.is_pressed
-
-    def long_read(self):
-        measures = [self.read() for _ in range(10)]
-        return 1 if sum(measures) > 5 else 0
