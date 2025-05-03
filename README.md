@@ -16,6 +16,8 @@ Project management, task sharing, autonomy, team spirit and experimentation are 
 
 The Belgian competition was held in **Mons** and hosted by **[SparkOH!](https://sparkoh.be/projet-robotixs/robotixs/)** on April 19-20, 2025.
 
+Have a look at our **[Wiki](https://github.com/NJurquet/FBG/wiki)** for more details about the project, team, robots, and strategy.
+
 ### Theme
 
 The 2025 theme is **The Show Must Go On!**:
