@@ -1,6 +1,7 @@
 # Fat BOTtomed Girls (FBG) - 2025 Eurobot Project
 
 [![Tests for Big Bot](https://github.com/NJurquet/FBG/actions/workflows/big_bot_tests.yml/badge.svg)](https://github.com/NJurquet/FBG/actions/workflows/big_bot_tests.yml)
+[![codecov](https://codecov.io/gh/NJurquet/FBG/graph/badge.svg?token=ZNFK9L2G5Q)](https://codecov.io/gh/NJurquet/FBG)
 
 ## Overview
 
