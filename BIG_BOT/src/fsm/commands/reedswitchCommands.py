@@ -7,7 +7,12 @@ if TYPE_CHECKING:
 
 
 class ReedSwitchCommand(ICommand):
-    """Command to detect a change in the reed switch value, it keeps the robot in a loop until the value change."""
+    """
+    Command to detect a change in the reed switch value, it keeps the robot in a loop until the value changes.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+    """
     def __init__(self, fsm: 'RobotFSM',):
         self._is_finished = False
         self.fsm = fsm

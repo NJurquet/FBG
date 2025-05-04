@@ -3,7 +3,7 @@ from .config import US_FRONT_RIGHT_TRIG_PIN, US_FRONT_RIGHT_ECHO_PIN, US_FRONT_L
 from .config import SERVO_CHANNELS
 from .config import REED_SWITCH_PIN
 from .config import CENTER_RIGHT_CLAW_NAME, CENTER_LEFT_CLAW_NAME, OUTER_RIGHT_CLAW_NAME, OUTER_LEFT_CLAW_NAME, CENTER_RIGHT_CLAW_ADAFRUIT_PIN, CENTER_LEFT_CLAW_ADAFRUIT_PIN, OUTER_RIGHT_CLAW_ADAFRUIT_PIN, OUTER_LEFT_CLAW_ADAFRUIT_PIN
-from .config import PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, PLANK_PUSHER_RIGHT_ADAFRUIT_PIN, PLANK_PUSHER_LEFT_ADAFRUIT_PIN, HINGE_NAME, HINGE_ADAFRUIT_PIN, BANNER_DEPLOYER_NAME, BANNER_DEPLOYER_ADAFRUIT_PIN
+from .config import PLANK_PUSHER_RIGHT_NAME, PLANK_PUSHER_LEFT_NAME, PLANK_PUSHER_RIGHT_ADAFRUIT_PIN, PLANK_PUSHER_LEFT_ADAFRUIT_PIN, BANNER_DEPLOYER_NAME, BANNER_DEPLOYER_ADAFRUIT_PIN
 from .config import REED_SWITCH_PIN
 from .config import STEPPER_DIR_PIN, STEPPER_STEP_PIN, STEPPER_MS1_PIN, STEPPER_MS2_PIN, STEPPER_MS3_PIN
 # from .config import STEPPER_BOTTOM_LIMIT_PIN, STEPPER_TOP_LIMIT_PIN
@@ -37,6 +37,8 @@ class Robot:
                                                  pins=[CENTER_RIGHT_CLAW_ADAFRUIT_PIN, CENTER_LEFT_CLAW_ADAFRUIT_PIN, OUTER_RIGHT_CLAW_ADAFRUIT_PIN, OUTER_LEFT_CLAW_ADAFRUIT_PIN,
                                                        PLANK_PUSHER_RIGHT_ADAFRUIT_PIN, PLANK_PUSHER_LEFT_ADAFRUIT_PIN, HINGE_ADAFRUIT_PIN, BANNER_DEPLOYER_ADAFRUIT_PIN
                                                   ])
+        
+        # The stepper was disconnected because of a lack of pins (lacking a pin to connect the enable pin)
 
         # self.stepper = StepperMotor(step=STEPPER_STEP_PIN, dir=STEPPER_DIR_PIN,
         #                             ms1=STEPPER_MS1_PIN, ms2=STEPPER_MS2_PIN, ms3=STEPPER_MS3_PIN,
@@ -60,41 +62,8 @@ class Robot:
 
         self.logger = logger
 
-        self.logger.info(f"Robot color: {self.color}")
         self.logger.info(f"Robot score: {self.score}")
+        self.logger.info(f"Robot color: {self.color}")
 
-        self.__position: tuple[int, int] = (0, 0)
         self.fsm = RobotFSM(self)
 
-
-    @property
-    def position(self):
-        """
-        Getter for the position of the robot.
-
-        Returns
-        -------
-        tuple[int, int]
-            The x and y coordinates of the robot.
-        """
-        return self.__position
-
-    @position.setter
-    def position(self, value: tuple[int, int]):
-        """
-        Setter for the position of the robot.
-
-        Parameters
-        ----------
-        value : tuple[int, int]
-            The new x and y coordinates of the robot.
-
-        Raises
-        ------
-        ValueError
-            If the position is not a tuple of two integers.
-        """
-        if isinstance(value, tuple) and len(value) == 2:
-            self.__position = value
-        else:
-            raise ValueError("Position must be a tuple of the x and y coordinates (x, y).")

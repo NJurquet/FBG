@@ -18,9 +18,9 @@ class BigMotor:
         backwardPin (int): The pin number the motor backward pin is connected to.
         
     **Methods**:
-        **forward(speed)**: Move the motor forward at the specified speed.
+        **forward(speed)**: Move the motor forward at the specified speed. Speed should be between 0 and 1.
            
-        **backward(speed)**: Move the motor backward at the specified speed.
+        **backward(speed)**: Move the motor backward at the specified speed. Speed should be between 0 and 1.
             
         **stop()**: Stop the motor.
         

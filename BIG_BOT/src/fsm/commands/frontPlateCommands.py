@@ -6,6 +6,12 @@ if TYPE_CHECKING:
 
 
 class InitFrontPlateCommand(ITimeBasedCommand):
+    """
+    Command to initialize the front plate of the robot & set it to the bottom position.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.    
+    """
     def __init__(self, fsm:'RobotFSM'):
         self._is_finished = False
         self.fsm = fsm
@@ -28,6 +34,12 @@ class InitFrontPlateCommand(ITimeBasedCommand):
 
 
 class RaiseFrontPlateCommand(ITimeBasedCommand):
+    """
+    Raise the front plate to the upper limit switch.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+    """
     def __init__(self, fsm:'RobotFSM'):
         self._is_finished = False
         self.fsm = fsm
@@ -50,6 +62,12 @@ class RaiseFrontPlateCommand(ITimeBasedCommand):
 
 
 class LowerFrontPlateCommand(ITimeBasedCommand):
+    """
+    Lower the front plate to the lower limit switch.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+    """
     def __init__(self, fsm:'RobotFSM'):
         self._is_finished = False
         self.fsm = fsm
@@ -72,6 +90,13 @@ class LowerFrontPlateCommand(ITimeBasedCommand):
 
 
 class MoveFrontPlateCommand(ITimeBasedCommand):
+    """
+    Move the front plate to the given vertical position.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        position (int): The target position to move the front plate to.
+    """
     def __init__(self, fsm:'RobotFSM', position: int):
         self._is_finished = False
         self.fsm = fsm

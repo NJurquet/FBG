@@ -62,17 +62,6 @@ class AdafruitServoControl:
         
         self.lastAngles[4] = angles[0]
         self.lastAngles[5] = angles[1]
-
-    def setHingeAngle(self, angle: int):
-        """
-        Sets the goal angle of the hinge servo motor.
-
-        Parameters:
-            angle (float): The goal angle in degrees.
-        """
-        self.kit.servo[6].angle = angle
-
-        self.lastAngles[6] = angle
         
     def setBannerDeployerAngle(self, angle: int):
         self.kit.servo[7].angle = angle
@@ -94,7 +83,7 @@ class AdafruitServoControl:
 
         Parameters:
             name (int): The channel number of the servo motor.
-            angle (float): The goal angle in degrees.
+            angle (int): The goal angle in degrees.
         """
         for i in range(len(self.names)):
             if self.names[i] == name:

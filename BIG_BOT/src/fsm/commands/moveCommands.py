@@ -1,4 +1,4 @@
-from .command import IMoveCommand, ITimeBasedCommand
+from .command import ITimeBasedCommand
 from ...constants import USPosition
 from typing import TYPE_CHECKING
 
@@ -7,7 +7,16 @@ if TYPE_CHECKING:
 
 
 class MoveForwardCommand(ITimeBasedCommand):
-    """Command to move the robot forward a certain distance at a certain speed."""
+    """
+    Command to move the robot forward a certain distance at a certain speed.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance that controls the robot.
+        distance (float): The distance to move in centimeters. Default value = 0.0.
+        speed (float): The speed at which to move the robot (value between 0 & 1). Default value = 0.5.
+        enable_direction_sensors (bool): Whether to enable ultrasonic sensors in the direction of movement. Default value = True.
+        re_enable_us_sensors (bool): Whether to re-enable ultrasonic sensors in other directions after movement. Default value = True.
+    """
     def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, enable_direction_sensors = True, re_enable_us_sensors = True):
         self._is_finished = False
 
@@ -16,7 +25,7 @@ class MoveForwardCommand(ITimeBasedCommand):
         self.speed = speed
         self.enable_direction_sensors = enable_direction_sensors
         self.re_enable_us_sensors = re_enable_us_sensors
-        self.time_needed = self.fsm.robot.motor.moveForward(distance_cm=self.distance, speed=self.speed)
+        self.time_needed = self.fsm.robot.motor.computeMoveForward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
 
@@ -70,7 +79,16 @@ class MoveForwardCommand(ITimeBasedCommand):
         self._is_finished = True
         
 class MoveBackwardCommand(ITimeBasedCommand):
-    """Command to move the robot backward a certain distance at a certain speed."""
+    """
+    Command to move the robot backward a certain distance at a certain speed.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance that controls the robot.
+        distance (float): The distance to move in centimeters. Default value = 0.0.
+        speed (float): The speed at which to move the robot (value between 0 & 1). Default value = 0.5.
+        enable_direction_sensors (bool): Whether to enable ultrasonic sensors in the direction of movement. Default value = True.
+        re_enable_us_sensors (bool): Whether to re-enable ultrasonic sensors in other directions after movement. Default value = True.
+    """    
     def __init__(self, fsm: 'RobotFSM', distance: float = 0.0, speed: float = 0.5, enable_direction_sensors = True, re_enable_us_sensors = True):
         self._is_finished = False
 
@@ -79,7 +97,7 @@ class MoveBackwardCommand(ITimeBasedCommand):
         self.speed = speed
         self.enable_direction_sensors = enable_direction_sensors
         self.enable_us_sensors = re_enable_us_sensors
-        self.time_needed = self.fsm.robot.motor.moveBackward(distance_cm=self.distance, speed=self.speed)
+        self.time_needed = self.fsm.robot.motor.computeMoveBackward(distance_cm=self.distance, speed=self.speed)
 
     def execute(self):
 
@@ -129,7 +147,17 @@ class MoveBackwardCommand(ITimeBasedCommand):
         self._is_finished = True
 
 class RotateLeftCommand(ITimeBasedCommand):
-    """Command to rotate the robot to the left a certain number of degrees at a certain speed."""
+    """
+    Command to rotate the robot to the left a certain number of degrees at a certain speed.
+
+    Parameters:
+        fsm (RobotFSM): The FSM instance that controls the robot.
+        degrees (float): The angle to rotate in degrees. Default value = 0.0.
+        speed (float): The speed at which to move the robot (value between 0 & 1). Default value = 0.5.
+        enable_front_sensors (bool): Whether to enable ultrasonic sensors in the front direction. Default value = True.
+        enable_back_sensors (bool): Whether to enable ultrasonic sensors in the back direction. Default value = True.
+        enable_side_sensors (bool): Whether to enable ultrasonic sensors in the side direction. Default value = True.
+    """  
     def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5, enable_front_sensors = True, enable_back_sensors = True, enable_side_sensors = True):
         self._is_finished = False
 
@@ -140,7 +168,7 @@ class RotateLeftCommand(ITimeBasedCommand):
         self.enable_back_sensors = enable_back_sensors
         self.enable_side_sensors = enable_side_sensors
 
-        self.time_needed = self.fsm.robot.motor.rotateLeftDegrees(degrees=self.degrees, speed=self.speed)
+        self.time_needed = self.fsm.robot.motor.computeRotateLeftDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
 
@@ -194,7 +222,17 @@ class RotateLeftCommand(ITimeBasedCommand):
         self._is_finished = True
 
 class RotateRightCommand(ITimeBasedCommand):
-    """Command to rotate the robot to the right a certain number of degrees at a certain speed."""
+    """
+    Command to rotate the robot to the right a certain number of degrees at a certain speed.
+
+    Parameters:
+        fsm (RobotFSM): The FSM instance that controls the robot.
+        degrees (float): The angle to rotate in degrees. Default value = 0.0.
+        speed (float): The speed at which to move the robot (value between 0 & 1). Default value = 0.5.
+        enable_front_sensors (bool): Whether to enable ultrasonic sensors in the front direction. Default value = True.
+        enable_back_sensors (bool): Whether to enable ultrasonic sensors in the back direction. Default value = True.
+        enable_side_sensors (bool): Whether to enable ultrasonic sensors in the side direction. Default value = True.
+    """
     def __init__(self, fsm: 'RobotFSM', degrees: float = 0.0, speed: float = 0.5, enable_front_sensors = True, enable_back_sensors = True, enable_side_sensors = True):
         self._is_finished = False
 
@@ -206,7 +244,7 @@ class RotateRightCommand(ITimeBasedCommand):
         self.enable_back_sensors = enable_back_sensors
         self.enable_side_sensors = enable_side_sensors
 
-        self.time_needed = self.fsm.robot.motor.rotateRightDegrees(degrees=self.degrees, speed=self.speed)
+        self.time_needed = self.fsm.robot.motor.computeRotateRightDegrees(degrees=self.degrees, speed=self.speed)
 
     def execute(self):
 
@@ -261,7 +299,13 @@ class RotateRightCommand(ITimeBasedCommand):
         self._is_finished = True
 
 class StopCommand(ITimeBasedCommand):
-    """Command to stop the motors and wait a time 0.1 to be sure of the complete stop of movement (can be tuned up if needed)."""
+    """
+    Command to stop the motors and wait a time given time to be sure of the complete stop of movement.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance that controls the robot, given automatically.
+        time_needed (float): The time to wait in seconds. Default value = 0.2.
+    """
     def __init__(self, fsm: 'RobotFSM', time_needed: float = 0.2):
         self._is_finished = False
 

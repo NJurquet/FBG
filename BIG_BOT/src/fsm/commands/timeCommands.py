@@ -7,7 +7,14 @@ if TYPE_CHECKING:
 
 
 class WaitCommand(ITimeBasedCommand):
-    """Command to wait for a certain amount of time."""
+    """
+    Command to wait for a certain amount of time.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        time_needed(float): Time to wait on this wait state. Default value = 0.0.
+        enable_sensors (bool): If True, enable the sensors after the wait. Default value = False.
+    """
     def __init__(self, fsm: 'RobotFSM', time_needed: float = 0.0, enable_sensors: bool = False):
         self._is_finished = False
         self.fsm = fsm
@@ -53,7 +60,13 @@ class WaitCommand(ITimeBasedCommand):
 
 
 class WaitForTargetTimeCommand(ITimeBasedCommand):
-    """Command to wait for a certain moment to arrive."""
+    """
+    Command to wait for a certain moment to arrive.
+    
+    Parameters:
+        fsm (RobotFSM): The FSM instance of the robot.
+        time_target(float): Target time of the match to wait on this wait state, if passed skips the command. Default value = 0.0.
+    """
     def __init__(self, fsm: 'RobotFSM', time_target: float = 0.0):
         self._is_finished = False
         self.fsm = fsm
