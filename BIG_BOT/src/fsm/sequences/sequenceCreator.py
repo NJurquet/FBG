@@ -339,23 +339,14 @@ class SequenceCreator():
     @property
     def IdleState(self) -> list[ICommand | ITimeBasedCommand]:
         return self._IdleState
-    @IdleState.setter
-    def IdleState(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._IdleState = sequence
 
     @property
     def Init(self) -> list[ICommand | ITimeBasedCommand]:
         return self._Init
-    @Init.setter
-    def Init(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._Init = sequence
 
     @property
     def DeployBanner(self) -> list[ICommand | ITimeBasedCommand]:
         return self._DeployBanner
-    @DeployBanner.setter
-    def DeployBanner(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._DeployBanner = sequence
 
     @property
     def MoveToSecondCans(self) -> list[ICommand | ITimeBasedCommand]:
@@ -363,33 +354,18 @@ class SequenceCreator():
             return self._MoveToSecondCans_Yellow
         else:
             return self._MoveToSecondCans_Blue
-    @MoveToSecondCans.setter
-    def MoveToSecondCans(self, sequence: list[ICommand | ITimeBasedCommand]):
-        if self.color == "yellow":
-            self._MoveToSecondCans_Yellow = sequence
-        else:
-            self._MoveToSecondCans_Blue = sequence
 
     @property
     def CollectCans(self) -> list[ICommand | ITimeBasedCommand]:
         return self._CollectCans
-    @CollectCans.setter
-    def CollectCans(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._CollectCans = sequence
 
     @property
     def Build1StoryBleachers(self) -> list[ICommand | ITimeBasedCommand]:
         return self._Build1StoryBleachers
-    @Build1StoryBleachers.setter
-    def Build1StoryBleachers(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._Build1StoryBleachers = sequence
 
     @property
     def Build2StoryBleachers(self) -> list[ICommand | ITimeBasedCommand]:
         return self._Build2StoryBleachers
-    @Build2StoryBleachers.setter
-    def Build2StoryBleachers(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._Build2StoryBleachers = sequence
 
     @property
     def RushFromStart(self) -> list[ICommand | ITimeBasedCommand]:
@@ -397,12 +373,6 @@ class SequenceCreator():
             return self._RushFromStart_Yellow
         else:
             return self._RushFromStart_Blue
-    @RushFromStart.setter
-    def RushFromStart(self, sequence: list[ICommand | ITimeBasedCommand]):
-        if self.color == "yellow":
-            self._RushFromStart_Yellow = sequence
-        else:
-            self._RushFromStart_Blue = sequence
 
     @property
     def FirstCansCollectMove(self) -> list[ICommand | ITimeBasedCommand]:
@@ -410,12 +380,6 @@ class SequenceCreator():
             return self._FirstCansCollectMove_Yellow
         else:
             return self._FirstCansCollectMove_Blue
-    @FirstCansCollectMove.setter
-    def FirstCansCollectMove(self, sequence: list[ICommand | ITimeBasedCommand]):
-        if self.color == "yellow":
-            self._FirstCansCollectMove_Yellow = sequence
-        else:
-            self._FirstCansCollectMove_Blue = sequence
     
     @property
     def FirstCansBuildMove(self) -> list[ICommand | ITimeBasedCommand]:
@@ -423,12 +387,6 @@ class SequenceCreator():
             return self._FirstCansBuildMove_Yellow
         else:
             return self._FirstCansBuildMove_Blue
-    @FirstCansBuildMove.setter
-    def FirstCansBuildMove(self, sequence: list[ICommand | ITimeBasedCommand]):
-        if self.color == "yellow":
-            self._FirstCansBuildMove_Yellow = sequence
-        else:
-            self._FirstCansBuildMove_Blue = sequence
 
     @property
     def SecondCansPushMove(self) -> list[ICommand | ITimeBasedCommand]:
@@ -436,12 +394,6 @@ class SequenceCreator():
             return self._SecondCansPushMove_Yellow
         else:
             return self._SecondCansPushMove_Blue
-    @SecondCansPushMove.setter
-    def SecondCansPushMove(self, sequence: list[ICommand | ITimeBasedCommand]):
-        if self.color == "yellow":
-            self._SecondCansPushMove_Yellow = sequence
-        else:
-            self._SecondCansPushMove_Blue = sequence
 
     @property
     def RushToEndFromSecondCans(self) -> list[ICommand | ITimeBasedCommand]:
@@ -449,12 +401,6 @@ class SequenceCreator():
             return self._RushToEndFromSecondCans_Yellow
         else:
             return self._RushToEndFromSecondCans_Blue
-    @RushToEndFromSecondCans.setter
-    def RushToEndFromSecondCans(self, sequence: list[ICommand | ITimeBasedCommand]):
-        if self.color == "yellow":
-            self._RushToEndFromSecondCans_Yellow = sequence
-        else:
-            self._RushToEndFromSecondCans_Blue = sequence
 
     @property
     def ThirdCansCollectMove(self) -> list[ICommand | ITimeBasedCommand]:
@@ -462,12 +408,6 @@ class SequenceCreator():
             return self._ThirdCansCollectMove_Blue
         else:
             return self._ThirdCansCollectMove_Blue
-    @ThirdCansCollectMove.setter
-    def ThirdCansCollectMove(self, sequence: list[ICommand | ITimeBasedCommand]):
-        if self.color == "yellow":
-            self._ThirdCansCollectMove_Blue = sequence
-        else:
-            self._ThirdCansCollectMove_Blue = sequence
 
     @property
     def ThirdCansBuildMove(self) -> list[ICommand | ITimeBasedCommand]:
@@ -475,19 +415,10 @@ class SequenceCreator():
             return self._ThirdCansBuildMove_Blue
         else:
             return self._ThirdCansBuildMove_Blue
-    @ThirdCansBuildMove.setter
-    def ThirdCansBuildMove(self, sequence: list[ICommand | ITimeBasedCommand]):
-        if self.color == "yellow":
-            self._ThirdCansBuildMove_Blue = sequence
-        else:
-            self._ThirdCansBuildMove_Blue = sequence
 
     @property
     def GoToEndMove(self) -> list[ICommand | ITimeBasedCommand]:
         return self._GoToEndMove
-    @GoToEndMove.setter
-    def GoToEndMove(self, sequence: list[ICommand | ITimeBasedCommand]):
-            self._GoToEndMove = sequence
 
     @property
     def MainSequence(self) -> list[list[ICommand | ITimeBasedCommand]]:
@@ -508,67 +439,11 @@ class SequenceCreator():
             #self.Build1StoryBleachers,
             #self.GoToEndMove
         ]
-    
-    @property
-    def Sprint4Yellow(self) -> list[ICommand | ITimeBasedCommand]:
-        return self._Sprint4Yellow
 
-    @Sprint4Yellow.setter
-    def Sprint4Yellow(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._Sprint4Yellow = sequence
-    
-    @property
-    def Sprint4Blue(self) -> list[ICommand | ITimeBasedCommand]:
-        return self._Sprint4Blue
-    @Sprint4Blue.setter
-    def Sprint4Blue(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._Sprint4Blue = sequence
-    
-    @property
-    def clawtest(self) -> list[ICommand | ITimeBasedCommand]:
-        return self._clawtest
-    @clawtest.setter
-    def clawtest(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._clawtest = sequence
-    
-    @property
-    def Sprint4CansBlue(self) -> list[ICommand | ITimeBasedCommand]:
-        return self._Sprint4CansBlue
-    @Sprint4CansBlue.setter
-    def Sprint4CansBlue(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._Sprint4CansBlue = sequence
-    
-    @property
-    def Sprint4CansYellows(self) -> list[ICommand | ITimeBasedCommand]:
-        return self._Sprint4CansYellows
-    @Sprint4CansYellows.setter
-    def Sprint4CansYellows(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._Sprint4CansYellows = sequence
-    
     @property
     def wheeltest(self) -> list[ICommand | ITimeBasedCommand]:
         return self._wheeltest
-    @wheeltest.setter
-    def wheeltest(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._wheeltest = sequence
     
     @property
     def reedswitchTest(self) -> list[ICommand | ITimeBasedCommand]:
         return self._reedswitchTest
-    @reedswitchTest.setter
-    def reedswitchTest(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._reedswitchTest = sequence
-    
-    @property
-    def frontPlateTest(self) -> list[ICommand | ITimeBasedCommand]:
-        return self._frontPlateTest
-    @frontPlateTest.setter
-    def frontPlateTest(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._frontPlateTest = sequence
-
-    @property
-    def frontPlantUp(self) -> list[ICommand | ITimeBasedCommand]:
-        return self._frontPlantUp
-    @frontPlantUp.setter
-    def frontPlantUp(self, sequence: list[ICommand | ITimeBasedCommand]):
-        self._frontPlantUp = sequence

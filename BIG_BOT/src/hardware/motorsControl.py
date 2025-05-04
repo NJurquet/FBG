@@ -35,14 +35,8 @@ class MotorsControl:
         leftSpeed = self.speed + self.leftStraightOffset
         rightSpeed = self.speed + self.rightStraightOffset
         
-        if leftSpeed < 0:
-            leftSpeed = 0
-        elif leftSpeed > 1:
-            leftSpeed = 1
-        if rightSpeed < 0:
-            rightSpeed = 0
-        elif rightSpeed > 1:
-            rightSpeed = 1
+        leftSpeed = max(min(leftSpeed, 1), 0)
+        rightSpeed = max(min(rightSpeed, 1), 0)
             
         self.leftMotor.forward(leftSpeed)
         self.rightMotor.forward(rightSpeed)
@@ -59,14 +53,8 @@ class MotorsControl:
         leftSpeed = self.speed + self.leftStraightOffset
         rightSpeed = self.speed + self.rightStraightOffset
         
-        if leftSpeed < 0:
-            leftSpeed = 0
-        elif leftSpeed > 1:
-            leftSpeed = 1
-        if rightSpeed < 0:
-            rightSpeed = 0
-        elif rightSpeed > 1:
-            rightSpeed = 1
+        leftSpeed = max(min(leftSpeed, 1), 0)
+        rightSpeed = max(min(rightSpeed, 1), 0)
             
         self.leftMotor.backward(leftSpeed)
         self.rightMotor.backward(rightSpeed)
@@ -82,14 +70,8 @@ class MotorsControl:
         leftSpeed = self.speed + self.leftRotateOffset
         rightSpeed = self.speed + self.rightRotateOffset
         
-        if leftSpeed < 0:
-            leftSpeed = 0
-        elif leftSpeed > 1:
-            leftSpeed = 1
-        if rightSpeed < 0:
-            rightSpeed = 0
-        elif rightSpeed > 1:
-            rightSpeed = 1
+        leftSpeed = max(min(leftSpeed, 1), 0)
+        rightSpeed = max(min(rightSpeed, 1), 0)
             
         self.leftMotor.backward(leftSpeed)
         self.rightMotor.forward(rightSpeed)
@@ -106,14 +88,8 @@ class MotorsControl:
         leftSpeed = self.speed + self.leftRotateOffset
         rightSpeed = self.speed + self.rightRotateOffset
         
-        if leftSpeed < 0:
-            leftSpeed = 0
-        elif leftSpeed > 1:
-            leftSpeed = 1
-        if rightSpeed < 0:
-            rightSpeed = 0
-        elif rightSpeed > 1:
-            rightSpeed = 1
+        leftSpeed = max(min(leftSpeed, 1), 0)
+        rightSpeed = max(min(rightSpeed, 1), 0)
             
         self.leftMotor.forward(leftSpeed)
         self.rightMotor.backward(rightSpeed)
@@ -137,10 +113,7 @@ class MotorsControl:
         if distance_cm <= 0:
             return 0
         
-        if speed < 0:
-            speed = 0
-        elif speed > 1:
-            speed = 1
+        speed = max(min(speed, 1), 0)
     
         self.speed = speed
         coeff = self.distance_per_second/self.speed 
@@ -160,11 +133,8 @@ class MotorsControl:
         """
         if distance_cm <= 0:
             return 0
-    
-        if speed < 0:
-            speed = 0
-        elif speed > 1:
-            speed = 1
+        
+        speed = max(min(speed, 1), 0)
             
         self.speed = speed
         coeff = self.distance_per_second/self.speed 
@@ -184,12 +154,9 @@ class MotorsControl:
         """
         if degrees <= 0:
             return 0
-    
-        if speed < 0:
-            speed = 0
-        elif speed > 1:
-            speed = 1
-            
+        
+        speed = max(min(speed, 1), 0)
+        
         self.speed = speed
         coeff = self.degrees_per_second_left/self.speed 
 
@@ -208,11 +175,8 @@ class MotorsControl:
         """
         if degrees <= 0:
             return 0
-    
-        if speed < 0:
-            speed = 0
-        elif speed > 1:
-            speed = 1
+        
+        speed = max(min(speed, 1), 0)
             
         self.speed = speed
         coeff = self.degrees_per_second_left/self.speed 
